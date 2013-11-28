@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		940D6A8E184797840013EA7B /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A8D184797840013EA7B /* NewsViewController.m */; };
+		940D6A91184797930013EA7B /* CalendarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A90184797930013EA7B /* CalendarViewController.m */; };
+		940D6A94184797A70013EA7B /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A93184797A70013EA7B /* HomeViewController.m */; };
+		940D6A97184797B20013EA7B /* ContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A96184797B20013EA7B /* ContactViewController.m */; };
+		940D6A9A184797BB0013EA7B /* SwitchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A99184797BB0013EA7B /* SwitchViewController.m */; };
+		940D6A9E18479F740013EA7B /* MainMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A9D18479F740013EA7B /* MainMenuViewController.m */; };
+		940D6AA11847A1F80013EA7B /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6AA01847A1F80013EA7B /* MainNavigationController.m */; };
+		940D6AA71847D2F20013EA7B /* UIView+AddOns.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6AA61847D2F20013EA7B /* UIView+AddOns.m */; };
 		94BD73BE183DA63D009E1129 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94BD73BD183DA63D009E1129 /* Foundation.framework */; };
 		94BD73C0183DA63D009E1129 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94BD73BF183DA63D009E1129 /* CoreGraphics.framework */; };
 		94BD73C2183DA63D009E1129 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94BD73C1183DA63D009E1129 /* UIKit.framework */; };
@@ -14,13 +22,16 @@
 		94BD73CA183DA63D009E1129 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BD73C9183DA63D009E1129 /* main.m */; };
 		94BD73CE183DA63D009E1129 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BD73CD183DA63D009E1129 /* AppDelegate.m */; };
 		94BD73D1183DA63D009E1129 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 94BD73CF183DA63D009E1129 /* Main.storyboard */; };
-		94BD73D4183DA63D009E1129 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BD73D3183DA63D009E1129 /* ViewController.m */; };
 		94BD73D6183DA63D009E1129 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94BD73D5183DA63D009E1129 /* Images.xcassets */; };
 		94BD73DD183DA63D009E1129 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94BD73DC183DA63D009E1129 /* XCTest.framework */; };
 		94BD73DE183DA63D009E1129 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94BD73BD183DA63D009E1129 /* Foundation.framework */; };
 		94BD73DF183DA63D009E1129 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94BD73C1183DA63D009E1129 /* UIKit.framework */; };
 		94BD73E7183DA63D009E1129 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 94BD73E5183DA63D009E1129 /* InfoPlist.strings */; };
 		94BD73E9183DA63D009E1129 /* School_IntercomTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BD73E8183DA63D009E1129 /* School_IntercomTests.m */; };
+		94BD73F3183DA686009E1129 /* EventKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94BD73F2183DA686009E1129 /* EventKit.framework */; };
+		94BD73F6183DA722009E1129 /* IntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BD73F5183DA722009E1129 /* IntroViewController.m */; };
+		94BD73FC183DAC13009E1129 /* UserData.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BD73FB183DAC12009E1129 /* UserData.m */; };
+		94BD7400183DCF16009E1129 /* RegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BD73FF183DCF16009E1129 /* RegisterViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,6 +45,22 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		940D6A8C184797840013EA7B /* NewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsViewController.h; sourceTree = "<group>"; };
+		940D6A8D184797840013EA7B /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsViewController.m; sourceTree = "<group>"; };
+		940D6A8F184797930013EA7B /* CalendarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarViewController.h; sourceTree = "<group>"; };
+		940D6A90184797930013EA7B /* CalendarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarViewController.m; sourceTree = "<group>"; };
+		940D6A92184797A70013EA7B /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
+		940D6A93184797A70013EA7B /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
+		940D6A95184797B20013EA7B /* ContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactViewController.h; sourceTree = "<group>"; };
+		940D6A96184797B20013EA7B /* ContactViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactViewController.m; sourceTree = "<group>"; };
+		940D6A98184797BB0013EA7B /* SwitchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchViewController.h; sourceTree = "<group>"; };
+		940D6A99184797BB0013EA7B /* SwitchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwitchViewController.m; sourceTree = "<group>"; };
+		940D6A9C18479F740013EA7B /* MainMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuViewController.h; sourceTree = "<group>"; };
+		940D6A9D18479F740013EA7B /* MainMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuViewController.m; sourceTree = "<group>"; };
+		940D6A9F1847A1F80013EA7B /* MainNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainNavigationController.h; sourceTree = "<group>"; };
+		940D6AA01847A1F80013EA7B /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
+		940D6AA51847D2F20013EA7B /* UIView+AddOns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AddOns.h"; sourceTree = "<group>"; };
+		940D6AA61847D2F20013EA7B /* UIView+AddOns.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AddOns.m"; sourceTree = "<group>"; };
 		94BD73BA183DA63D009E1129 /* School Intercom.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "School Intercom.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		94BD73BD183DA63D009E1129 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		94BD73BF183DA63D009E1129 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -45,14 +72,20 @@
 		94BD73CC183DA63D009E1129 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		94BD73CD183DA63D009E1129 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		94BD73D0183DA63D009E1129 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
-		94BD73D2183DA63D009E1129 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
-		94BD73D3183DA63D009E1129 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
 		94BD73D5183DA63D009E1129 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		94BD73DB183DA63D009E1129 /* School IntercomTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "School IntercomTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		94BD73DC183DA63D009E1129 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		94BD73E4183DA63D009E1129 /* School IntercomTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "School IntercomTests-Info.plist"; sourceTree = "<group>"; };
 		94BD73E6183DA63D009E1129 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		94BD73E8183DA63D009E1129 /* School_IntercomTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = School_IntercomTests.m; sourceTree = "<group>"; };
+		94BD73F2183DA686009E1129 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
+		94BD73F4183DA722009E1129 /* IntroViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntroViewController.h; sourceTree = "<group>"; };
+		94BD73F5183DA722009E1129 /* IntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntroViewController.m; sourceTree = "<group>"; };
+		94BD73F9183DAAB7009E1129 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		94BD73FA183DAC12009E1129 /* UserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserData.h; sourceTree = "<group>"; };
+		94BD73FB183DAC12009E1129 /* UserData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserData.m; sourceTree = "<group>"; };
+		94BD73FE183DCF16009E1129 /* RegisterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisterViewController.h; sourceTree = "<group>"; };
+		94BD73FF183DCF16009E1129 /* RegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +93,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				94BD73F3183DA686009E1129 /* EventKit.framework in Frameworks */,
 				94BD73C0183DA63D009E1129 /* CoreGraphics.framework in Frameworks */,
 				94BD73C2183DA63D009E1129 /* UIKit.framework in Frameworks */,
 				94BD73BE183DA63D009E1129 /* Foundation.framework in Frameworks */,
@@ -79,6 +113,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		940D6A9B184797E70013EA7B /* Main Views */ = {
+			isa = PBXGroup;
+			children = (
+				940D6A9C18479F740013EA7B /* MainMenuViewController.h */,
+				940D6A9D18479F740013EA7B /* MainMenuViewController.m */,
+				940D6A8C184797840013EA7B /* NewsViewController.h */,
+				940D6A8D184797840013EA7B /* NewsViewController.m */,
+				940D6A8F184797930013EA7B /* CalendarViewController.h */,
+				940D6A90184797930013EA7B /* CalendarViewController.m */,
+				940D6A92184797A70013EA7B /* HomeViewController.h */,
+				940D6A93184797A70013EA7B /* HomeViewController.m */,
+				940D6A95184797B20013EA7B /* ContactViewController.h */,
+				940D6A96184797B20013EA7B /* ContactViewController.m */,
+				940D6A98184797BB0013EA7B /* SwitchViewController.h */,
+				940D6A99184797BB0013EA7B /* SwitchViewController.m */,
+			);
+			name = "Main Views";
+			sourceTree = "<group>";
+		};
 		94BD73B1183DA63C009E1129 = {
 			isa = PBXGroup;
 			children = (
@@ -101,6 +154,7 @@
 		94BD73BC183DA63D009E1129 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				94BD73F2183DA686009E1129 /* EventKit.framework */,
 				94BD73BD183DA63D009E1129 /* Foundation.framework */,
 				94BD73BF183DA63D009E1129 /* CoreGraphics.framework */,
 				94BD73C1183DA63D009E1129 /* UIKit.framework */,
@@ -112,12 +166,13 @@
 		94BD73C3183DA63D009E1129 /* School Intercom */ = {
 			isa = PBXGroup;
 			children = (
-				94BD73CC183DA63D009E1129 /* AppDelegate.h */,
-				94BD73CD183DA63D009E1129 /* AppDelegate.m */,
+				94BD73F9183DAAB7009E1129 /* Constants.h */,
 				94BD73CF183DA63D009E1129 /* Main.storyboard */,
-				94BD73D2183DA63D009E1129 /* ViewController.h */,
-				94BD73D3183DA63D009E1129 /* ViewController.m */,
+				940D6A9B184797E70013EA7B /* Main Views */,
+				94BD7401183DCF1F009E1129 /* Intro/Reg */,
+				94BD73FD183DAC1A009E1129 /* Model */,
 				94BD73D5183DA63D009E1129 /* Images.xcassets */,
+				94C8EC6F1847E1C0002EF4FE /* Categories */,
 				94BD73C4183DA63D009E1129 /* Supporting Files */,
 			);
 			path = "School Intercom";
@@ -126,6 +181,8 @@
 		94BD73C4183DA63D009E1129 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				94BD73CC183DA63D009E1129 /* AppDelegate.h */,
+				94BD73CD183DA63D009E1129 /* AppDelegate.m */,
 				94BD73C5183DA63D009E1129 /* School Intercom-Info.plist */,
 				94BD73C6183DA63D009E1129 /* InfoPlist.strings */,
 				94BD73C9183DA63D009E1129 /* main.m */,
@@ -150,6 +207,37 @@
 				94BD73E5183DA63D009E1129 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		94BD73FD183DAC1A009E1129 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				94BD73FA183DAC12009E1129 /* UserData.h */,
+				94BD73FB183DAC12009E1129 /* UserData.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		94BD7401183DCF1F009E1129 /* Intro/Reg */ = {
+			isa = PBXGroup;
+			children = (
+				94BD73FE183DCF16009E1129 /* RegisterViewController.h */,
+				94BD73FF183DCF16009E1129 /* RegisterViewController.m */,
+				94BD73F4183DA722009E1129 /* IntroViewController.h */,
+				94BD73F5183DA722009E1129 /* IntroViewController.m */,
+				940D6A9F1847A1F80013EA7B /* MainNavigationController.h */,
+				940D6AA01847A1F80013EA7B /* MainNavigationController.m */,
+			);
+			name = Intro/Reg;
+			sourceTree = "<group>";
+		};
+		94C8EC6F1847E1C0002EF4FE /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				940D6AA61847D2F20013EA7B /* UIView+AddOns.m */,
+				940D6AA51847D2F20013EA7B /* UIView+AddOns.h */,
+			);
+			name = Categories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -249,9 +337,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				94BD73D4183DA63D009E1129 /* ViewController.m in Sources */,
+				94BD7400183DCF16009E1129 /* RegisterViewController.m in Sources */,
 				94BD73CE183DA63D009E1129 /* AppDelegate.m in Sources */,
+				940D6AA11847A1F80013EA7B /* MainNavigationController.m in Sources */,
+				94BD73F6183DA722009E1129 /* IntroViewController.m in Sources */,
+				940D6A8E184797840013EA7B /* NewsViewController.m in Sources */,
+				940D6A97184797B20013EA7B /* ContactViewController.m in Sources */,
+				94BD73FC183DAC13009E1129 /* UserData.m in Sources */,
+				940D6A9E18479F740013EA7B /* MainMenuViewController.m in Sources */,
+				940D6AA71847D2F20013EA7B /* UIView+AddOns.m in Sources */,
 				94BD73CA183DA63D009E1129 /* main.m in Sources */,
+				940D6A91184797930013EA7B /* CalendarViewController.m in Sources */,
+				940D6A9A184797BB0013EA7B /* SwitchViewController.m in Sources */,
+				940D6A94184797A70013EA7B /* HomeViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -460,6 +558,7 @@
 				94BD73EE183DA63D009E1129 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		94BD73EF183DA63D009E1129 /* Build configuration list for PBXNativeTarget "School IntercomTests" */ = {
 			isa = XCConfigurationList;
@@ -468,6 +567,7 @@
 				94BD73F1183DA63D009E1129 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
