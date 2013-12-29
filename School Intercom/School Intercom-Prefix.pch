@@ -15,4 +15,7 @@
     #import <Foundation/Foundation.h>
     #import "Constants.h"
     #import "UIView+AddOns.h"
+    #import "DatabaseRequest.h"
+    #import "HelperMethods.h"
+    #import "UserData.h"
 #endif

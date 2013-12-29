@@ -8,13 +8,17 @@
 
 #import <UIKit/UIKit.h>
 #import "HomeViewController.h"
-#import "CalendarViewController.h"
+#import "CalendarMonthViewController.h"
 #import "NewsViewController.h"
 #import "ContactViewController.h"
 #import "SwitchViewController.h"
+#import "SettingsViewController.h"
+#import "CalendarMonthViewController.h"
 
-@interface MainMenuViewController : UIViewController <HomeViewControllerDelegate, NewsViewControllerDelegate, CalendarViewControllerDelegate, ContactViewControllerDelegate, SwitchViewControllerDelegate>
+
+@interface MainMenuViewController : UIViewController <HomeViewControllerDelegate, NewsViewControllerDelegate, CalendarMonthViewControllerDelegate, ContactViewControllerDelegate, SwitchViewControllerDelegate, SettingsViewControllerDelegate>
 
 @property (nonatomic) BOOL isFirstLoad;
+@property (nonatomic, strong) UserData *mainUserData;
 
 @end

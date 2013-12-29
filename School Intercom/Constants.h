@@ -97,6 +97,7 @@ typedef enum
 #define NUMBER_OF_SCHOOLS @"numOfSchools"
 #define SCHOOL_ID_ARRAY @"schoolIDArray"
 #define WORKING_SCHOOL_ID @"workingSchoolID"
+#define SCHOOL_DATA_ARRAY @"schoolDataArray"
 
 //adv table
 #define AD_IMAGE_NAME @"adImageName"
@@ -146,11 +147,12 @@ typedef enum
 #define SCHOOL_STATE @"schoolState"
 #define SCHOOL_ZIP @"schoolZip"
 #define SCHOOL_CITY @"schoolCity"
-#define SCHOOL_NEEDS_TO_VERIFY @"schoolVerify"
+#define SCHOOL_NEEDS_TO_VERIFY @"schoolVerifyUsers"
 #define SCHOOL_IS_ACTIVE @"schoolActive"
 #define SCHOOL_EMAIL @"schoolEmail"
 #define SCHOOL_PHONE @"schoolPhone"
 #define SCHOOL_NEWS_HEADER @"schoolNewsHeader"
+
 
 //user table
 #define USER_FIRST_NAME @"userFName"
@@ -159,6 +161,7 @@ typedef enum
 #define USER_PIN @"userPin"
 #define USER_IS_VERIFIED @"userVerified"
 #define USER_PUSH_NOTIFICATION_PIN @"userPushPin"
+#define USER_PASSWORD @"userPassword"
 
 //verify queue Table
 #define VQ_MESSAGE @"vqMessage"
@@ -177,8 +180,10 @@ typedef enum
 #define SEGUE_TO_CONTACT_VIEW @"contactview"
 #define SEGUE_TO_SWITCH_VIEW @"switchview"
 #define SEGUE_TO_REGISTER_VIEW @"registerview"
+#define SEGUE_TO_SETTINGS_VIEW @"settingsview"
 
 
-
+//Dictionary keys
+#define DIC_CALENDAR_DATA @"calendarData"
 
 

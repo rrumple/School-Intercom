@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UserData.h"
+#import "RegistrationModel.h"
 
-@interface RegisterViewController : UIViewController
+@interface RegisterViewController : UIViewController <UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, strong) UserData *mainUserData;
 

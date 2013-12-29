@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "UserData.h"
 #import "RegisterViewController.h"
 #import "MainNavigationController.h"
+#import "IntroModel.h"
 
 @interface IntroViewController : UIViewController <UIAlertViewDelegate, UITextFieldDelegate>
 

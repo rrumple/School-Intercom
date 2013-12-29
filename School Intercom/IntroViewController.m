@@ -12,10 +12,20 @@
 
 @property (nonatomic, strong) UserData *mainUserData;
 @property (nonatomic, strong) NSMutableDictionary *existingUserData;
+@property (weak, nonatomic) IBOutlet UIImageView *micImageView;
+@property (nonatomic, strong) IntroModel *introData;
+@property (nonatomic) BOOL isLoadDataComplete;
+@property (nonatomic, strong) NSTimer *timer;
 
 @end
 
 @implementation IntroViewController
+
+- (IntroModel *)introData
+{
+    if (!_introData) _introData = [[IntroModel alloc]init];
+    return  _introData;
+}
 
 - (UserData *)mainUserData
 {
@@ -37,13 +47,103 @@
     [self checkForValidUser];
 }
 
+- (void)showHomeScreen
+{
+    if(self.isLoadDataComplete) //&& self.isLoadImageComplete)
+    {
+        if(self.timer.isValid)
+        {
+            [self.timer invalidate];
+            self.timer = nil;
+        }
+        [self performSegueWithIdentifier:SEGUE_TO_MAIN_MENU sender:self];
+        
+    }
+    else
+    {
+        //self.isLoadImageComplete = [[[NSUserDefaults standardUserDefaults] objectForKey:@"isLoadImageComplete"] boolValue];
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:2 target:self selector:@selector(showHomeScreen) userInfo:nil repeats:NO];
+    }
+    
+}
+
+
+- (void)setBackgroundImage
+{
+    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    NSArray *suffixes = @[LOW_RES_SUFFIX, RETINA_SUFFIX, IPHONE5_SUFFIX];
+    int picCount = 0;
+    
+    for( NSString *suffix in suffixes)
+    {
+        NSString *pngFilePath = [NSString stringWithFormat:@"%@/%@%@",docDir, [self.mainUserData.schoolData objectForKey:SCHOOL_IMAGE_NAME], suffix];
+        
+        if([[NSFileManager defaultManager] fileExistsAtPath:pngFilePath])
+            picCount++;
+    }
+    
+    if(picCount == 3)
+    {
+        NSString *pngFilePath = [NSString stringWithFormat:@"%@/%@%@",docDir, [self.mainUserData.schoolData objectForKey:SCHOOL_IMAGE_NAME], LOW_RES_SUFFIX];
+        
+        UIImage *image = [UIImage imageWithContentsOfFile:pngFilePath];
+        [self.micImageView setImage:image];
+    }
+    else
+    {
+        [HelperMethods downloadAndSaveImagesToDiskWithFilename:[self.mainUserData.schoolData objectForKey:SCHOOL_IMAGE_NAME]];
+    }
+
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    self.isLoadDataComplete = NO;
+}
+
+- (void)loadData
+{
+    
+  
+    
+    dispatch_queue_t createQueue = dispatch_queue_create("getAppData", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.introData queryDatabaseForSchoolsDataForUser:self.mainUserData.userID andSchoolID:self.mainUserData.schoolIDselected];
+        if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic];
+                    
+                }
+                else
+                {
+                                        
+                    self.mainUserData.appData = tempDic;
+                    NSLog(@"%@", self.mainUserData.appData);
+                    self.isLoadDataComplete = YES;
+                }
+            });
+            
+        }
+    });
+
+}
+
 - (void)checkForValidUser
 {
     if (self.mainUserData.isAccountCreated && self.mainUserData.isRegistered)
     {
-        //load data here
+        [self loadData];
         
-        [self performSegueWithIdentifier:SEGUE_TO_MAIN_MENU sender:self];
+          self.timer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showHomeScreen) userInfo:nil repeats:NO];
     }
     else if (!self.mainUserData.isAccountCreated)
     {
@@ -99,6 +199,8 @@
         MainNavigationController *MNC = segue.destinationViewController;
         
         MNC.isFirstLoad = YES;
+        MNC.mainUserData = self.mainUserData;
+        
     }
 }
 

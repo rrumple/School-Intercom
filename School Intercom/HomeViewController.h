@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UserData.h"
 
 @protocol HomeViewControllerDelegate;
 
-@interface HomeViewController : UIViewController
+@interface HomeViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, weak) id<HomeViewControllerDelegate> delegate;
+@property (nonatomic, strong) UserData *mainUserData;
+
 
 @end
 

@@ -31,6 +31,7 @@
     MainMenuViewController *MMVC = [[self viewControllers]objectAtIndex:0];
     MMVC.isFirstLoad = self.isFirstLoad;
     self.isFirstLoad = NO;
+    MMVC.mainUserData = self.mainUserData;
 }
 
 - (void)didReceiveMemoryWarning

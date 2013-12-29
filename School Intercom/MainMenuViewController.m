@@ -64,6 +64,14 @@
     self.screenShotView.image = image;
     
 }
+- (IBAction)calendarPressed
+{
+    CalendarMonthViewController *vc = [[CalendarMonthViewController alloc] initWithSunday:YES];
+    vc.calendarData = [self.mainUserData.appData objectForKey:DIC_CALENDAR_DATA];
+    vc.delegate = self;
+    vc.backgroundColor = self.view.backgroundColor;
+    [self.navigationController pushViewController:vc animated:YES];
+}
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
@@ -71,11 +79,12 @@
     {
         HomeViewController *HVC = segue.destinationViewController;
         HVC.delegate = self;
+        HVC.mainUserData = self.mainUserData;
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_CALENDAR_VIEW])
     {
-        CalendarViewController *CVC = segue.destinationViewController;
-        CVC.delegate = self;
+        //CalendarViewController *CVC = segue.destinationViewController;
+        //CVC.delegate = self;
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_NEWS_VIEW])
     {
@@ -91,6 +100,11 @@
     {
         SwitchViewController *VC = segue.destinationViewController;
         VC.delegate = self;
+    }
+    else if([segue.identifier isEqualToString:SEGUE_TO_SETTINGS_VIEW])
+    {
+        SettingsViewController *SVC = segue.destinationViewController;
+        SVC.delegate = self;
     }
 }
 
