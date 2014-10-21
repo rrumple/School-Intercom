@@ -13,16 +13,41 @@
 
 @property (nonatomic) BOOL isRegistered;
 @property (nonatomic) BOOL isAccountCreated;
+@property (nonatomic) BOOL hasPurchased;
+@property (nonatomic) BOOL wasPasswordReset;
+@property (nonatomic) BOOL isDemoInUse;
 @property (nonatomic, strong) NSString *userID;
 @property (nonatomic, strong) NSString *schoolIDselected;
 @property (nonatomic, strong) NSDictionary *schoolData;
 @property (nonatomic, strong) NSDictionary *appData;
+@property (nonatomic, strong) NSDictionary *userInfo;
+
 
 - (NSUInteger)getNumberOfSchools;
 
 - (void)addSchoolIDtoArray:(NSString *)schoolID;
 
 - (void)addschoolDataToArray:(NSDictionary *)schoolData;
+
+- (void)addSchoolIDsFromArray:(NSArray *)schoolIDs;
+
+- (void)updateSchoolDataInArray:(NSDictionary *)schoolData;
+
+- (BOOL)checkForASchoolIDMatch:(NSString *)schoolIDtoCheck;
+
+- (void)setActiveSchool:(NSString *)schoolID;
+
+- (void)showAllSchoolsInNSLOG;
+
+- (NSArray *)getAllofUsersSchools;
+
+- (NSString *)getSchoolNameFromID:(NSString *)schoolID;
+
+- (void)updateBadgeCountsForSchools:(NSArray *)schoolBadgeData;
+
+- (void)clearAllData;
+
+- (BOOL)removeSchoolFromPhone:(NSString *)schoolID;
 
 
 

@@ -35,8 +35,22 @@
 - (NSArray *)queryDatabaseForSchoolsUsingState:
     (NSString *)state andCity:(NSString *)city;
 
+- (NSArray *)queryDatabaseForSchoolsUsingStateWithNoArrayProcessing:(NSString *)state andCity:(NSString *)city;
+
+- (NSArray *)addAdditionalSchoolToUser:(NSString *)userID andSchool:(NSString *)schoolID;
+
 - (NSArray *)addUserToDatabase;
 
 - (NSArray *)addChildToDatabaseWithUserID:(NSString *)userID;
+
+- (NSDictionary *)getUserInfoAsDictionary;
+
+- (NSArray *)updateUserPushNotificationPinForUserID:(NSString *)userID withPin:(NSString *)deviceToken;
+
+- (NSArray *)updateUserVersionUserID:(NSString *)userID withVersion:(NSString *)version;
+
+- (NSArray *)getCurrentAppVersion;
+
+- (NSArray *)sendEmailToRequestSchoolAdditionBy:(NSString *)name forSchoolNamed:(NSString *)schoolName inCity:(NSString *)city inState:(NSString *)state withSchoolContactName:(NSString *)schoolContactName;
 
 @end

@@ -32,12 +32,20 @@
     MMVC.isFirstLoad = self.isFirstLoad;
     self.isFirstLoad = NO;
     MMVC.mainUserData = self.mainUserData;
+    MMVC.delegate = self;
+    
+
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)signOut
+{
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 @end

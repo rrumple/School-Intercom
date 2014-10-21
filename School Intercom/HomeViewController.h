@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 #import "UserData.h"
+#import "AdModel.h"
+#import "UpdateProfileModel.h"
 
 @protocol HomeViewControllerDelegate;
 

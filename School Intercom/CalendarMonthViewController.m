@@ -37,10 +37,24 @@
 @property (nonatomic, strong) NSArray *yearsUsed;
 @property (nonatomic) BOOL showDetailView;
 @property (nonatomic, strong) NSDictionary *detailViewDic;
+@property (nonatomic, strong) NSDictionary *selectedEventData;
+@property (nonatomic, strong) NSArray *eventsArray;
 @end
 
 #pragma mark - CalendarMonthViewController
 @implementation CalendarMonthViewController
+
+-(NSArray *)eventsArray
+{
+    if (!_eventsArray) _eventsArray = [[NSArray alloc]init];
+    return _eventsArray;
+}
+
+-(NSDictionary *)selectedEventData
+{
+    if (!_selectedEventData) _selectedEventData = [[NSDictionary alloc]init];
+    return _selectedEventData;
+}
 
 -(NSDictionary *)detailViewDic
 {
@@ -83,13 +97,88 @@
     
 }
 
+- (void)loadUsersCalendar
+{
+    EKEventStore *store = [[EKEventStore alloc] init];
+    
+    
+    // Get the appropriate calendar
+    NSCalendar *calendar = [NSCalendar currentCalendar];
+    
+    
+    if ([store respondsToSelector:@selector(requestAccessToEntityType:completion:)])
+    {
+        /* iOS Settings > Privacy > Calendars > MY APP > ENABLE | DISABLE */
+        [store requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error)
+         {
+             
+             dispatch_queue_t createQueue = dispatch_queue_create("getCalendar", NULL);
+             dispatch_async(createQueue, ^{
+            
+                 if ( granted )
+                 {
+                     
+                     NSLog(@"User has granted permission!");
+                     // Create the start date components
+                     NSDateComponents *oneDayAgoComponents = [[NSDateComponents alloc] init];
+                     oneDayAgoComponents.day = -1;
+                     NSDate *oneDayAgo = [calendar dateByAddingComponents:oneDayAgoComponents
+                                                                   toDate:[NSDate date]
+                                                                  options:0];
+                     
+                     NSDateComponents *sixMonthsFromNowComponets = [[NSDateComponents alloc]init];
+                     sixMonthsFromNowComponets.month = 6;
+                     NSDate *sixMonthsFromNow = [calendar dateByAddingComponents:sixMonthsFromNowComponets
+                                                                          toDate:[NSDate date]
+                                                                         options:0];
+                     /* // Create the end date components
+                      NSDateComponents *oneYearFromNowComponents = [[NSDateComponents alloc] init];
+                      oneYearFromNowComponents.year = 1;
+                      NSDate *oneYearFromNow = [calendar dateByAddingComponents:oneYearFromNowComponents
+                      toDate:[NSDate date]
+                      options:0];
+                      */
+                     // Create the predicate from the event store's instance method
+                     NSPredicate *predicate = [store predicateForEventsWithStartDate:oneDayAgo
+                                                                             endDate:sixMonthsFromNow
+                                                                           calendars:nil];
+                     self.eventsArray = [store eventsMatchingPredicate:predicate];
+                     NSLog(@"The content of array is%@",self.eventsArray);
+                     // Fetch all events that match the predicate
+                     dispatch_async(dispatch_get_main_queue(), ^{
+                         
+            
+                         [self.tableView reloadData];
+                         
+                     });
+                     
+                 }
+                 else
+                 {
+                     NSLog(@"User has not granted permission!");
+                 }
+             
+             
+             
+             
+             });
+
+             
+         
+             
+             
+         }];
+    }
+}
+
 - (void) datesToMarkStartDate:(NSDate *)start endDate:(NSDate *)end
 {
     self.dataArray = [[NSMutableArray alloc]init];
     BOOL isMatched = NO;
     
     NSDate *d = start;
-    	while(YES){
+    	while(self.calendarData != (id)[NSNull null])
+        {
         NSDateComponents *components = [[NSCalendar currentCalendar] components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear fromDate:d];
         
         
@@ -323,9 +412,18 @@
 
 
 #pragma mark View Lifecycle
-- (void) viewDidLoad{
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [[NSNotificationCenter defaultCenter]removeObserver:self];
+}
+
+- (void) viewDidLoad
+{
 	[super viewDidLoad];
     self.view.backgroundColor = self.backgroundColor;
+    [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(loadUsersCalendar) name:UIApplicationDidBecomeActiveNotification object:nil];
+
     self.showDetailView = false;
     [self getSectionCount];
     NSLog(@"%@", self.calendarData);
@@ -334,17 +432,32 @@
     CGRect rect = self.monthView.frame;
     rect.origin.y += 58;
     self.monthView.frame = rect;
+    CGRect viewRect = self.view.frame;
     rect = self.tableView.frame;
-    rect.origin.y += 58;
+    rect.size.height = viewRect.size.height - 58;
+    
+    rect.origin.y = viewRect.origin.y + 58;
+    rect.origin.x = viewRect.origin.x;
     self.tableView.frame = rect;
+    [self.monthView removeFromSuperview];
     
     UIButton *menuButton = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, 40, 40)];
+    UILabel *pageTitle = [[UILabel alloc]initWithFrame:CGRectMake(131, 19, 80, 21)];
+    
+    pageTitle.text = @"Calendar";
+    [pageTitle setTextAlignment:NSTextAlignmentCenter];
+    [pageTitle setTextColor:[UIColor whiteColor]];
+    
+        
+        
+    [pageTitle setFont:FONT_CHARCOAL_CY(17.0f)];
     
     [menuButton addTarget:self action:@selector(menuPressed) forControlEvents:UIControlEventTouchDown];
     
     [menuButton setImage:[UIImage imageNamed:@"menuIcon"] forState:UIControlStateNormal];
     [self.view addSubview:menuButton];
-    
+    [self.view addSubview:pageTitle];
+    /*
     UIView *detailViewControls = [[UIView alloc]initWithFrame:CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width, 40)];
     UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(20, 0, 40, 40)];
     UIButton *addButton = [[UIButton alloc]initWithFrame:CGRectMake(260, 0, 40, 40)];
@@ -361,6 +474,9 @@
     [detailViewControls addSubview:addButton];
     
     [self.view insertSubview:detailViewControls belowSubview:self.tableView];
+     */
+    
+    [self loadUsersCalendar];
 
 }
 
@@ -389,7 +505,7 @@
     [self.tableView reloadData];
 }
 
-- (void)addEventToCalendar
+- (void)addEventToUserCalendar
 {
     //NSString *dateString = @"Mon, 02 Sep 2013 00:00:45";
     NSLocale *usLocale = [[NSLocale alloc]initWithLocaleIdentifier:@"en-US"];
@@ -401,14 +517,24 @@
     EKEventStore *store = [[EKEventStore alloc]init];
     [store requestAccessToEntityType:EKEntityTypeEvent completion:^(BOOL granted, NSError *error)  {
         if (!granted)
-            return;
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                UIAlertView *noCalendarAccessAlert = [[UIAlertView alloc]initWithTitle:@"Calendar Access" message:@"Unable to add event, enable Intercom for calendar access via Settings->Privacy->Calendars" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                [noCalendarAccessAlert show];
+                
+                
+            });
+
+                       return;
+        }
         EKEvent *event = [EKEvent eventWithEventStore:store];
-        event.title = [self.detailViewDic objectForKey:CAL_TITLE];
-        event.allDay = [[self.detailViewDic objectForKey:CAL_IS_ALL_DAY] boolValue];
-        event.startDate = [dateFormatter dateFromString:[self.detailViewDic objectForKey:CAL_START_DATE]];
-        event.endDate = [dateFormatter dateFromString:[self.detailViewDic objectForKey:CAL_END_DATE]];
-        event.location = [self.detailViewDic objectForKey:CAL_LOCATION];
-        event.notes = [self.detailViewDic objectForKey:CAL_MORE_INFO];
+        event.title = [self.selectedEventData objectForKey:CAL_TITLE];
+        event.allDay = [[self.selectedEventData objectForKey:CAL_IS_ALL_DAY] boolValue];
+        event.startDate = [dateFormatter dateFromString:[self.selectedEventData objectForKey:CAL_START_DATE]];
+        event.endDate = [dateFormatter dateFromString:[self.selectedEventData objectForKey:CAL_END_DATE]];
+        event.location = [self.selectedEventData objectForKey:CAL_LOCATION];
+        event.notes = [self.selectedEventData objectForKey:CAL_MORE_INFO];
         [event setCalendar:[store defaultCalendarForNewEvents]];
         NSError *err = nil;
         [store saveEvent:event span:EKSpanThisEvent commit:YES error:&err];
@@ -419,18 +545,63 @@
             
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Calendar" message:@"Event added successfully" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
+            [self loadUsersCalendar];
             
             
         });
         
         
     }];
+
+}
+
+- (BOOL)isEventAlreadyInUsersCalendar:(NSDictionary *)event
+{
     
+    for (EKEvent *usersEvent in self.eventsArray)
+    {
+     
+       
+        if ([usersEvent.title isEqualToString:[event objectForKey:CAL_TITLE]] && [usersEvent.location isEqualToString:[event objectForKey:CAL_LOCATION]])
+        {
+            return YES;
+        }
+    }
+    
+    return NO;
+}
+
+
+- (void)addEventToCalendar:(UIButton *)sender
+{
+    self.selectedEventData = [self.calendarData objectAtIndex:sender.tag];
+
+    UIAlertView *confirmAddAlert = [[UIAlertView alloc]initWithTitle:@"Add Event" message:[NSString stringWithFormat:@"Add %@?", [self.selectedEventData objectForKey:CAL_TITLE]] delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+    confirmAddAlert.tag = zAlertConfirmCalendarAdd;
+    
+    [confirmAddAlert show];
 
 }
 
 
 #pragma mark MonthView Delegate & DataSource
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(alertView.tag == zAlertConfirmCalendarAdd)
+    {
+        if(buttonIndex == 1)
+        {
+            [self addEventToUserCalendar];
+        }
+    }
+}
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 0.01f;
+}
 - (NSArray*) calendarMonthView:(TKCalendarMonthView*)monthView marksFromDate:(NSDate*)startDate toDate:(NSDate*)lastDate{
 	[self datesToMarkStartDate:startDate endDate:lastDate];
     //[self generateRandomDataForStartDate:startDate endDate:lastDate];
@@ -552,8 +723,8 @@
             UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 20, 306, 21)];
             UILabel *dateLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 49, 306, 41)];
             dateLabel.numberOfLines = 2;
-            dateLabel.font = [UIFont systemFontOfSize:10.0];
-            titleLabel.font = [UIFont systemFontOfSize:17.0];
+            dateLabel.font = [UIFont systemFontOfSize:8.0];
+            titleLabel.font = [UIFont systemFontOfSize:13.0];
             
             
             titleLabel.text = [self.detailViewDic objectForKey:CAL_TITLE];;
@@ -617,10 +788,24 @@
     }
     else
     {
-        if (cell == nil) cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
-        
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
+        cell.selectionStyle = UITableViewCellSelectionStyleNone;
         //UILabel *cellLabel = (UILabel *)[cell.contentView viewWithTag:2];
         //UILabel *calLabel = (UILabel *)[cell.contentView viewWithTag:1];
+        
+        UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 11, 185, 21)];
+        UILabel *dateLabel = [[UILabel alloc]initWithFrame:CGRectMake(238, 11, 62, 21)];
+        
+        dateLabel.textAlignment = NSTextAlignmentRight;
+        
+        dateLabel.font = [UIFont systemFontOfSize:10.0];
+        titleLabel.font = [UIFont systemFontOfSize:15.0];
+
+        
+        UIButton *addButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 7, 30, 30)];
+
+        addButton.titleLabel.font = [UIFont fontWithName:@"system" size:26.0];
+        
         
         NSInteger section = indexPath.section;
         NSInteger row = 0;
@@ -638,20 +823,58 @@
         }
         
         NSDictionary *calendarDic = [self.calendarData objectAtIndex:row];
+        addButton.tag = row;
+        [addButton addTarget:self action:@selector(addEventToCalendar:) forControlEvents:UIControlEventTouchDown];
         
-        cell.textLabel.text = [calendarDic objectForKey:CAL_TITLE];
-        
+        titleLabel.text = [calendarDic objectForKey:CAL_TITLE];
         NSArray *dateArray = [self getDateArrayFromString:[calendarDic objectForKey:CAL_START_DATE]];
         NSString *stringDate = [NSString stringWithFormat:@"%@/%@/%@", dateArray[1], dateArray[2], dateArray[0]];
+
+        if([[calendarDic objectForKey:CAL_IS_ALL_DAY]boolValue] && ![[calendarDic objectForKey:CAL_START_DATE] isEqualToString:[calendarDic objectForKey:CAL_END_DATE]])
+        {
+            
+            dateLabel.frame =  CGRectMake(238, 2, 62, 40);
+            dateLabel.numberOfLines = 3;
+            NSArray *dateArray2 = [self getDateArrayFromString:[calendarDic objectForKey:CAL_END_DATE]];
+            stringDate = [NSString stringWithFormat:@"%@/%@/%@\n    thru         %@/%@/%@", dateArray[1], dateArray[2], dateArray[0], dateArray2[1], dateArray2[2], dateArray2[0]];
+
+        }
+      
+        dateLabel.text = stringDate;
+
         
-        cell.detailTextLabel.text = stringDate;
+       
+        [cell addSubview:titleLabel];
+        [cell addSubview:dateLabel];
+        
+        
+        if([self isEventAlreadyInUsersCalendar:calendarDic])
+        {
+            UILabel *addLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 7, 30, 30)];
+            
+            addLabel.font = [UIFont fontWithName:@"system" size:40.0];
+            addLabel.textColor = [UIColor greenColor];
+            addLabel.text = @"✔︎";
+            addButton.hidden = TRUE;
+            [cell addSubview:addLabel];
+        }
+        else
+        {
+            addButton.enabled = FALSE;
+            [addButton setTitle:@"" forState:UIControlStateDisabled];
+            [addButton setTitle:@"➕" forState:UIControlStateNormal];
+            addButton.enabled = TRUE;
+             [cell addSubview:addButton];
+        }
+        
+
     }
     return cell;
 }
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    
+    /*
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     
@@ -689,7 +912,7 @@
     [self.tableView reloadData];
     //[self performSegueWithIdentifier:@"calendarDetailSegue" sender:self];
     // Navigation logic may go here. Create and push another view controller.
-    /*
+    
       *detailViewController = [[  alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
      // ...
      // Pass the selected object to the new view controller.

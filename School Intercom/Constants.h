@@ -6,6 +6,8 @@
 //  Copyright (c) 2013 Randall Rumple. All rights reserved.
 //
 
+#define FONT_CHARCOAL_CY(s) [UIFont fontWithName:@"Charcoal CY" size:s]
+
 
 //Pickers
 typedef enum
@@ -33,7 +35,21 @@ typedef enum
     zAlertVerifyPending,
     zAlertPurchase,
     zAlertInAppTemp,
-    zAlertAddMoreError
+    zAlertAddMoreError,
+    zAlertExistingUserIncorrectPassword,
+    zAlertNotifyOnly,
+    zAlertForgotPasswordNoEmailEntered,
+    zAlertForgotPassword,
+    zAlertInAppPurchaseEnabledAlert,
+    zAlertApproved,
+    zAlertDeleteKid,
+    zAlertDeleteKidSuccess,
+    zAlertKidAddUpdatedSuccess,
+    zAlertConfirmCalendarAdd,
+    zAlertStartRestore,
+    zAlertProductedRestored,
+    zAlertRestoreFailed,
+    zAlertConfirmRemoveSchool
 } AlertTypes;
 
 typedef enum
@@ -42,6 +58,17 @@ typedef enum
     zTextFieldPin
     
 } TextFieldTypes;
+
+typedef enum
+{
+    mv_Home,
+    mv_News,
+    mv_Settings,
+    mv_Contact,
+    mv_Switch,
+    mv_Calendar,
+    mv_LunchMenu
+} MainViews;
 
 typedef enum
 {
@@ -62,8 +89,12 @@ typedef enum
 //base url
 #define BASE_URL @"http://www.myschoolintercom.com/iPhone_php/"
 #define IMAGE_URL @"http://www.myschoolintercom.com/school_images/"
-#define NEWS_IMAGE_URL @"http://www.myschoolintercom.com/news_images/"
-#define AD_IMAGE_URL @"http://www.myschoolintercom.com/ad_images/"
+#define NEWS_IMAGE_URL @"http://www.myschoolintercom.com/admin/_schoolNews/"
+#define AD_IMAGE_URL @"http://www.myschoolintercom.com/admin/"
+#define AD_DIRECTORY @"_schoolAdv/"
+#define SCHOOL_NEWS_DIRECTORY @"_schoolNews/"
+#define SCHOOL_LOGO_PATH @"http://www.myschoolintercom.com/admin/_schoolLogo/"
+#define AD_OFFER_LINK @"http://www.myschoolintercom.com/offer/index.php"
 
 
 //image suffixes
@@ -73,16 +104,33 @@ typedef enum
 
 
 //php file defines
-#define GET_STATES @"get_states.php"
-#define GET_CITIES @"get_cities.php"
-#define GET_SCHOOLS @"get_schools.php"
-#define ADD_USER @"add_user.php"
-#define ADD_KID @"add_kid.php"
-#define CHECK_STATUS @"verify_check.php"
-#define LOAD_DATA @"load_data.php"
-#define LOAD_LOCAL_AD @"load_local_ad.php"
-#define ADD_SCHOOL @"add_school.php"
-#define LOGIN_USER @"login_user.php"
+#define PHP_GET_STATES @"get_states.php"
+#define PHP_GET_CITIES @"get_cities.php"
+#define PHP_GET_SCHOOLS @"get_schools.php"
+#define PHP_ADD_USER @"add_user.php"
+#define PHP_ADD_KID @"add_kid.php"
+#define PHP_CHECK_STATUS @"verify_check.php"
+#define PHP_LOAD_DATA @"load_data.php"
+#define PHP_LOAD_LOCAL_AD @"load_local_ad.php"
+#define PHP_ADD_SCHOOL @"add_school.php"
+#define PHP_LOGIN_USER @"login_user.php"
+#define PHP_SEND_EMAIL @"send_email.php"
+#define PHP_UPDATE_USER_PUSH_PIN @"update_push_pin.php"
+#define PHP_RESET_PASSWORD @"reset_password.php"
+#define PHP_UPDATE_PROFILE @"update_profile.php"
+#define PHP_UPDATE_DEVICE_VERSION @"update_device_version.php"
+#define PHP_UPDATE_AD_CLICKED @"update_ad_clicked.php"
+#define PHP_UPDATE_HAS_PURCHASED @"update_has_purchased.php"
+#define PHP_GET_KIDS @"get_kids.php"
+#define PHP_UPDATE_KID @"update_kid.php"
+#define PHP_DELETE_KID @"delete_kid.php"
+#define PHP_ADD_SCHOOL_TO_USER @"add_school_to_user.php"
+#define PHP_GET_PRODUCT_IDS @"get_product_ids.php"
+#define PHP_GET_CURRENT_VERSION @"get_current_version.php"
+#define PHP_ADD_SCHOOL_EMAIL @"send_add_school_email.php"
+#define PHP_BADGE_UPDATE @"badge_update.php"
+#define PHP_CHANGE_SCHOOL_STATUS @"change_school_status.php"
+#define PHP_RESTORE_PURCHASE @"restore_purchase.php"
 
 //common fields
 #define SCHOOL_ID @"schoolID"
@@ -98,12 +146,26 @@ typedef enum
 #define SCHOOL_ID_ARRAY @"schoolIDArray"
 #define WORKING_SCHOOL_ID @"workingSchoolID"
 #define SCHOOL_DATA_ARRAY @"schoolDataArray"
+#define EMAIL_SUBJECT @"emailSubject"
+#define EMAIL_BODY @"emailBody"
+#define PASSWORD_RESET @"passwordRest"
+#define DEVICE_VERSION @"deviceVersion"
+#define CURRENT_VERSION @"currentVersion"
+#define IS_APP_UP_TO_DATE @"isAppUpToDate"
+#define BADGE_COUNT @"badgeCount"
+#define OLD_PASSWORD @"crWcmwaz"
+#define NEW_PASSWORD @"mciwwuUR"
+#define IS_DEMO_IN_USE @"isDemoInUse"
+#define USER_SCHOOL_IS_ACTIVE @"isActive"
 
 //adv table
+#define AD_ID @"adID"
 #define AD_IMAGE_NAME @"adImageName"
 #define AD_IMPRESSION_COUNT @"adImpCount"
 #define AD_CLICK_COUNT @"adClickCount"
 #define AD_URL_LINK @"adUrlLink"
+#define AD_TYPE @"adType"
+#define AD_NAME @"adName"
 
 //alert queue table
 #define ALERT_TEXT @"alertText"
@@ -126,6 +188,7 @@ typedef enum
 #define KID_FIRST_NAME @"kidFName"
 #define KID_LAST_NAME @"kidLName"
 #define KID_GRADE_LEVEL @"kidGradeLevel"
+#define KID_ID @"kidID"
 
 //login table
 #define LOGIN_DATE @"loginDate"
@@ -152,6 +215,7 @@ typedef enum
 #define SCHOOL_EMAIL @"schoolEmail"
 #define SCHOOL_PHONE @"schoolPhone"
 #define SCHOOL_NEWS_HEADER @"schoolNewsHeader"
+#define SCHOOL_LUNCH @"schoolLunch"
 
 
 //user table
@@ -159,7 +223,6 @@ typedef enum
 #define USER_LAST_NAME @"userLName"
 #define USER_EMAIL @"userEmail"
 #define USER_PIN @"userPin"
-#define USER_IS_VERIFIED @"userVerified"
 #define USER_PUSH_NOTIFICATION_PIN @"userPushPin"
 #define USER_PASSWORD @"userPassword"
 
@@ -170,6 +233,9 @@ typedef enum
 
 //user schools table
 #define US_NUMBER_OF_KIDS @"usNumOfKids"
+#define USER_IS_VERIFIED @"usVerified"
+#define USER_HAS_PURCHASED @"usHasPurchased"
+#define US_PURCHASED_DATE @"purchasedDate"
 
 
 //Segues
@@ -181,9 +247,16 @@ typedef enum
 #define SEGUE_TO_SWITCH_VIEW @"switchview"
 #define SEGUE_TO_REGISTER_VIEW @"registerview"
 #define SEGUE_TO_SETTINGS_VIEW @"settingsview"
+#define SEGUE_TO_UPDATE_PROFILE_VIEW @"updateprofileview"
+#define SEGUE_TO_UPDATE_KIDS_VIEW @"updatekidsview"
+#define SEGUE_TO_ADD_SCHOOL_VIEW @"addschoolview"
+#define SEGUE_TO_NEWS_DETAIL_VIEW @"newsdetailview"
+#define SEGUE_TO_LUNCH_MENU_VIEW @"lunchMenuSegue"
+#define SEGUE_TO_UPDATE_KID_VIEW @"updateKidSegue"
 
 
 //Dictionary keys
 #define DIC_CALENDAR_DATA @"calendarData"
+#define USER_INFO @"userInfo"
 
 

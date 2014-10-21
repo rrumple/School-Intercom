@@ -7,12 +7,19 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "NewsDetailViewController.h"
+#import "AdModel.h"
 
 @protocol NewsViewControllerDelegate;
 
-@interface NewsViewController : UIViewController
+@interface NewsViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, weak) id<NewsViewControllerDelegate> delegate;
+@property (nonatomic, strong) NSArray *newsData;
+@property (nonatomic, strong) NSString *newsHeader;
+@property (nonatomic, strong) NSString *schoolID;
+@property (nonatomic, strong) NSString *userID;
+
 
 @end
 

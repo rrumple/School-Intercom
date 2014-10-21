@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "RegistrationModel.h"
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

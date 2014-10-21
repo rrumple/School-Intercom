@@ -9,8 +9,16 @@
 #import <UIKit/UIKit.h>
 #import "RegistrationModel.h"
 
-@interface RegisterViewController : UIViewController <UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIAlertViewDelegate>
+@protocol RegisterViewControllerDelegate;
 
+@interface RegisterViewController : UIViewController <UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, UIGestureRecognizerDelegate>
+@property (nonatomic, weak) id<RegisterViewControllerDelegate> delegate;
 @property (nonatomic, strong) UserData *mainUserData;
+
+@end
+
+@protocol RegisterViewControllerDelegate <NSObject>
+
+- (void)loginToDemoAccount;
 
 @end

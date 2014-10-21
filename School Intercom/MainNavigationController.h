@@ -9,9 +9,10 @@
 #import <UIKit/UIKit.h>
 #import "MainMenuViewController.h"
 
-@interface MainNavigationController : UINavigationController
+@interface MainNavigationController : UINavigationController <MainMenuControllerDelegate>
 
 @property (nonatomic) BOOL isFirstLoad;
 @property (nonatomic, strong) UserData *mainUserData;
 
 @end
+

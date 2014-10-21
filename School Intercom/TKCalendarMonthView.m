@@ -282,27 +282,40 @@ static UIImage *tileImage;
 	
 	return CGRectMake(col*46-1, row*44+6, 46, 44);
 }
-- (void) drawTileInRect:(CGRect)r day:(NSInteger)day mark:(BOOL)mark font:(UIFont*)f1 font2:(UIFont*)f2 context:(CGContextRef)context{
+- (void) drawTileInRect:(CGRect)r day:(NSInteger)day mark:(BOOL)mark font:(UIFont*)f1 font2:(UIFont*)f2 context:(CGContextRef)context color:(UIColor *)color{
 
     NSString *str = [numberFormatter stringFromNumber:@(day)];
 	r.size.height -= 2;
 	
 	CGContextSetPatternPhase(context, CGSizeMake(r.origin.x, r.origin.y - 2));
 
+    NSMutableParagraphStyle *textStyle = [[NSMutableParagraphStyle defaultParagraphStyle] mutableCopy];
+    textStyle.lineBreakMode = NSLineBreakByWordWrapping;
+    textStyle.alignment = NSTextAlignmentCenter;
+
     
+    // iOS 7 way
+    [str drawInRect:r withAttributes:@{NSFontAttributeName:f1, NSParagraphStyleAttributeName:textStyle, NSForegroundColorAttributeName:color}];
+    
+    /*
 	[str drawInRect: r
 		   withFont: f1
 	  lineBreakMode: NSLineBreakByWordWrapping
 		  alignment: NSTextAlignmentCenter];
+    */
 	
 	if(mark){
-		r.size.height = 10;
+		r.size.height = 15;
 		r.origin.y += 19;
 		
+        [@"•" drawInRect:r withAttributes:@{NSFontAttributeName:f2, NSParagraphStyleAttributeName:textStyle}];
+        
+        /*
 		[@"•" drawInRect: r
 				withFont: f2
 		   lineBreakMode: NSLineBreakByWordWrapping
 			   alignment: NSTextAlignmentCenter];
+        */
 	}
 	
 
@@ -349,7 +362,7 @@ static UIImage *tileImage;
 			r = [self rectForCellAtIndex:index];
 			
 			BOOL mark = mc > 0 && index < mc ? [self.marks[index] boolValue] : NO;
-			[self drawTileInRect:r day:i mark:mark font:font font2:font2 context:context];
+			[self drawTileInRect:r day:i mark:mark font:font font2:font2 context:context color:color];
 
 			index++;
 		}
@@ -372,7 +385,7 @@ static UIImage *tileImage;
 		}
 		
 		BOOL mark = mc > 0 && index < mc ? [self.marks[index] boolValue] : NO;
-		[self drawTileInRect:r day:i mark:mark font:font font2:font2 context:context];
+		[self drawTileInRect:r day:i mark:mark font:font font2:font2 context:context color:color];
 		
 		if(today == i){
 			CGContextSetShadowWithColor(context, CGSizeMake(0,1), 0, whiteColor);
@@ -390,7 +403,7 @@ static UIImage *tileImage;
 	while(index % 7 != 0){
 		r = [self rectForCellAtIndex:index];
 		BOOL mark = mc > 0 && index < mc ? [self.marks[index] boolValue] : NO;
-		[self drawTileInRect:r day:i mark:mark font:font font2:font2 context:context];
+		[self drawTileInRect:r day:i mark:mark font:font font2:font2 context:context color:grayGradientColor];
 		i++;
 		index++;
 	}
@@ -547,12 +560,16 @@ static UIImage *tileImage;
 	self.selectedImageView.frame = CGRectMakeWithSize((column*46)-1, (row*44)-1, self.selectedImageView.frame.size);
 	
 	if(day == selectedDay && selectedPortion == portion) return;
-	
+
+  
+
 	
 	
 	if(portion == 1){
 		selectedDay = day;
 		selectedPortion = portion;
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 		[self.target performSelector:self.action withObject:@[@(day)]];
 		
 	}else if(down){
@@ -560,7 +577,7 @@ static UIImage *tileImage;
 		selectedDay = day;
 		selectedPortion = portion;
 	}
-	
+#pragma clang diagnostic pop
 }
 - (void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event{
 	//[super touchesBegan:touches withEvent:event];

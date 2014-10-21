@@ -36,12 +36,13 @@
 @protocol CalendarMonthViewControllerDelegate;
 
 #pragma mark - CalendarMonthViewController
-@interface CalendarMonthViewController : TKCalendarMonthTableViewController
+@interface CalendarMonthViewController : TKCalendarMonthTableViewController <UIAlertViewDelegate>
 
 @property (nonatomic,strong) NSMutableArray *dataArray;
 @property (nonatomic,strong) NSMutableDictionary *dataDictionary;
 @property (nonatomic, strong) NSArray *calendarData;
 @property (nonatomic, strong) UIColor *backgroundColor;
+@property (nonatomic, strong) UIFont *headerFont;
 
 @property (nonatomic, weak) id<CalendarMonthViewControllerDelegate> delegate;
 

@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		940D6A8E184797840013EA7B /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A8D184797840013EA7B /* NewsViewController.m */; };
-		940D6A91184797930013EA7B /* CalendarViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A90184797930013EA7B /* CalendarViewController.m */; };
 		940D6A94184797A70013EA7B /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A93184797A70013EA7B /* HomeViewController.m */; };
 		940D6A97184797B20013EA7B /* ContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A96184797B20013EA7B /* ContactViewController.m */; };
 		940D6A9A184797BB0013EA7B /* SwitchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A99184797BB0013EA7B /* SwitchViewController.m */; };
@@ -16,8 +15,21 @@
 		940D6AA11847A1F80013EA7B /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6AA01847A1F80013EA7B /* MainNavigationController.m */; };
 		940D6AA71847D2F20013EA7B /* UIView+AddOns.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6AA61847D2F20013EA7B /* UIView+AddOns.m */; };
 		9412DE80184ECED60046D297 /* HelperMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 9412DE7F184ECED60046D297 /* HelperMethods.m */; };
+		9427379919874431002CEA3F /* UpdateKidViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9427379819874431002CEA3F /* UpdateKidViewController.m */; };
+		942DD8511870D21600FB8F71 /* UpdateProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DD8501870D21600FB8F71 /* UpdateProfileViewController.m */; };
+		942DD8551870D25800FB8F71 /* UpdateKidsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DD8541870D25800FB8F71 /* UpdateKidsViewController.m */; };
+		942DD8581870D26C00FB8F71 /* AddSchoolViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DD8571870D26C00FB8F71 /* AddSchoolViewController.m */; };
+		943A0CF91876538C00D0910F /* ContactModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 943A0CF81876538C00D0910F /* ContactModel.m */; };
+		943A0CFC1879C7C300D0910F /* UpdateProfileModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 943A0CFB1879C7C300D0910F /* UpdateProfileModel.m */; };
+		943DC65318B9263100DE0989 /* charcoal_cy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 943DC65218B9263100DE0989 /* charcoal_cy.ttf */; };
 		94451F591866EA1100136ED2 /* IntroModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 94451F581866EA1100136ED2 /* IntroModel.m */; };
-		94451F5C18676FCF00136ED2 /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94451F5B18676FCF00136ED2 /* SettingsViewController.m */; };
+		9447E51419152A9A0002C556 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9447E51319152A9A0002C556 /* StoreKit.framework */; };
+		9447E51719152AE40002C556 /* IAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9447E51619152AE40002C556 /* IAPHelper.m */; };
+		9447E51A19152F390002C556 /* SchoolIntercomIAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9447E51919152F390002C556 /* SchoolIntercomIAPHelper.m */; };
+		9447E51C1921BF3B0002C556 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9447E51B1921BF3B0002C556 /* AVFoundation.framework */; };
+		9447E51E192460CE0002C556 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9447E51D192460CE0002C556 /* QuartzCore.framework */; };
+		947AB4E2196A489C00C4AD80 /* LunchMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 947AB4E1196A489C00C4AD80 /* LunchMenuViewController.m */; };
+		948E085118B082E800B3A854 /* AdModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 948E085018B082E800B3A854 /* AdModel.m */; };
 		94AB780B186A9A1E00F5A56F /* NSObject+TKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AB7808186A9A1E00F5A56F /* NSObject+TKCategory.m */; };
 		94AB780C186A9A1E00F5A56F /* NSString+TKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AB780A186A9A1E00F5A56F /* NSString+TKCategory.m */; };
 		94AB780E186A9CC500F5A56F /* TKCalendarMonthView.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AB780D186A9CC500F5A56F /* TKCalendarMonthView.m */; };
@@ -38,6 +50,8 @@
 		94BD73F6183DA722009E1129 /* IntroViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BD73F5183DA722009E1129 /* IntroViewController.m */; };
 		94BD73FC183DAC13009E1129 /* UserData.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BD73FB183DAC12009E1129 /* UserData.m */; };
 		94BD7400183DCF16009E1129 /* RegisterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BD73FF183DCF16009E1129 /* RegisterViewController.m */; };
+		94BDF7281870904600AAFFA4 /* SettingsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BDF7271870904600AAFFA4 /* SettingsTableViewController.m */; };
+		94C8B9B31875403B00D245E4 /* NewsDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94C8B9B21875403B00D245E4 /* NewsDetailViewController.m */; };
 		94C8EC751847ED7E002EF4FE /* RegistrationModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 94C8EC741847ED7E002EF4FE /* RegistrationModel.m */; };
 		94C8EC781847EF0A002EF4FE /* DatabaseRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 94C8EC771847EF0A002EF4FE /* DatabaseRequest.m */; };
 		94E33BF91869E0A900DB9A82 /* CalendarMonthViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94E33BF81869E0A900DB9A82 /* CalendarMonthViewController.m */; };
@@ -109,8 +123,6 @@
 /* Begin PBXFileReference section */
 		940D6A8C184797840013EA7B /* NewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsViewController.h; sourceTree = "<group>"; };
 		940D6A8D184797840013EA7B /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsViewController.m; sourceTree = "<group>"; };
-		940D6A8F184797930013EA7B /* CalendarViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarViewController.h; sourceTree = "<group>"; };
-		940D6A90184797930013EA7B /* CalendarViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarViewController.m; sourceTree = "<group>"; };
 		940D6A92184797A70013EA7B /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
 		940D6A93184797A70013EA7B /* HomeViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HomeViewController.m; sourceTree = "<group>"; };
 		940D6A95184797B20013EA7B /* ContactViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactViewController.h; sourceTree = "<group>"; };
@@ -125,10 +137,32 @@
 		940D6AA61847D2F20013EA7B /* UIView+AddOns.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AddOns.m"; sourceTree = "<group>"; };
 		9412DE7E184ECED60046D297 /* HelperMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelperMethods.h; sourceTree = "<group>"; };
 		9412DE7F184ECED60046D297 /* HelperMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelperMethods.m; sourceTree = "<group>"; };
+		9427379719874431002CEA3F /* UpdateKidViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateKidViewController.h; sourceTree = "<group>"; };
+		9427379819874431002CEA3F /* UpdateKidViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateKidViewController.m; sourceTree = "<group>"; };
+		942DD84F1870D21600FB8F71 /* UpdateProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateProfileViewController.h; sourceTree = "<group>"; };
+		942DD8501870D21600FB8F71 /* UpdateProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateProfileViewController.m; sourceTree = "<group>"; };
+		942DD8531870D25800FB8F71 /* UpdateKidsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateKidsViewController.h; sourceTree = "<group>"; };
+		942DD8541870D25800FB8F71 /* UpdateKidsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateKidsViewController.m; sourceTree = "<group>"; };
+		942DD8561870D26C00FB8F71 /* AddSchoolViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddSchoolViewController.h; sourceTree = "<group>"; };
+		942DD8571870D26C00FB8F71 /* AddSchoolViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddSchoolViewController.m; sourceTree = "<group>"; };
+		943A0CF71876538C00D0910F /* ContactModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ContactModel.h; sourceTree = "<group>"; };
+		943A0CF81876538C00D0910F /* ContactModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ContactModel.m; sourceTree = "<group>"; };
+		943A0CFA1879C7C300D0910F /* UpdateProfileModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateProfileModel.h; sourceTree = "<group>"; };
+		943A0CFB1879C7C300D0910F /* UpdateProfileModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateProfileModel.m; sourceTree = "<group>"; };
+		943DC65218B9263100DE0989 /* charcoal_cy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = charcoal_cy.ttf; sourceTree = "<group>"; };
 		94451F571866EA1100136ED2 /* IntroModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntroModel.h; sourceTree = "<group>"; };
 		94451F581866EA1100136ED2 /* IntroModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntroModel.m; sourceTree = "<group>"; };
-		94451F5A18676FCF00136ED2 /* SettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
-		94451F5B18676FCF00136ED2 /* SettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		9447E51319152A9A0002C556 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		9447E51519152AE40002C556 /* IAPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IAPHelper.h; sourceTree = "<group>"; };
+		9447E51619152AE40002C556 /* IAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IAPHelper.m; sourceTree = "<group>"; };
+		9447E51819152F390002C556 /* SchoolIntercomIAPHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SchoolIntercomIAPHelper.h; sourceTree = "<group>"; };
+		9447E51919152F390002C556 /* SchoolIntercomIAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SchoolIntercomIAPHelper.m; sourceTree = "<group>"; };
+		9447E51B1921BF3B0002C556 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		9447E51D192460CE0002C556 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		947AB4E0196A489C00C4AD80 /* LunchMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LunchMenuViewController.h; sourceTree = "<group>"; };
+		947AB4E1196A489C00C4AD80 /* LunchMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LunchMenuViewController.m; sourceTree = "<group>"; };
+		948E084F18B082E800B3A854 /* AdModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdModel.h; sourceTree = "<group>"; };
+		948E085018B082E800B3A854 /* AdModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdModel.m; sourceTree = "<group>"; };
 		94AB7807186A9A1E00F5A56F /* NSObject+TKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+TKCategory.h"; sourceTree = "<group>"; };
 		94AB7808186A9A1E00F5A56F /* NSObject+TKCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+TKCategory.m"; sourceTree = "<group>"; };
 		94AB7809186A9A1E00F5A56F /* NSString+TKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+TKCategory.h"; sourceTree = "<group>"; };
@@ -159,6 +193,10 @@
 		94BD73FE183DCF16009E1129 /* RegisterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisterViewController.h; sourceTree = "<group>"; };
 		94BD73FF183DCF16009E1129 /* RegisterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegisterViewController.m; sourceTree = "<group>"; };
 		94BDF725186FF06A00AAFFA4 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = en; path = en.lproj/Main.storyboard; sourceTree = "<group>"; };
+		94BDF7261870904600AAFFA4 /* SettingsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SettingsTableViewController.h; sourceTree = "<group>"; };
+		94BDF7271870904600AAFFA4 /* SettingsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SettingsTableViewController.m; sourceTree = "<group>"; };
+		94C8B9B11875403B00D245E4 /* NewsDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsDetailViewController.h; sourceTree = "<group>"; };
+		94C8B9B21875403B00D245E4 /* NewsDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsDetailViewController.m; sourceTree = "<group>"; };
 		94C8EC731847ED7E002EF4FE /* RegistrationModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegistrationModel.h; sourceTree = "<group>"; };
 		94C8EC741847ED7E002EF4FE /* RegistrationModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RegistrationModel.m; sourceTree = "<group>"; };
 		94C8EC761847EF0A002EF4FE /* DatabaseRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseRequest.h; sourceTree = "<group>"; };
@@ -279,6 +317,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9447E51E192460CE0002C556 /* QuartzCore.framework in Frameworks */,
+				9447E51C1921BF3B0002C556 /* AVFoundation.framework in Frameworks */,
+				9447E51419152A9A0002C556 /* StoreKit.framework in Frameworks */,
 				94BD73F3183DA686009E1129 /* EventKit.framework in Frameworks */,
 				94BD73C0183DA63D009E1129 /* CoreGraphics.framework in Frameworks */,
 				94BD73C2183DA63D009E1129 /* UIKit.framework in Frameworks */,
@@ -302,14 +343,16 @@
 		940D6A9B184797E70013EA7B /* Main Views */ = {
 			isa = PBXGroup;
 			children = (
-				94451F5A18676FCF00136ED2 /* SettingsViewController.h */,
-				94451F5B18676FCF00136ED2 /* SettingsViewController.m */,
+				947AB4E0196A489C00C4AD80 /* LunchMenuViewController.h */,
+				947AB4E1196A489C00C4AD80 /* LunchMenuViewController.m */,
+				94E33BF71869E0A900DB9A82 /* CalendarMonthViewController.h */,
+				94E33BF81869E0A900DB9A82 /* CalendarMonthViewController.m */,
+				94BDF7261870904600AAFFA4 /* SettingsTableViewController.h */,
+				94BDF7271870904600AAFFA4 /* SettingsTableViewController.m */,
 				940D6A9C18479F740013EA7B /* MainMenuViewController.h */,
 				940D6A9D18479F740013EA7B /* MainMenuViewController.m */,
 				940D6A8C184797840013EA7B /* NewsViewController.h */,
 				940D6A8D184797840013EA7B /* NewsViewController.m */,
-				940D6A8F184797930013EA7B /* CalendarViewController.h */,
-				940D6A90184797930013EA7B /* CalendarViewController.m */,
 				940D6A92184797A70013EA7B /* HomeViewController.h */,
 				940D6A93184797A70013EA7B /* HomeViewController.m */,
 				940D6A95184797B20013EA7B /* ContactViewController.h */,
@@ -318,6 +361,30 @@
 				940D6A99184797BB0013EA7B /* SwitchViewController.m */,
 			);
 			name = "Main Views";
+			sourceTree = "<group>";
+		};
+		942DD8521870D21C00FB8F71 /* Sub Views */ = {
+			isa = PBXGroup;
+			children = (
+				9427379719874431002CEA3F /* UpdateKidViewController.h */,
+				9427379819874431002CEA3F /* UpdateKidViewController.m */,
+				94C8B9B11875403B00D245E4 /* NewsDetailViewController.h */,
+				94C8B9B21875403B00D245E4 /* NewsDetailViewController.m */,
+				942DD8561870D26C00FB8F71 /* AddSchoolViewController.h */,
+				942DD8571870D26C00FB8F71 /* AddSchoolViewController.m */,
+				942DD8531870D25800FB8F71 /* UpdateKidsViewController.h */,
+				942DD8541870D25800FB8F71 /* UpdateKidsViewController.m */,
+				942DD84F1870D21600FB8F71 /* UpdateProfileViewController.h */,
+				942DD8501870D21600FB8F71 /* UpdateProfileViewController.m */,
+			);
+			name = "Sub Views";
+			sourceTree = "<group>";
+		};
+		943A0CFF1879FE9300D0910F /* iPad */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = iPad;
 			sourceTree = "<group>";
 		};
 		94BD73B1183DA63C009E1129 = {
@@ -342,6 +409,9 @@
 		94BD73BC183DA63D009E1129 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9447E51D192460CE0002C556 /* QuartzCore.framework */,
+				9447E51B1921BF3B0002C556 /* AVFoundation.framework */,
+				9447E51319152A9A0002C556 /* StoreKit.framework */,
 				94BD73F2183DA686009E1129 /* EventKit.framework */,
 				94BD73BD183DA63D009E1129 /* Foundation.framework */,
 				94BD73BF183DA63D009E1129 /* CoreGraphics.framework */,
@@ -354,15 +424,14 @@
 		94BD73C3183DA63D009E1129 /* School Intercom */ = {
 			isa = PBXGroup;
 			children = (
-				94E33BF71869E0A900DB9A82 /* CalendarMonthViewController.h */,
-				94E33BF81869E0A900DB9A82 /* CalendarMonthViewController.m */,
+				943A0CFF1879FE9300D0910F /* iPad */,
 				94E33BDE1869D63300DB9A82 /* Tapku Addon */,
 				94BD73F9183DAAB7009E1129 /* Constants.h */,
 				94BD73CF183DA63D009E1129 /* Main.storyboard */,
+				942DD8521870D21C00FB8F71 /* Sub Views */,
 				940D6A9B184797E70013EA7B /* Main Views */,
 				94BD7401183DCF1F009E1129 /* Intro/Reg */,
 				94BD73FD183DAC1A009E1129 /* Model */,
-				94BD73D5183DA63D009E1129 /* Images.xcassets */,
 				94C8EC6F1847E1C0002EF4FE /* Categories */,
 				94BD73C4183DA63D009E1129 /* Supporting Files */,
 			);
@@ -372,6 +441,12 @@
 		94BD73C4183DA63D009E1129 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				94BD73D5183DA63D009E1129 /* Images.xcassets */,
+				9447E51519152AE40002C556 /* IAPHelper.h */,
+				9447E51619152AE40002C556 /* IAPHelper.m */,
+				9447E51819152F390002C556 /* SchoolIntercomIAPHelper.h */,
+				9447E51919152F390002C556 /* SchoolIntercomIAPHelper.m */,
+				943DC65218B9263100DE0989 /* charcoal_cy.ttf */,
 				94BD73CC183DA63D009E1129 /* AppDelegate.h */,
 				94BD73CD183DA63D009E1129 /* AppDelegate.m */,
 				94BD73C5183DA63D009E1129 /* School Intercom-Info.plist */,
@@ -403,12 +478,18 @@
 		94BD73FD183DAC1A009E1129 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				943A0CFA1879C7C300D0910F /* UpdateProfileModel.h */,
+				943A0CFB1879C7C300D0910F /* UpdateProfileModel.m */,
 				9412DE7E184ECED60046D297 /* HelperMethods.h */,
 				9412DE7F184ECED60046D297 /* HelperMethods.m */,
 				94C8EC761847EF0A002EF4FE /* DatabaseRequest.h */,
 				94C8EC771847EF0A002EF4FE /* DatabaseRequest.m */,
 				94C8EC731847ED7E002EF4FE /* RegistrationModel.h */,
 				94C8EC741847ED7E002EF4FE /* RegistrationModel.m */,
+				943A0CF71876538C00D0910F /* ContactModel.h */,
+				943A0CF81876538C00D0910F /* ContactModel.m */,
+				948E084F18B082E800B3A854 /* AdModel.h */,
+				948E085018B082E800B3A854 /* AdModel.m */,
 				94BD73FA183DAC12009E1129 /* UserData.h */,
 				94BD73FB183DAC12009E1129 /* UserData.m */,
 				94451F571866EA1100136ED2 /* IntroModel.h */,
@@ -602,11 +683,16 @@
 		94BD73B2183DA63C009E1129 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0500;
+				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Randall Rumple";
 				TargetAttributes = {
 					94BD73B9183DA63D009E1129 = {
-						DevelopmentTeam = 3SQK575VL8;
+						DevelopmentTeam = 4QR8727ADF;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+						};
 					};
 					94BD73DA183DA63D009E1129 = {
 						TestTargetID = 94BD73B9183DA63D009E1129;
@@ -637,6 +723,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				943DC65318B9263100DE0989 /* charcoal_cy.ttf in Resources */,
 				94BD73D6183DA63D009E1129 /* Images.xcassets in Resources */,
 				94E33CBF186A068B00DB9A82 /* TapkuLibrary.bundle in Resources */,
 				94BD73C8183DA63D009E1129 /* InfoPlist.strings in Resources */,
@@ -660,6 +747,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				94BD7400183DCF16009E1129 /* RegisterViewController.m in Sources */,
+				94C8B9B31875403B00D245E4 /* NewsDetailViewController.m in Sources */,
+				943A0CFC1879C7C300D0910F /* UpdateProfileModel.m in Sources */,
 				94AB780B186A9A1E00F5A56F /* NSObject+TKCategory.m in Sources */,
 				94BD73CE183DA63D009E1129 /* AppDelegate.m in Sources */,
 				94E33CBB1869E3E700DB9A82 /* UITextField+TKCategory.m in Sources */,
@@ -667,15 +756,16 @@
 				94E33CB81869E3E700DB9A82 /* UIImageView+TKCategory.m in Sources */,
 				94E33C9B1869E3E700DB9A82 /* TKLoadingView.m in Sources */,
 				94E33CAF1869E3E700DB9A82 /* UIAlertView+TKCategory.m in Sources */,
+				948E085118B082E800B3A854 /* AdModel.m in Sources */,
 				94E33C921869E3E700DB9A82 /* TKGradientView.m in Sources */,
 				94E33CA11869E3E700DB9A82 /* TKRetroButton.m in Sources */,
 				940D6AA11847A1F80013EA7B /* MainNavigationController.m in Sources */,
-				94451F5C18676FCF00136ED2 /* SettingsViewController.m in Sources */,
 				94E33C871869E3E700DB9A82 /* TKButtonCell.m in Sources */,
 				94E33CB71869E3E700DB9A82 /* UIImagePickerController+TKCategory.m in Sources */,
 				94E33CB21869E3E700DB9A82 /* UIColor+TKCategory.m in Sources */,
 				94BD73F6183DA722009E1129 /* IntroViewController.m in Sources */,
 				94E33CA91869E3E700DB9A82 /* TKTextView.m in Sources */,
+				9447E51A19152F390002C556 /* SchoolIntercomIAPHelper.m in Sources */,
 				94E33C811869E3E700DB9A82 /* NSDate+TKCategory.m in Sources */,
 				94E33C9E1869E3E700DB9A82 /* TKProgressBarView.m in Sources */,
 				94E33CA61869E3E700DB9A82 /* TKTableViewCell.m in Sources */,
@@ -686,14 +776,18 @@
 				94E33C7F1869E3E700DB9A82 /* NSArray+TKCategory.m in Sources */,
 				94AB780C186A9A1E00F5A56F /* NSString+TKCategory.m in Sources */,
 				94E33CAA1869E3E700DB9A82 /* TKTextViewCell.m in Sources */,
+				94BDF7281870904600AAFFA4 /* SettingsTableViewController.m in Sources */,
 				94E33CA41869E3E700DB9A82 /* TKSlideToUnlockView.m in Sources */,
+				942DD8581870D26C00FB8F71 /* AddSchoolViewController.m in Sources */,
+				942DD8551870D25800FB8F71 /* UpdateKidsViewController.m in Sources */,
 				94E33CB61869E3E700DB9A82 /* UIImage+TKCategory.m in Sources */,
 				94BD73FC183DAC13009E1129 /* UserData.m in Sources */,
 				940D6A9E18479F740013EA7B /* MainMenuViewController.m in Sources */,
 				940D6AA71847D2F20013EA7B /* UIView+AddOns.m in Sources */,
 				94BD73CA183DA63D009E1129 /* main.m in Sources */,
+				947AB4E2196A489C00C4AD80 /* LunchMenuViewController.m in Sources */,
+				943A0CF91876538C00D0910F /* ContactModel.m in Sources */,
 				94E33C9A1869E3E700DB9A82 /* TKLabelTextViewCell.m in Sources */,
-				940D6A91184797930013EA7B /* CalendarViewController.m in Sources */,
 				94E33CAC1869E3E700DB9A82 /* TKWebViewController.m in Sources */,
 				940D6A9A184797BB0013EA7B /* SwitchViewController.m in Sources */,
 				94E33C901869E3E700DB9A82 /* TKGlobal.m in Sources */,
@@ -707,6 +801,7 @@
 				94C8EC781847EF0A002EF4FE /* DatabaseRequest.m in Sources */,
 				94E33CB41869E3E700DB9A82 /* UIFont+TKCategory.m in Sources */,
 				94E33C8B1869E3E700DB9A82 /* TKCalendarMonthTableViewController.m in Sources */,
+				942DD8511870D21600FB8F71 /* UpdateProfileViewController.m in Sources */,
 				94C8EC751847ED7E002EF4FE /* RegistrationModel.m in Sources */,
 				94E33C971869E3E700DB9A82 /* TKLabelFieldCell.m in Sources */,
 				94E33BF91869E0A900DB9A82 /* CalendarMonthViewController.m in Sources */,
@@ -714,12 +809,14 @@
 				94E33C801869E3E700DB9A82 /* NSDate+CalendarGrid.m in Sources */,
 				94E33C961869E3E700DB9A82 /* TKLabelCell.m in Sources */,
 				94E33C8A1869E3E700DB9A82 /* TKCalendarDayViewController.m in Sources */,
+				9447E51719152AE40002C556 /* IAPHelper.m in Sources */,
 				94E33CB11869E3E700DB9A82 /* UIButton+TKCategory.m in Sources */,
 				94E33C861869E3E700DB9A82 /* TKAppDelegate.m in Sources */,
 				940D6A94184797A70013EA7B /* HomeViewController.m in Sources */,
 				94E33CB01869E3E700DB9A82 /* UIBarButtonItem+TKCategory.m in Sources */,
 				94E33CBA1869E3E700DB9A82 /* UIScrollview+TKCategory.m in Sources */,
 				94E33C9F1869E3E700DB9A82 /* TKProgressCircleView.m in Sources */,
+				9427379919874431002CEA3F /* UpdateKidViewController.m in Sources */,
 				94E33C891869E3E700DB9A82 /* TKCalendarDayView.m in Sources */,
 				94E33C8D1869E3E700DB9A82 /* TKCalendarMonthViewController.m in Sources */,
 				94E33CBD1869E3E700DB9A82 /* UIViewController+TKCategory.m in Sources */,
@@ -786,7 +883,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -825,7 +921,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_MODULES = YES;
@@ -860,12 +955,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Developer: Randy Rumple (C76WF49FKB)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School Intercom/School Intercom-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -876,12 +974,15 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution: School Intercom Inc. (4QR8727ADF)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School Intercom/School Intercom-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -889,7 +990,6 @@
 		94BD73F0183DA63D009E1129 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/School Intercom.app/School Intercom";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -912,7 +1012,6 @@
 		94BD73F1183DA63D009E1129 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/School Intercom.app/School Intercom";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",

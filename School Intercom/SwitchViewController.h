@@ -7,18 +7,25 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UserData.h"
+#import "UpdateProfileModel.h"
+
 
 @protocol SwitchViewControllerDelegate;
 
-@interface SwitchViewController : UIViewController
+@interface SwitchViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 
 @property (nonatomic, weak) id<SwitchViewControllerDelegate> delegate;
+@property (nonatomic, strong) UserData *mainUserData;
+
 
 @end
 
 @protocol SwitchViewControllerDelegate <NSObject>
 
 - (void)snapshotOfViewAsImage:(UIImage *)image;
+
+- (void)exitOutOfSchool;
 
 @end
 

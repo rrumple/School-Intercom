@@ -7,10 +7,12 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "RegisterViewController.h"
 #import "MainNavigationController.h"
 #import "IntroModel.h"
+#import "RegistrationModel.h"
 
-@interface IntroViewController : UIViewController <UIAlertViewDelegate, UITextFieldDelegate>
+@interface IntroViewController : UIViewController <UIAlertViewDelegate, UITextFieldDelegate, RegisterViewControllerDelegate>
 
 @end

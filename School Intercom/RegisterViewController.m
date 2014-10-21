@@ -8,7 +8,9 @@
 
 #import "RegisterViewController.h"
 
+
 @interface RegisterViewController ()
+
 @property (weak, nonatomic) IBOutlet UILabel *headerLabel;
 
 @property (weak, nonatomic) IBOutlet UIView *schoolInputView;
@@ -16,8 +18,11 @@
 @property (weak, nonatomic) IBOutlet UITextField *cityTextField;
 @property (weak, nonatomic) IBOutlet UITextField *schoolTextField;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *stateIndicatorView;
+@property (weak, nonatomic) IBOutlet UIView *requestSchoolView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *cityIndicatorView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *schoolIndicatorView;
+@property (weak, nonatomic) IBOutlet UIButton *signUpButton;
+@property (weak, nonatomic) IBOutlet UIButton *addSchoolSendButton;
 
 @property (weak, nonatomic) IBOutlet UIView *userInputView;
 @property (weak, nonatomic) IBOutlet UITextField *firstNameTextField;
@@ -32,16 +37,26 @@
 @property (weak, nonatomic) IBOutlet UITextField *childLastName;
 @property (weak, nonatomic) IBOutlet UITextField *childGradeLevel;
 @property (weak, nonatomic) IBOutlet UIButton *addChildButton;
+@property (weak, nonatomic) IBOutlet UITextField *yourNameTF;
+@property (weak, nonatomic) IBOutlet UITextField *schoolnameTF;
+@property (weak, nonatomic) IBOutlet UITextField *cityTF;
+@property (weak, nonatomic) IBOutlet UITextField *stateTF;
+@property (weak, nonatomic) IBOutlet UITextField *schoolContactTF;
+@property (nonatomic) BOOL gradeTFready;
+@property (nonatomic) BOOL numberOfChildrenTFready;
+
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *addChildActivityView;
 
 //@property (nonatomic, strong) DatabaseRequest *databaseRequest;
 @property (nonatomic, strong) RegistrationModel *registerData;
 @property (nonatomic, strong) NSString *schoolIDSelected;
-@property (nonatomic) int stateSelected;
-@property (nonatomic) int citySelected;
-@property (nonatomic) int schoolSelected;
+@property (nonatomic) NSInteger stateSelected;
+@property (nonatomic) NSInteger citySelected;
+@property (nonatomic) NSInteger schoolSelected;
 @property (nonatomic) int kidCounter;
+
+@property (nonatomic, strong) NSTimer *timer;
 
 @end
 
@@ -66,6 +81,17 @@
     [self.stateTextField setDelegate:self];
     [self.cityTextField setDelegate:self];
     [self.schoolTextField setDelegate:self];
+    self.childFirstname.delegate = self;
+    self.childLastName.delegate = self;
+    self.childGradeLevel.delegate = self;
+    self.firstNameTextField.delegate = self;
+    self.lastNameTextField.delegate = self;
+    self.emailAddressTextField.delegate = self;
+    self.passwordTextField.delegate =self;
+    self.numberOfChildrenTextField.delegate = self;
+    self.gradeTFready = NO;
+    self.numberOfChildrenTFready = NO;
+    
     
     self.stateTextField.inputView = [self createPickerWithTag:zPickerState];
     self.cityTextField.inputView = [self createPickerWithTag:zPickerCity];
@@ -76,21 +102,36 @@
     
     [self getStatesFromDatabase];
     [self setupTapGestures];
-
+    
+    
 }
 
 - (void)checkToSeeIfAButtonShouldBeUnhidden
 {
-    if([self.firstNameTextField.text length] > 0 && [self.lastNameTextField.text length] > 0 && [self.emailAddressTextField.text length] > 0 && [self.passwordTextField.text length] > 0 && [self.numberOfChildrenTextField.text length] > 0)
+    if([self.firstNameTextField.text length] > 0 && [self.lastNameTextField.text length] > 0 && [self.emailAddressTextField.text length] > 0 && [self.passwordTextField.text length] > 0 && self.numberOfChildrenTFready)
     {
         self.createButton.hidden = NO;
+        if(!self.createButton.hidden)
+           [self.createButton setEnabled:true];
+    }
+    else
+    {
+        self.createButton.hidden = YES;
+        self.createButton.enabled = NO;
     }
     
-    if ([self.childFirstname.text length] > 0 && [self.childLastName.text length] > 0 && [self.childGradeLevel.text length] > 0)
+    if ([self.childFirstname.text length] > 0 && [self.childLastName.text length] > 0 && self.gradeTFready)
     {
         self.addChildButton.hidden = NO;
     }
-
+    else
+        self.addChildButton.hidden = YES;
+    
+    if([self.yourNameTF.text length] > 0 && [self.schoolnameTF.text length] > 0 && [self.cityTF.text length] > 0 && [self.stateTF.text length] > 0 && [self.schoolContactTF.text length] > 0)
+    {
+        self.addSchoolSendButton.hidden = NO;
+    }
+    
 }
 
 -(void)hideKeyboard
@@ -105,6 +146,15 @@
     [self.childGradeLevel resignFirstResponder];
     [self.childFirstname resignFirstResponder];
     [self.childLastName resignFirstResponder];
+    [self.stateTextField resignFirstResponder];
+    [self.cityTextField resignFirstResponder];
+    [self.schoolTextField resignFirstResponder];
+    [self.yourNameTF resignFirstResponder];
+    [self.schoolnameTF resignFirstResponder];
+    [self.cityTF resignFirstResponder];
+    [self.stateTF resignFirstResponder];
+    [self.schoolnameTF resignFirstResponder];
+    [self.schoolContactTF resignFirstResponder];
 }
 
 - (void)setupTapGestures
@@ -149,57 +199,69 @@
 
 - (void)getCitiesFromDatabase
 {
-    [self.cityIndicatorView startAnimating];
+ 
     NSString *state = self.stateTextField.text;
-    dispatch_queue_t createQueue = dispatch_queue_create("cities", NULL);
-    dispatch_async(createQueue, ^{
-        NSArray *cityArray;
-        cityArray = [self.registerData queryDatabaseForCitiesUsingState:state];
+    
+    if([state length] > 0)
+    {
         
-        if (cityArray)
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.registerData.cityArray = cityArray;
-                NSLog(@"%@", self.registerData.cityArray);
-                self.cityTextField.enabled = YES;
-                self.cityTextField.placeholder = @"Select City";
-                [self.cityIndicatorView stopAnimating];
-                UIPickerView *tempPicker = (UIPickerView *)self.cityTextField.inputView;
-                [tempPicker reloadAllComponents];
-            });
+        dispatch_queue_t createQueue = dispatch_queue_create("cities", NULL);
+        dispatch_async(createQueue, ^{
+            NSArray *cityArray;
+            cityArray = [self.registerData queryDatabaseForCitiesUsingState:state];
             
-        }
-    });
-
+            if (cityArray)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.registerData.cityArray = cityArray;
+                    NSLog(@"%@", self.registerData.cityArray);
+                    self.cityTextField.enabled = YES;
+                    self.cityTextField.placeholder = @"Select City";
+                    [self.cityIndicatorView stopAnimating];
+                    UIPickerView *tempPicker = (UIPickerView *)self.cityTextField.inputView;
+                    [tempPicker reloadAllComponents];
+                });
+                
+            }
+        });
+    }
+    else
+        [self.cityIndicatorView stopAnimating];
 }
 
 - (void)getSchoolsFromDatabase
 {
     self.schoolTextField.enabled = NO;
-    [self.schoolIndicatorView startAnimating];
     
     NSString *state = self.stateTextField.text;
     NSString *city = self.cityTextField.text;
-    dispatch_queue_t createQueue = dispatch_queue_create("schools", NULL);
-    dispatch_async(createQueue, ^{
-        NSArray *schoolArray;
-        schoolArray = [self.registerData queryDatabaseForSchoolsUsingState:state andCity:city];
+    
+    if([state length] > 0 && [city length] > 0)
+    {
         
-        if (schoolArray)
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                self.registerData.schoolArray = schoolArray;
-                NSLog(@"%@", self.registerData.schoolArray);
-                self.schoolTextField.enabled = YES;
-                self.schoolTextField.placeholder = @"Select School";
-                [self.schoolIndicatorView stopAnimating];
-                UIPickerView *tempPicker = (UIPickerView *)self.schoolTextField.inputView;
-                [tempPicker reloadAllComponents];
-            });
-            
-        }
-    });
 
+        dispatch_queue_t createQueue = dispatch_queue_create("schools", NULL);
+        dispatch_async(createQueue, ^{
+            NSArray *schoolArray;
+            schoolArray = [self.registerData queryDatabaseForSchoolsUsingState:state andCity:city];
+            
+            if (schoolArray)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    self.registerData.schoolArray = schoolArray;
+                    NSLog(@"%@", self.registerData.schoolArray);
+                    self.schoolTextField.enabled = YES;
+                    self.schoolTextField.placeholder = @"Select School";
+                    [self.schoolIndicatorView stopAnimating];
+                    UIPickerView *tempPicker = (UIPickerView *)self.schoolTextField.inputView;
+                    [tempPicker reloadAllComponents];
+                });
+                
+            }
+        });
+    }
+    else
+        [self.schoolIndicatorView stopAnimating];
 
 }
 
@@ -208,7 +270,7 @@
     if(self.stateTextField.isFirstResponder)
     {
         //start DB query to load cities
-        [self getCitiesFromDatabase];
+        //[self getCitiesFromDatabase];
         
         [self.stateTextField resignFirstResponder];
         
@@ -216,14 +278,14 @@
     }
     else if(self.cityTextField.isFirstResponder)
     {
-        [self getSchoolsFromDatabase];
+        //[self getSchoolsFromDatabase];
         
         [self.cityTextField resignFirstResponder];
     }
     else if(self.schoolTextField.isFirstResponder)
     {
         
-        [self getUserData];
+        
                 /* do this later
         
         NSLog(@"%@", self.schoolIDselected);
@@ -250,9 +312,22 @@
         }
         */  //take out all these comments when you implement adding multiple schools
         
-        [self.schoolTextField resignFirstResponder];
+         [self.schoolTextField resignFirstResponder];
         
     }
+}
+- (IBAction)addMySchoolButtonPressed
+{
+ 
+    
+    [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^
+     {
+         self.requestSchoolView.hidden = false;
+     }completion:^(BOOL finished)
+     {
+         NSLog(@"Animation Completed");
+     }];
+
 }
 
 - (void)getUserData
@@ -270,9 +345,13 @@
     pickerView.delegate = self;
     
     [pickerView setShowsSelectionIndicator:YES];
+ 
     
     
     UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
+    
+    [tapGR setNumberOfTapsRequired:1];
+    [tapGR setDelegate:self];
     [pickerView addGestureRecognizer:tapGR];
     
     return pickerView;
@@ -289,6 +368,11 @@
     [HelperMethods downloadAndSaveImagesToDiskWithFilename:[self.mainUserData.schoolData objectForKey:SCHOOL_IMAGE_NAME]];
 }
 
+- (void)downloadLogo
+{
+    [HelperMethods downloadSingleImageFromBaseURL:SCHOOL_LOGO_PATH withFilename:[NSString stringWithFormat:@"%@",[self.mainUserData.schoolData objectForKey:SCHOOL_IMAGE_NAME]] saveToDisk:YES replaceExistingImage:NO];
+}
+
 - (void)addUserToDatabase
 {
     
@@ -303,7 +387,8 @@
                 
                 if([[tempDic objectForKey:@"error"] boolValue])
                 {
-                    [HelperMethods displayErrorUsingDictionary:tempDic];
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                    self.emailAddressTextField.text = @"";
                                         
                 }
                 else
@@ -311,9 +396,59 @@
                     self.mainUserData.userID = [tempDic objectForKey:USER_ID];
                     self.mainUserData.schoolIDselected = self.schoolIDSelected;
                     [self.mainUserData addSchoolIDtoArray:self.schoolIDSelected];
-                    [self.mainUserData addschoolDataToArray:[NSDictionary dictionaryWithObjectsAndKeys:[tempDic objectForKey:USER_IS_VERIFIED],USER_IS_VERIFIED, [tempDic objectForKey:SCHOOL_IMAGE_NAME], SCHOOL_IMAGE_NAME, self.schoolIDSelected, SCHOOL_ID, nil]];
+                    [self.mainUserData addschoolDataToArray:[[tempDic objectForKey:SCHOOL_DATA] objectAtIndex:0]];
+                    [self.mainUserData setActiveSchool:self.schoolIDSelected];
                     
-                    [self downloadImages];
+                    //[self downloadImages];
+                    //[self downloadLogo];
+                    
+                    NSString *deviceToken = [[NSUserDefaults standardUserDefaults] objectForKey:USER_PUSH_NOTIFICATION_PIN];
+                    
+                    NSString *iosVersion = [[UIDevice currentDevice] systemVersion];
+                    
+                    dispatch_queue_t createQueue = dispatch_queue_create("updateIOSVersion", NULL);
+                    dispatch_async(createQueue, ^{
+                        NSArray *dataArray;
+                        dataArray = [self.registerData updateUserVersionUserID:[[NSUserDefaults standardUserDefaults]objectForKey:USER_ID] withVersion:iosVersion];
+                        if ([dataArray count] == 1)
+                        {
+                            dispatch_async(dispatch_get_main_queue(), ^{
+                                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                                
+                                if([[tempDic objectForKey:@"error"] boolValue])
+                                {
+                                    NSLog(@"%@", tempDic);
+                                }
+                            });
+                            
+                        }
+                    });
+
+                    
+                    if(deviceToken)
+                        {
+                            dispatch_queue_t createQueue = dispatch_queue_create("updatePin", NULL);
+                            dispatch_async(createQueue, ^{
+                                NSArray *dataArray;
+                                dataArray = [self.registerData updateUserPushNotificationPinForUserID:self.mainUserData.userID withPin:deviceToken];
+                                if ([dataArray count] == 1)
+                                {
+                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                        NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                                        
+                                        if([[tempDic objectForKey:@"error"] boolValue])
+                                        {
+                                           [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                                            
+                                        }
+                                    });
+                                    
+                                }
+                            });
+
+                        }
+                    [self showKidsInputView];
+                    
                     
                     
                 }
@@ -331,6 +466,57 @@
     self.kidCounter = 1;
     self.headerLabel.text = [NSString stringWithFormat:@"Add Child # %i", self.kidCounter];
     
+}
+
+
+- (IBAction)addSchoolRequestButtonPressed
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("sendEmail", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *emailArray;
+        emailArray = [self.registerData sendEmailToRequestSchoolAdditionBy:self.yourNameTF.text forSchoolNamed:self.schoolnameTF.text inCity:self.cityTF.text inState:self.stateTF.text withSchoolContactName:self.schoolContactTF.text];
+        
+        if (emailArray)
+        {
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSLog(@"%@", [emailArray objectAtIndex:0]);
+                
+                
+                if(![[[emailArray objectAtIndex:0]objectForKey:@"error"] boolValue])
+                {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message Sent" message:@"Message Sent Successfully" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                    
+                    [alert show];
+                    self.yourNameTF.text = @"";
+                    self.schoolnameTF.text = @"";
+                    self.cityTF.text = @"";
+                    self.stateTF.text =@"";
+                    self.schoolContactTF.text = @"";
+                    
+                    [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^
+                     {
+                         self.requestSchoolView.hidden = true;
+                     }completion:^(BOOL finished)
+                     {
+                        NSLog(@"Animation Completed");
+                     }];
+                }
+                else
+                {
+                    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message Sent" message:@"Message Sent Failed! Try again later." delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                    
+                    [alert show];
+                    
+                }
+                
+                
+                
+            });
+            
+        }
+    });
+
 }
 
 - (IBAction)addChildPressed
@@ -359,7 +545,7 @@
                 
                 if([[tempDic objectForKey:@"error"] boolValue])
                 {
-                    [HelperMethods displayErrorUsingDictionary:tempDic];
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
                     
                 }
                 else
@@ -374,6 +560,19 @@
                     }
                     else
                     {
+                        
+                        //-- Set Notification
+                        if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
+                        {
+                            [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+                            [[UIApplication sharedApplication] registerForRemoteNotifications];
+                        }
+                        else
+                        {
+                            [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+                             (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+                        }
+
                         [self.navigationController popViewControllerAnimated:YES];
                     }
                     
@@ -386,17 +585,64 @@
 
 }
 
+- (IBAction)privacyPolicyButtonPressed
+{
+     [self.navigationController popToRootViewControllerAnimated:YES];
+    
+    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://www.myschoolintercom.com/privacy.php"]];
+    
+   
+}
+
+- (IBAction)tryDemoPressed
+{
+    if([self.delegate respondsToSelector:@selector(loginToDemoAccount)])
+    {
+        self.mainUserData.isAccountCreated = YES;
+        self.mainUserData.isRegistered = YES;
+        self.mainUserData.isDemoInUse = YES;
+        [self.delegate loginToDemoAccount];
+    }
+    
+    [self.navigationController popToRootViewControllerAnimated:NO];
+}
+
 - (IBAction)createAccountButtonPressed
 {
+    [self.createButton setEnabled:false];
     self.registerData.userFirstName = self.firstNameTextField.text;
     self.registerData.userLastName = self.lastNameTextField.text;
     self.registerData.userEmailAddress = self.emailAddressTextField.text;
     self.registerData.userPassword = self.passwordTextField.text;
     self.registerData.numberOfChildren = self.numberOfChildrenTextField.text;
     
+    self.mainUserData.userInfo = [self.registerData getUserInfoAsDictionary];
+    
     [self addUserToDatabase];
     
-    [self showKidsInputView];
+        
+}
+
+- (IBAction)signUpButttonPressed
+{
+    [self getUserData];
+   
+}
+- (IBAction)goBackButtonPressed
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
+- (IBAction)addSchoolBackButtonPressed
+{
+    
+    [UIView animateWithDuration:0.4 delay:0.0 options:UIViewAnimationOptionCurveEaseOut animations:^
+     {
+         self.requestSchoolView.hidden = true;
+     }completion:^(BOOL finished)
+     {
+         NSLog(@"Animation Completed");
+     }];
+
 }
 
 #pragma mark Delegate Section
@@ -442,9 +688,10 @@
             [self.stateIndicatorView startAnimating];
         else
         {
-            [self.stateIndicatorView stopAnimating];
             self.stateTextField.text = [self.registerData.stateArray objectAtIndex:row];
             self.stateSelected = row;
+            [self.stateIndicatorView stopAnimating];
+
         }
     }
     else if(pickerView.tag == zPickerCity)
@@ -467,7 +714,7 @@
             [self.schoolIndicatorView stopAnimating];
             self.schoolIDSelected = [[self.registerData.schoolDicsArray objectAtIndex:row] objectForKey:ID];
             self.schoolTextField.text = [self.registerData.schoolArray objectAtIndex:row];
-            self.registerData.schoolSelected = [self.registerData.schoolArray objectAtIndex:row];
+            self.registerData.schoolSelected = [self.registerData.schoolDicsArray objectAtIndex:row];
             self.schoolSelected = row;
           
         }
@@ -483,6 +730,8 @@
             self.schoolIDSelected = [[self.registerData.schoolDicsArray objectAtIndex:self.schoolSelected] objectForKey:ID];
             self.schoolTextField.text = [self.registerData.schoolArray objectAtIndex:self.schoolSelected];
             self.registerData.schoolSelected = [self.registerData.schoolDicsArray objectAtIndex:self.schoolSelected];
+            
+
         }
         else
         {
@@ -494,9 +743,13 @@
     {
         self.cityTextField.text = @"";
         self.schoolTextField.text = @"";
+        [self.cityTextField setEnabled:false];
+        [self.schoolTextField setEnabled:false];
         
         if([self.registerData.stateArray count] > 0)
+        {
             self.stateTextField.text = [self.registerData.stateArray objectAtIndex:self.stateSelected];
+        }
         else
         {
             [self.stateIndicatorView startAnimating];
@@ -507,8 +760,11 @@
     else if(self.cityTextField.isFirstResponder)
     {
         self.schoolTextField.text = @"";
+        [self.schoolTextField setEnabled:false];
         if([self.registerData.cityArray count] > 0)
+        {
             self.cityTextField.text = [self.registerData.cityArray objectAtIndex:self.citySelected];
+        }
         else
         {
             [self.cityIndicatorView startAnimating];
@@ -519,8 +775,86 @@
     }
 }
 
+- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
+{
+    
+    if(textField.tag == 4)
+    {
+        
+        NSString *newString = textField.text;
+        
+        newString = [newString stringByReplacingCharactersInRange:range withString:string];
+        
+        if(![newString isEqualToString:@""] && [newString intValue] >= 0 && [newString intValue] <=12)
+        {
+            textField.textColor = [UIColor blackColor];
+            self.gradeTFready = YES;
+        }
+        else
+        {
+            self.gradeTFready = NO;
+            textField.textColor = [UIColor redColor];
+        }
+    }
+    else if(textField.tag == 1)
+    {
+        NSString *newString = textField.text;
+        
+        newString = [newString stringByReplacingCharactersInRange:range withString:string];
+        
+        if(![newString isEqualToString:@""] && [newString intValue] >= 1 && [newString intValue] <=10)
+        {
+            textField.textColor = [UIColor blackColor];
+            self.numberOfChildrenTFready = YES;
+        }
+        else
+        {
+            self.numberOfChildrenTFready = NO;
+            textField.textColor = [UIColor redColor];
+        }
+
+    }
+
+    [self checkToSeeIfAButtonShouldBeUnhidden];
+    
+    return YES;
+}
+
+
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
+    switch (textField.tag)
+    {
+        case 1: if([textField.text length] > 0)
+        {
+            
+            self.cityTextField.text = @"";
+            self.schoolTextField.text = @"";
+            [self.cityTextField setEnabled:false];
+            [self.schoolTextField setEnabled:false];
+            [self.cityIndicatorView startAnimating];
+            self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(getCitiesFromDatabase) userInfo:nil repeats:NO];
+
+           
+            
+            
+        }
+            break;
+        case 2:
+            if([textField.text length] > 0 )
+            {
+                self.schoolTextField.text = @"";
+                [self.schoolTextField setEnabled:false];
+                [self.schoolIndicatorView startAnimating];
+                self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(getSchoolsFromDatabase) userInfo:nil repeats:NO];
+            }
+            break;
+        case 3:
+            if ([textField.text length] > 0)
+                [self.signUpButton setHidden:false];
+            break;
+    }
+    
     [self checkToSeeIfAButtonShouldBeUnhidden];
 }
 
@@ -569,5 +903,9 @@
     }
 }
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return TRUE;
+}
 
 @end

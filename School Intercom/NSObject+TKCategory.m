@@ -212,7 +212,8 @@
 		
 		id object = [NSJSONSerialization JSONObjectWithData:data options:options error:&error];
 		
-		
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
 		
 		if(error && eSelector){
 			[self performSelector:NSSelectorFromString(eSelector) withObject:error];
@@ -220,6 +221,7 @@
 			if(background) object = [self performSelector:NSSelectorFromString(background) withObject:object];
 			[self performSelectorOnMainThread:NSSelectorFromString(callback) withObject:object waitUntilDone:NO];
 		}
+#pragma clang diagnostic pop
 	}
 }
 

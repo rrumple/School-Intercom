@@ -12,13 +12,31 @@
 #import "NewsViewController.h"
 #import "ContactViewController.h"
 #import "SwitchViewController.h"
-#import "SettingsViewController.h"
+#import "SettingsTableViewController.h"
 #import "CalendarMonthViewController.h"
+#import "IntroModel.h"
+#import "LunchMenuViewController.h"
 
 
-@interface MainMenuViewController : UIViewController <HomeViewControllerDelegate, NewsViewControllerDelegate, CalendarMonthViewControllerDelegate, ContactViewControllerDelegate, SwitchViewControllerDelegate, SettingsViewControllerDelegate>
 
-@property (nonatomic) BOOL isFirstLoad;
+
+
+
+
+@protocol MainMenuControllerDelegate;
+
+@interface MainMenuViewController : UIViewController <HomeViewControllerDelegate, NewsViewControllerDelegate, CalendarMonthViewControllerDelegate, ContactViewControllerDelegate, SwitchViewControllerDelegate, SettingsTableViewControllerDelegate, LunchMenuViewControllerDelegate>
+
+@property (nonatomic, weak) id<MainMenuControllerDelegate> delegate;
 @property (nonatomic, strong) UserData *mainUserData;
+@property (nonatomic) BOOL isFirstLoad;
+
+
+
+@end
+
+@protocol MainMenuControllerDelegate <NSObject>
+
+- (void)signOut;
 
 @end

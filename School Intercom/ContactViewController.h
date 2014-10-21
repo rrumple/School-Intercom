@@ -7,13 +7,16 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ContactModel.h"
+#import "UserData.h"
 
 @protocol ContactViewControllerDelegate;
 
-@interface ContactViewController : UIViewController
-
+@interface ContactViewController : UIViewController <UITextViewDelegate>
+@property (nonatomic) CGFloat animatedDistance;
 @property (nonatomic, weak) id<ContactViewControllerDelegate> delegate;
-
+@property (nonatomic, strong) NSDictionary *schoolData;
+@property (nonatomic, strong) UserData *mainUserData;
 @end
 
 @protocol ContactViewControllerDelegate <NSObject>

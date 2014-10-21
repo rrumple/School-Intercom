@@ -11,7 +11,10 @@
 
 @interface IntroModel : NSObject
 
-- (NSArray *)queryDatabaseForSchoolsDataForUser:
-(NSString *)userID andSchoolID:(NSString *)schoolID;
-
+- (NSArray *)queryDatabaseForSchoolsDataForUser:(NSString *)userID andSchoolID:(NSString *)schoolID;
+- (NSArray *)loginExistingUserWithEmail:(NSString *)email andPassword:(NSString *)password;
+- (NSArray *)restorePurchaseForUser:(NSString *)userID andSchool:(NSString *)schoolID;
+- (NSArray *)resetPasswordForEmail:(NSString *)email;
+- (NSArray *)checkAccountStatusofUserID:(NSString *)userID ofSchool:(NSString *)schoolID;
+- (NSArray *)updateHasPurchasedinUserSchoolTable:(NSString *)userID ofSchool:(NSString *)schoolID hasPurchasedBOOL:(NSString *)hasPurchased;
 @end
