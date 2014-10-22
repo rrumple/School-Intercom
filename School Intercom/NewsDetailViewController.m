@@ -29,9 +29,7 @@
 {
     [super viewDidLoad];
 	self.newsTitleLabel.text = [self.newsDetailData objectForKey:NEWS_TITLE];
-    NSString *text = [self.newsDetailData objectForKey:NEWS_TEXT];
-    
-    text = [@"<br />" stringByAppendingString:[self.newsDetailData objectForKey:NEWS_TEXT]];
+    NSString *text = [@"<br />" stringByAppendingString:[self.newsDetailData objectForKey:NEWS_TEXT]];
 
     
     NSError *err = nil;

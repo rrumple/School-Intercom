@@ -735,7 +735,13 @@
                                         {
                                             if(self.isInAppPurchaseEnabled)
                                             {
-                                                if(self.mainUserData.hasPurchased)
+                                                if(self.mainUserData.isDemoInUse)
+                                                {
+                                                    [self setBackgroundImage];
+                                                    
+                                                    [self checkForValidUser];
+                                                }
+                                                else if(self.mainUserData.hasPurchased)
                                                    [self restorePurchases];
                                                 //[self checkForValidUser];
                                                 
@@ -759,9 +765,14 @@
                         {
                             if(self.isInAppPurchaseEnabled)
                             {
-                                if(self.mainUserData.hasPurchased)
-                                   [self restorePurchases];
-                                //[self checkForValidUser];
+                                if(self.mainUserData.isDemoInUse)
+                                {
+                                    [self setBackgroundImage];
+                                    
+                                    [self checkForValidUser];
+                                }
+                                else if(self.mainUserData.hasPurchased)
+                                    [self restorePurchases];
                             }
                             
                             else

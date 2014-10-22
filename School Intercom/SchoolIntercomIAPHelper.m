@@ -29,7 +29,7 @@
     //dispatch_queue_t createQueue = dispatch_queue_create("updateHasPurchased", NULL);
     //dispatch_async(createQueue, ^{
         NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_PRODUCT_IDS withKeys:nil andData:nil];
-        NSArray *dataArray = [[NSArray alloc] init];
+        NSArray *dataArray;
         dataArray = [databaseRequest performRequestToDatabaseWithURLasString:urlString];
         
         if ([dataArray count] > 0)

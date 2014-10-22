@@ -22,7 +22,7 @@
 
 - (NSArray *)getAdFromDatabase:(NSString *)schoolID
 {
-    NSArray *dataArray = [[NSArray alloc]init];
+    NSArray *dataArray;
     NSArray *keys = @[SCHOOL_ID];
     NSArray *data = @[schoolID];
     
@@ -37,7 +37,7 @@
 
 - (NSArray *)updateAdClickCountInDatabse:(NSString *)adID
 {
-    NSArray *dataArray = [[NSArray alloc]init];
+    NSArray *dataArray;
     NSArray *keys = @[AD_ID];
     NSArray *data = @[adID];
     

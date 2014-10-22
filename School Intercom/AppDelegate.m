@@ -28,8 +28,7 @@
         
         dispatch_queue_t createQueue = dispatch_queue_create("updatePin", NULL);
         dispatch_async(createQueue, ^{
-            NSArray *dataArray;
-            dataArray = [registerData updateUserPushNotificationPinForUserID:[[NSUserDefaults standardUserDefaults]objectForKey:USER_ID] withPin:finalToken];
+           [registerData updateUserPushNotificationPinForUserID:[[NSUserDefaults standardUserDefaults]objectForKey:USER_ID] withPin:finalToken];
         });
 
     }

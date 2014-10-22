@@ -51,7 +51,7 @@
 {
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_STATES withKeys:nil andData:nil];
-    NSArray *dataArray = [[NSArray alloc] init];
+    NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
     return [self processArray:dataArray withKey:SCHOOL_STATE];
@@ -61,7 +61,7 @@
 - (NSArray *)queryDatabaseForCitiesUsingState:(NSString *)state
 {
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_CITIES withKeys:@[SCHOOL_STATE] andData:@[state]];
-    NSArray *dataArray = [[NSArray alloc] init];
+    NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
     return [self processArray:dataArray withKey:SCHOOL_CITY];
@@ -71,7 +71,7 @@
 - (NSArray *)queryDatabaseForSchoolsUsingState:(NSString *)state andCity:(NSString *)city
 {
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_SCHOOLS withKeys:@[SCHOOL_STATE, SCHOOL_CITY] andData:@[state, city]];
-    NSArray *dataArray = [[NSArray alloc] init];
+    NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -85,7 +85,7 @@
 - (NSArray *)queryDatabaseForSchoolsUsingStateWithNoArrayProcessing:(NSString *)state andCity:(NSString *)city
 {
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_SCHOOLS withKeys:@[SCHOOL_STATE, SCHOOL_CITY] andData:@[state, city]];
-    NSArray *dataArray = [[NSArray alloc] init];
+    NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
     dispatch_async(dispatch_get_main_queue(), ^{
@@ -100,7 +100,7 @@
 {
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_SCHOOL_TO_USER withKeys:@[USER_ID, SCHOOL_ID] andData:@[userID, schoolID]];
-    NSArray *dataArray = [[NSArray alloc] init];
+    NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
     
@@ -115,7 +115,7 @@
     NSArray *data = @[[self.schoolSelected objectForKey:ID], self.userFirstName, self.userLastName, self.userEmailAddress, self.numberOfChildren, self.userPassword];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_USER withKeys:keys andData:data];
-    NSArray *dataArray = [[NSArray alloc] init];
+    NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
     
@@ -128,7 +128,7 @@
     NSArray *data = @[userID, [self.schoolSelected objectForKey:ID], self.childFirstName, self.childLastName, self.childGradeLevel];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_KID withKeys:keys andData:data];
-    NSArray *dataArray = [[NSArray alloc] init];
+    NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
     
@@ -153,7 +153,7 @@
     NSArray *data = @[userID, deviceToken];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_USER_PUSH_PIN withKeys:keys andData:data];
-    NSArray *dataArray = [[NSArray alloc]init];
+    NSArray *dataArray;
     
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
@@ -163,7 +163,7 @@
 
 - (NSArray *)updateUserVersionUserID:(NSString *)userID withVersion:(NSString *)version
 {
-    NSArray *dataArray = [[NSArray alloc]init];
+    NSArray *dataArray;
     NSArray *keys = @[USER_ID, DEVICE_VERSION];
     NSArray *data = @[userID, version];
     
@@ -178,7 +178,7 @@
 
 - (NSArray *)getCurrentAppVersion
 {
-    NSArray *dataArray = [[NSArray alloc]init];
+    NSArray *dataArray;
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_CURRENT_VERSION withKeys:@[] andData:@[]];
     
     
@@ -194,7 +194,7 @@
     NSArray *data = @[name, schoolName, city, state, schoolContactName];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_SCHOOL_EMAIL withKeys:keys andData:data];
-    NSArray *dataArray = [[NSArray alloc] init];
+    NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
     

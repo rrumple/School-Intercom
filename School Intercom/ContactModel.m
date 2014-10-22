@@ -25,7 +25,7 @@
     NSArray *data = @[schoolID, subject, message, userID];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_SEND_EMAIL withKeys:keys andData:data];
-    NSArray *dataArray = [[NSArray alloc] init];
+    NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
     

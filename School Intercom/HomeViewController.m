@@ -178,7 +178,7 @@
     NSLog(@"%@", schoolData);
     dispatch_queue_t createQueue = dispatch_queue_create("getLocalAd", NULL);
     dispatch_async(createQueue, ^{
-        NSArray *adDataArray = [[NSArray alloc]init];
+        NSArray *adDataArray;
         adDataArray = [self.adModel getAdFromDatabase:[schoolData objectForKey:ID]];
         
         if ([adDataArray count] == 1)
