@@ -8,7 +8,8 @@
 
 #import "UpdateKidViewController.h"
 
-@interface UpdateKidViewController ()
+@interface UpdateKidViewController () <UITableViewDataSource, UITableViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate,UIGestureRecognizerDelegate>
+@property (weak, nonatomic) IBOutlet UITableView *teacherTableView;
 @property (nonatomic, strong) UpdateProfileModel *updateProfileData;
 @property (weak, nonatomic) IBOutlet UITextField *firstNameTF;
 @property (weak, nonatomic) IBOutlet UITextField *lastNameTF;
@@ -20,6 +21,20 @@
 @property (nonatomic) BOOL gradeTFready;
 @property (nonatomic) BOOL firstNameTFready;
 @property (nonatomic) BOOL lastNameTFready;
+@property (nonatomic, strong) NSArray *teachers;
+@property (nonatomic, strong) NSArray *masterListOfTeachers;
+@property (nonatomic, strong) NSArray *kidTeachers;
+@property (weak, nonatomic) IBOutlet UIButton *addTeacherButton;
+@property (nonatomic, strong) NSString *teacherSelected;
+@property (weak, nonatomic) IBOutlet UIButton *showAddTeacherButton;
+@property (weak, nonatomic) IBOutlet UILabel *swipeLabel;
+@property (nonatomic) NSInteger rowSelected;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *removeButtonConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *origianalConstraint;
+@property (strong, nonatomic) IBOutlet NSLayoutConstraint *tableViewTopConstraint;
+@property (nonatomic, strong) NSLayoutConstraint *hiddenConstraint;
+@property (nonatomic, strong) NSArray *tableConstraints;
+@property (nonatomic, strong) NSArray *labelConstraints;
 @end
 
 @implementation UpdateKidViewController
@@ -30,6 +45,15 @@
     return _updateProfileData;
 }
 
+- (void)setKidData:(NSDictionary *)kidData
+{
+    _kidData = kidData;
+    if(!self.addingNewKid)
+        [self getKidsTeachersFromDatabase];
+    else
+        [self getTeachersFromDatabase];
+}
+
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
@@ -37,6 +61,108 @@
         // Custom initialization
     }
     return self;
+}
+
+- (void)filterTeachers
+{
+    NSMutableArray *tempTeacherArray = [self.masterListOfTeachers mutableCopy];
+    
+    if([self.masterListOfTeachers count] > 0 && [self.kidTeachers count] > 0)
+    {
+        for(NSDictionary *teacher in self.masterListOfTeachers)
+        {
+            for(NSDictionary *otherTeacher in self.kidTeachers)
+            {
+                if([[teacher objectForKey:ID] isEqualToString:[otherTeacher objectForKey:TEACHER_ID]])
+                {
+                    [tempTeacherArray removeObject:teacher];
+                }
+            }
+        }
+    }
+    
+    if([tempTeacherArray count] == 0)
+        [tempTeacherArray addObject:@{TEACHER_PREFIX:@"No Teachers ", TEACHER_LAST_NAME:@"to Display", ID:@"999"}];
+    
+    self.teachers = tempTeacherArray;
+    
+    UIPickerView *tempPicker = (UIPickerView *)self.gradeTF.inputView;
+    [tempPicker reloadAllComponents];
+
+}
+
+- (void)getTeachersFromDatabase
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("teachers", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *teachersArray;
+        teachersArray = [self.updateProfileData queryDatabaseForTeachersAtSchool:self.mainUserData.schoolIDselected];
+        
+        if (teachersArray)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                
+                self.masterListOfTeachers = teachersArray;
+                
+                [self filterTeachers];
+                
+                
+            });
+            
+        }
+    });
+    
+}
+- (void)getKidsTeachersFromDatabase
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("kid_teachers", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *teachersArray;
+        teachersArray = [self.updateProfileData getKidsTeachersFromDatabase:[self.kidData objectForKey:ID]];
+        
+        if (teachersArray)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                
+                NSDictionary *tempDic = [teachersArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                    
+                }
+                else
+                {
+                    if([[tempDic objectForKey:@"teacherData"] count] == 0)
+                    {
+                        self.teacherTableView.hidden = true;
+                        self.swipeLabel.hidden = true;
+                        [self swapConstraints:1];
+                    }
+                    else
+                    {
+                        
+                        self.teacherTableView.hidden =false;
+                        self.swipeLabel.hidden = false;
+                        [self swapConstraints:0];
+                    }
+                    
+                    self.kidTeachers = [tempDic objectForKey:@"teacherData"];
+                    [self filterTeachers];
+                    [self.teacherTableView reloadData];
+
+ 
+                    
+                    
+                }
+
+                
+            });
+            
+        }
+    });
+    
 }
 
 - (void)deleteKidFromDatabase
@@ -70,6 +196,65 @@
     
 }
 
+- (void)deleteTeacherFromKidInDatabase
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("deleteTeacher", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.updateProfileData deleteTeacher:[[self.kidTeachers objectAtIndex:self.rowSelected]objectForKey:TEACHER_ID] fromKidInDatabase:[self.kidData objectForKey:ID]];
+        if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                    
+                }
+                else
+                {
+                    [self getKidsTeachersFromDatabase];
+                    
+                }
+            });
+            
+        }
+    });
+    
+}
+
+- (void)addTeacherToKidInDatabase
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("addKidTeacher", NULL);
+    dispatch_async(createQueue, ^{
+    NSArray *dataArray;
+        dataArray = [self.updateProfileData addTeacher:self.teacherSelected ToKidInDatabase:[self.kidData objectForKey:ID]];
+        if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                    
+                }
+                else
+                {
+                    [self getKidsTeachersFromDatabase];
+                    self.gradeTF.text = @"";
+                    self.gradeTF.hidden = true;
+                    self.addTeacherButton.hidden = true;
+                    self.addTeacherButton.enabled = false;
+                    self.showAddTeacherButton.hidden = false;
+                }
+            });
+            
+        }
+    });
+}
+
 - (void)updateKidInDatabase
 {
     NSString *kidID;
@@ -84,7 +269,7 @@
         
     
     
-    NSDictionary *tempDic = [[NSDictionary alloc]initWithObjects:@[kidID, self.firstNameTF.text, self.lastNameTF.text, self.gradeTF.text, self.mainUserData.schoolIDselected, self.mainUserData.userID ] forKeys:@[KID_ID, KID_FIRST_NAME, KID_LAST_NAME, KID_GRADE_LEVEL, SCHOOL_ID, USER_ID]];
+    NSDictionary *tempDic = [[NSDictionary alloc]initWithObjects:@[kidID, self.firstNameTF.text, self.lastNameTF.text, self.teacherSelected, self.mainUserData.schoolIDselected, self.mainUserData.userID ] forKeys:@[KID_ID, KID_FIRST_NAME, KID_LAST_NAME, TEACHER_ID, SCHOOL_ID, USER_ID]];
     
     dispatch_queue_t createQueue = dispatch_queue_create("updateKid", NULL);
     dispatch_async(createQueue, ^{
@@ -132,12 +317,37 @@
 - (void)checkToSeeIfButtonShouldBeEnabled
 {
     NSLog(@"%@", self.firstNameTF.text);
-    if(self.firstNameTFready && self.lastNameTFready && self.gradeTFready )
+    if(self.addingNewKid)
     {
-        self.addUpdateButton.enabled = true;
+        if(self.firstNameTFready && self.lastNameTFready && [self.gradeTF.text length] > 0)
+        {
+            self.addUpdateButton.enabled = true;
+        }
+        else
+            self.addUpdateButton.enabled = false;
+
     }
     else
-        self.addUpdateButton.enabled = false;
+    {
+        if(self.firstNameTFready && self.lastNameTFready)
+        {
+            self.addUpdateButton.enabled = true;
+        }
+        else
+            self.addUpdateButton.enabled = false;
+
+    }
+    
+    
+    if([self.gradeTF.text length] > 0 && [self.teacherSelected length] > 0)
+    {
+        self.addTeacherButton.enabled = true;
+    }
+    else
+    {
+        self.addTeacherButton.enabled = false;
+    }
+        
 
 }
 
@@ -165,6 +375,67 @@
     
 }
 
+-(UIPickerView *)createPickerWithTag:(NSInteger)tag
+{
+    UIPickerView *pickerView = [[UIPickerView alloc]init];
+    pickerView.tag = tag;
+    pickerView.dataSource = self;
+    pickerView.delegate = self;
+    
+    [pickerView setShowsSelectionIndicator:YES];
+    
+    
+    
+    UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
+    
+    [tapGR setNumberOfTapsRequired:1];
+    [tapGR setDelegate:self];
+    [pickerView addGestureRecognizer:tapGR];
+    
+    return pickerView;
+}
+
+- (void)pickerViewTapped
+{
+    if(self.gradeTF.isFirstResponder)
+    {
+        [self hideKeyboard];
+    }
+}
+
+-(void)swapConstraints:(NSTimeInterval)animationTime
+{
+    if(self.teacherTableView.hidden)
+    {
+        [self.view removeConstraint:self.removeButtonConstraint];
+        [self.view removeConstraint:self.origianalConstraint];
+        [self.view removeConstraints:[self.teacherTableView constraints]];
+        [self.view removeConstraints:[self.swipeLabel constraints]];
+
+        [UIView animateWithDuration:animationTime animations:^{
+            [self.view addConstraint:self.hiddenConstraint];
+            
+                        [self.view layoutIfNeeded];
+        }];
+    }
+    else
+    {
+        [self.view removeConstraint:self.hiddenConstraint];
+
+        [UIView animateWithDuration:animationTime animations:^{
+            [self.view addConstraint:self.origianalConstraint];
+            [self.view addConstraints:self.tableConstraints];
+            [self.view addConstraints:self.labelConstraints];
+            
+            
+            [self.view layoutIfNeeded];
+        }];
+    }
+
+}
+
+
+
 
 - (void)viewDidLoad
 {
@@ -179,7 +450,11 @@
     self.gradeTFready = NO;
     self.firstNameTFready = NO;
     self.lastNameTFready = NO;
-    
+    self.gradeTF.inputView = [self createPickerWithTag:zPickerTeacher];
+    self.origianalConstraint = self.removeButtonConstraint;
+    self.hiddenConstraint = [NSLayoutConstraint constraintWithItem:self.deleteButton attribute:NSLayoutAttributeTop relatedBy:NSLayoutRelationEqual toItem:self.gradeTF attribute:NSLayoutAttributeBottom multiplier:1.0 constant:8.0];
+    self.tableConstraints = [self.teacherTableView constraints];
+    self.labelConstraints = [self.swipeLabel constraints];
     
     if (self.addingNewKid)
     {
@@ -187,12 +462,27 @@
         [self.addUpdateButton setTitle:@"Add" forState:UIControlStateNormal];
         self.schoolTF.text = [self.mainUserData getSchoolNameFromID:self.mainUserData.schoolIDselected];
         self.header.text = @"Add a Kid";
+        self.teacherTableView.hidden = true;
+        self.swipeLabel.hidden = true;
+        self.addTeacherButton.hidden = true;
+        self.addTeacherButton.enabled = false;
+        self.showAddTeacherButton.hidden = true;
+        
+        [self swapConstraints:0];
+    
+        
+        
+        
     }
     else
     {
+        [self getTeachersFromDatabase];
         self.firstNameTF.text = [self.kidData objectForKey:KID_FIRST_NAME];
         self.lastNameTF.text = [self.kidData objectForKey:KID_LAST_NAME];
-        self.gradeTF.text = [self.kidData objectForKey:KID_GRADE_LEVEL];
+        self.gradeTF.hidden = true;
+        self.addTeacherButton.hidden = true;
+        self.addTeacherButton.enabled = false;
+        self.showAddTeacherButton.hidden = false;
         self.schoolTF.text = [self.mainUserData getSchoolNameFromID:[self.kidData objectForKey:SCHOOL_ID]];
         self.addUpdateButton.enabled = true;
         self.gradeTFready = YES;
@@ -216,6 +506,21 @@
     
     [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://www.myschoolintercom.com/privacy.php"]];
 
+}
+
+- (IBAction)showAddTeacherButtonPressed
+{
+    if(!self.addingNewKid)
+    {
+        self.showAddTeacherButton.hidden = true;
+        self.gradeTF.hidden = false;
+        self.addTeacherButton.hidden = false;
+    }
+}
+
+- (IBAction)addTeacherButtonPressed
+{
+    [self addTeacherToKidInDatabase];
 }
 
 - (IBAction)addUpdateButtonPressed:(UIButton *)sender
@@ -320,6 +625,124 @@
     
     
     
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    if(self.addingNewKid)
+        return 0;
+    else
+        return self.kidTeachers.count;
+}
+
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
+    
+    
+    cell.textLabel.text = [NSString stringWithFormat:@"%@ - %@", [[self.kidTeachers objectAtIndex:indexPath.row] objectForKey:TEACHER_NAME], [HelperMethods convertGradeLevel:[[self.kidTeachers objectAtIndex:indexPath.row]objectForKey:@"grade"]]];
+    if(![[[self.kidTeachers objectAtIndex:indexPath.row]objectForKey:TEACHER_SUBJECT] isEqualToString:@""])
+        cell.detailTextLabel.text = [[self.kidTeachers objectAtIndex:indexPath.row]objectForKey:TEACHER_SUBJECT];
+    
+    return cell;
+}
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        UIAlertView * confirmDeleteAlert = [[UIAlertView alloc]initWithTitle:@"Remove Teacher" message:[ NSString stringWithFormat:@"Are you sure you want to remove %@?",[[self.kidTeachers objectAtIndex:indexPath.row]objectForKey:TEACHER_NAME]]   delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        confirmDeleteAlert.tag = zAlertConfirmRemoveTeacher;
+        self.rowSelected = indexPath.row;
+        
+        [confirmDeleteAlert show];
+        //[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+        
+    }
+}
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    
+    if(pickerView.tag == zPickerTeacher)
+        return [self.teachers count];
+    
+    
+    return 0;
+}
+
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    //if(pickerView.tag == zPickerTeacher)
+    //  return 2;
+    //else
+    return 1;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    
+    if(pickerView.tag == zPickerTeacher)
+    {
+        if([[[self.teachers objectAtIndex:row]objectForKey:ID] isEqualToString:@"999"])
+            return @"No Teachers to Display";
+        else
+            return [NSString stringWithFormat:@"%@ %@ - %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME], [HelperMethods convertGradeLevel:[[self.teachers objectAtIndex:row] objectForKey:@"grade"]]];
+            
+        
+    }
+    
+    return nil;
+}
+
+
+
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    if(pickerView.tag == zPickerTeacher)
+    {
+        self.teacherSelected = [[self.teachers objectAtIndex:row] objectForKey:ID];
+        self.gradeTF.text = [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row]objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_LAST_NAME]];
+            
+        
+        
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return TRUE;
+}
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(alertView.tag == zAlertConfirmRemoveTeacher)
+    {
+        if (buttonIndex == 1)
+        {
+            [self deleteTeacherFromKidInDatabase];
+            
+        }
+        
+        
+            
+        
+            
+    
+    }
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if(self.gradeTF.isFirstResponder && [self.gradeTF.text length] == 0 && ![[[self.teachers objectAtIndex:0]objectForKey:ID] isEqualToString:@"999"] )
+    {
+        self.gradeTF.text = [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:0]objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:0]objectForKey:TEACHER_LAST_NAME]];
+        self.teacherSelected = [[self.teachers objectAtIndex:0] objectForKey:ID];
+
+    }
 }
 
 @end

@@ -21,6 +21,7 @@
 @property (nonatomic) BOOL signOut;
 @property (weak, nonatomic) IBOutlet UIButton *updateAppButton;
 @property (weak, nonatomic) IBOutlet UILabel *switchSchoolBadge;
+@property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 @end
 
 @implementation MainMenuViewController
@@ -200,6 +201,11 @@
     
     self.headerFont = self.rootFont.font;
     
+    if(self.mainUserData.isAdmin)
+    {
+        self.logOutButton.hidden = false;
+    }
+    
     if(self.mainUserData.isDemoInUse)
     {
         [self.switchSchoolButton setTitle:@"Exit Demo" forState:UIControlStateNormal];
@@ -303,9 +309,20 @@
     self.screenShotView.image = image;
     
 }
+
+- (IBAction)logOutButtonPressed
+{
+    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    [self.mainUserData clearAllData];
+    [self.delegate signOut];
+
+}
+
 - (IBAction)updateSchoolButtonPressed
 {
-    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"itms-apps://phobos.apple.com/WebObjects/MZStore.woa/wa/viewSoftware?id=917103099&mt=8"]];
+    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/school-intercom/id917103099?ls=1&mt=8"]];
     //Make sure to change this link to the app store
 }
 

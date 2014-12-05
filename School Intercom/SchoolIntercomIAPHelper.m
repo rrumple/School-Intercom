@@ -26,7 +26,7 @@
 {
     NSMutableSet *tempSet = [[NSMutableSet alloc] init];
     DatabaseRequest *databaseRequest = [[DatabaseRequest alloc]init];
-    //dispatch_queue_t createQueue = dispatch_queue_create("updateHasPurchased", NULL);
+    //dispatch_queue_t createQueue = dispatch_queue_create("getProductIDs", NULL);
     //dispatch_async(createQueue, ^{
         NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_PRODUCT_IDS withKeys:nil andData:nil];
         NSArray *dataArray;
@@ -34,16 +34,20 @@
         
         if ([dataArray count] > 0)
         {
-            //dispatch_async(dispatch_get_main_queue(), ^{
-            
+            if([dataArray isKindOfClass:[NSArray class]])
+            {
+                //dispatch_async(dispatch_get_main_queue(), ^{
+                
                 for(NSDictionary *tempDic in dataArray)
                 {
                     [tempSet addObject:[tempDic objectForKey:ID]];
                 }
                 
-            
+                
                 NSLog(@"%@", tempSet);
-           // });
+                // });
+
+            }
             
         }
     //});

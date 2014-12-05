@@ -28,6 +28,7 @@
 		9447E51A19152F390002C556 /* SchoolIntercomIAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9447E51919152F390002C556 /* SchoolIntercomIAPHelper.m */; };
 		9447E51C1921BF3B0002C556 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9447E51B1921BF3B0002C556 /* AVFoundation.framework */; };
 		9447E51E192460CE0002C556 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9447E51D192460CE0002C556 /* QuartzCore.framework */; };
+		945D61831A20D12300FEFEA2 /* RequestSchoolViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 945D61821A20D12300FEFEA2 /* RequestSchoolViewController.m */; };
 		947AB4E2196A489C00C4AD80 /* LunchMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 947AB4E1196A489C00C4AD80 /* LunchMenuViewController.m */; };
 		948E085118B082E800B3A854 /* AdModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 948E085018B082E800B3A854 /* AdModel.m */; };
 		94AB780B186A9A1E00F5A56F /* NSObject+TKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AB7808186A9A1E00F5A56F /* NSObject+TKCategory.m */; };
@@ -159,6 +160,8 @@
 		9447E51919152F390002C556 /* SchoolIntercomIAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SchoolIntercomIAPHelper.m; sourceTree = "<group>"; };
 		9447E51B1921BF3B0002C556 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		9447E51D192460CE0002C556 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		945D61811A20D12300FEFEA2 /* RequestSchoolViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestSchoolViewController.h; sourceTree = "<group>"; };
+		945D61821A20D12300FEFEA2 /* RequestSchoolViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestSchoolViewController.m; sourceTree = "<group>"; };
 		947AB4E0196A489C00C4AD80 /* LunchMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LunchMenuViewController.h; sourceTree = "<group>"; };
 		947AB4E1196A489C00C4AD80 /* LunchMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LunchMenuViewController.m; sourceTree = "<group>"; };
 		948E084F18B082E800B3A854 /* AdModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdModel.h; sourceTree = "<group>"; };
@@ -366,6 +369,8 @@
 		942DD8521870D21C00FB8F71 /* Sub Views */ = {
 			isa = PBXGroup;
 			children = (
+				945D61811A20D12300FEFEA2 /* RequestSchoolViewController.h */,
+				945D61821A20D12300FEFEA2 /* RequestSchoolViewController.m */,
 				9427379719874431002CEA3F /* UpdateKidViewController.h */,
 				9427379819874431002CEA3F /* UpdateKidViewController.m */,
 				94C8B9B11875403B00D245E4 /* NewsDetailViewController.h */,
@@ -815,6 +820,7 @@
 				940D6A94184797A70013EA7B /* HomeViewController.m in Sources */,
 				94E33CB01869E3E700DB9A82 /* UIBarButtonItem+TKCategory.m in Sources */,
 				94E33CBA1869E3E700DB9A82 /* UIScrollview+TKCategory.m in Sources */,
+				945D61831A20D12300FEFEA2 /* RequestSchoolViewController.m in Sources */,
 				94E33C9F1869E3E700DB9A82 /* TKProgressCircleView.m in Sources */,
 				9427379919874431002CEA3F /* UpdateKidViewController.m in Sources */,
 				94E33C891869E3E700DB9A82 /* TKCalendarDayView.m in Sources */,

@@ -51,9 +51,29 @@
 
 }
 
+- (NSArray *)queryDatabaseForTeachersAtSchool:(NSString *)schoolID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_TEACHERS withKeys:@[SCHOOL_ID] andData:@[schoolID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+    
+}
+
+
+- (NSArray *)getKidsTeachersFromDatabase:(NSString *)kidID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_KID_TEACHERS withKeys:@[KID_ID] andData:@[kidID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+}
+
 - (NSArray *)updateKidFromKidDicData:(NSDictionary *)kidData
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_KID withKeys:@[KID_ID, KID_FIRST_NAME, KID_LAST_NAME, KID_GRADE_LEVEL, SCHOOL_ID, USER_ID] andData:@[kidData[KID_ID], kidData[KID_FIRST_NAME], kidData[KID_LAST_NAME], kidData[KID_GRADE_LEVEL], kidData[SCHOOL_ID], kidData[USER_ID]]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_KID withKeys:@[KID_ID, KID_FIRST_NAME, KID_LAST_NAME, TEACHER_ID, SCHOOL_ID, USER_ID] andData:@[kidData[KID_ID], kidData[KID_FIRST_NAME], kidData[KID_LAST_NAME], kidData[TEACHER_ID], kidData[SCHOOL_ID], kidData[USER_ID]]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
@@ -68,6 +88,25 @@
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
     return dataArray;
+
+}
+
+- (NSArray *)deleteTeacher:(NSString *)teacherID fromKidInDatabase:(NSString *)kidID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_DELETE_TEACHER_FROM_KID withKeys:@[KID_ID, TEACHER_ID] andData:@[kidID, teacherID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;}
+
+- (NSArray *)addTeacher:(NSString *)teacherID ToKidInDatabase:(NSString *)kidID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_TEACHER withKeys:@[KID_ID, TEACHER_ID] andData:@[kidID, teacherID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+    
 
 }
 

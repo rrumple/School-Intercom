@@ -82,9 +82,19 @@
 
 }
 
-- (NSArray *)queryDatabaseForSchoolsUsingStateWithNoArrayProcessing:(NSString *)state andCity:(NSString *)city
+- (NSArray *)queryDatabaseForTeachersAtSchool:(NSString *)schoolID
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_SCHOOLS withKeys:@[SCHOOL_STATE, SCHOOL_CITY] andData:@[state, city]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_TEACHERS withKeys:@[SCHOOL_ID] andData:@[schoolID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+
+}
+
+- (NSArray *)queryDatabaseForSchoolsUsingStateWithNoArrayProcessing:(NSString *)state andCity:(NSString *)city andUserID:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_SCHOOLS withKeys:@[SCHOOL_STATE, SCHOOL_CITY, USER_ID] andData:@[state, city, userID]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
@@ -124,7 +134,7 @@
 
 - (NSArray *)addChildToDatabaseWithUserID:(NSString *)userID
 {
-    NSArray *keys = @[USER_ID, SCHOOL_ID, KID_FIRST_NAME, KID_LAST_NAME, KID_GRADE_LEVEL];
+    NSArray *keys = @[USER_ID, SCHOOL_ID, KID_FIRST_NAME, KID_LAST_NAME, TEACHER_ID];
     NSArray *data = @[userID, [self.schoolSelected objectForKey:ID], self.childFirstName, self.childLastName, self.childGradeLevel];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_KID withKeys:keys andData:data];
@@ -188,10 +198,10 @@
     
 }
 
-- (NSArray *)sendEmailToRequestSchoolAdditionBy:(NSString *)name forSchoolNamed:(NSString *)schoolName inCity:(NSString *)city inState:(NSString *)state withSchoolContactName:(NSString *)schoolContactName
+- (NSArray *)sendEmailToRequestSchoolAdditionBy:(NSString *)name emailAddress:(NSString *)email forSchoolNamed:(NSString *)schoolName inCity:(NSString *)city inState:(NSString *)state withSchoolContactName:(NSString *)schoolContactName
 {
-    NSArray *keys = @[@"name", SCHOOL_NAME, @"city", @"state", @"contactName"];
-    NSArray *data = @[name, schoolName, city, state, schoolContactName];
+    NSArray *keys = @[@"name", SCHOOL_NAME, @"city", @"state", @"contactName", @"email"];
+    NSArray *data = @[name, schoolName, city, state, schoolContactName, email];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_SCHOOL_EMAIL withKeys:keys andData:data];
     NSArray *dataArray;

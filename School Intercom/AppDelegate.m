@@ -164,17 +164,22 @@
                             NSString *deviceAppVersion = [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"];
                             if(![currentAppVersion isEqualToString:deviceAppVersion])
                             {
-                                UIAlertView *alertview = [[UIAlertView alloc]initWithTitle:@"Update Available" message:[NSString stringWithFormat:@"Version %@ is now available please update the app for a better experience", currentAppVersion] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
                                 
-                                [alertview show];
-                                
-                                
-                                
-                                [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:IS_APP_UP_TO_DATE];
-                                [[NSUserDefaults standardUserDefaults]synchronize];
+                                if(![[[NSUserDefaults standardUserDefaults]objectForKey:WAS_UPDATE_ALERT_SHOWN]boolValue])
+                                {
+                                    UIAlertView *alertview = [[UIAlertView alloc]initWithTitle:@"Update Available" message:[NSString stringWithFormat:@"Version %@ is now available please update the app for a better experience", currentAppVersion] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                                    
+                                    [alertview show];
+                                    
+                                    
+                                    [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:WAS_UPDATE_ALERT_SHOWN];
+                                    [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:IS_APP_UP_TO_DATE];
+                                    [[NSUserDefaults standardUserDefaults]synchronize];
+                                }
                             }
                             else
                             {
+                                [[NSUserDefaults standardUserDefaults] setObject:@"0" forKey:WAS_UPDATE_ALERT_SHOWN];
                                 [[NSUserDefaults standardUserDefaults] setObject:@"1" forKey:IS_APP_UP_TO_DATE];
                                 [[NSUserDefaults standardUserDefaults]synchronize];
                             }

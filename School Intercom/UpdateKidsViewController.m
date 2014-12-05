@@ -74,10 +74,17 @@
                 }
                 else
                 {
-                    self.kidsArray = [[dataArray objectAtIndex:0] objectForKey:@"kidsData"];
+                    if([[[dataArray objectAtIndex:0]objectForKey:@"kidsData"]count] == 0)
+                    {
+                        UIAlertView *noKidsAlert = [[UIAlertView alloc]initWithTitle:@"No Kids Found" message:@"Press the add kid button to add kids to your account" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                        [noKidsAlert show];
+                    }
                     
-                    [self.kidsTableView reloadData];
-                    [self.textfields removeAllObjects];
+                    
+                        self.kidsArray = [[dataArray objectAtIndex:0] objectForKey:@"kidsData"];
+                        [self.kidsTableView reloadData];                        
+                        //[self.textfields removeAllObjects];
+                    
                     
                 }
             });
@@ -293,9 +300,10 @@
     {
         UpdateKidViewController *UKVC = segue.destinationViewController;
         
+        UKVC.addingNewKid = self.addingNewKid;
         UKVC.kidData = self.kidDicToEdit;
         UKVC.mainUserData = self.mainUserData;
-        UKVC.addingNewKid = self.addingNewKid;
+       
     }
 }
 

@@ -59,6 +59,7 @@
         self.userID = [[NSUserDefaults standardUserDefaults]objectForKey:USER_ID];
         self.userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:USER_INFO];
         self.isDemoInUse = [[[NSUserDefaults standardUserDefaults] objectForKey:IS_DEMO_IN_USE] boolValue];
+        self.isAdmin = [[[NSUserDefaults standardUserDefaults]objectForKey:USER_IS_ADMIN] boolValue];
         
                 
         NSLog(@"%@", self.schoolDataArray);
@@ -168,6 +169,13 @@
 {
     _userID = userID;
     [[NSUserDefaults standardUserDefaults] setValue:userID forKey:USER_ID];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+}
+
+- (void)setIsAdmin:(BOOL)isAdmin
+{
+    _isAdmin = isAdmin;
+    [[NSUserDefaults standardUserDefaults] setValue:[NSString stringWithFormat:@"%d", isAdmin] forKey:USER_IS_ADMIN];
     [[NSUserDefaults standardUserDefaults]synchronize];
 }
 
@@ -362,6 +370,7 @@
     self.userInfo = @{};
     self.schoolDataArray = @[];
     self.schoolIDs = @[];
+    self.isAdmin = NO;
 }
 
 - (BOOL)removeSchoolFromPhone:(NSString *)schoolID

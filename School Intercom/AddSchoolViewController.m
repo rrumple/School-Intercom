@@ -7,6 +7,8 @@
 //
 
 #import "AddSchoolViewController.h"
+#import "SchoolIntercomIAPHelper.h"
+#import <StoreKit/StoreKit.h>
 
 
 @interface AddSchoolViewController ()
@@ -26,11 +28,19 @@
 @property (nonatomic, strong) NSTimer *timer;
 @property (weak, nonatomic) IBOutlet UIView *loadingIndicatorView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
+@property (weak, nonatomic) IBOutlet UILabel *loadingActivityViewLabel;
+@property (nonatomic, strong) IntroModel *introData;
 
 
 @end
 
 @implementation AddSchoolViewController
+
+- (IntroModel *)introData
+{
+    if (!_introData) _introData = [[IntroModel alloc]init];
+    return  _introData;
+}
 
 -(RegistrationModel *)registerData
 {
@@ -46,6 +56,26 @@
     }
     return self;
 }
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:YES];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restorePurchasesFromDatabase:) name:IAPHelperProductRestoredPurchaseNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete) name:IAPHelperProductRestoreCompleted object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete:) name:IAPHelperProductRestoreCompletedWithNumber object:nil];
+    
+}
+
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    
+}
+
 
 - (void)viewDidLoad
 {
@@ -142,6 +172,7 @@
     [self addSchoolToUserInDatabase];
     self.addSchoolButton.enabled = NO;
     self.loadingIndicatorView.hidden = false;
+    self.loadingActivityViewLabel.text = @"Adding School";
     [self.loadingActivityIndicator startAnimating];
 }
 
@@ -238,7 +269,7 @@
         dispatch_queue_t createQueue = dispatch_queue_create("schools", NULL);
         dispatch_async(createQueue, ^{
             NSArray *schoolArray;
-            schoolArray = [self.registerData queryDatabaseForSchoolsUsingStateWithNoArrayProcessing:state andCity:city];
+            schoolArray = [self.registerData queryDatabaseForSchoolsUsingStateWithNoArrayProcessing:state andCity:city andUserID:self.mainUserData.userID];
             
             if (schoolArray)
             {
@@ -364,6 +395,97 @@
 - (IBAction)backButtonPressed
 {
     [self.navigationController popViewControllerAnimated:YES];
+}
+
+- (void)restorePurchasesFromDatabase:(NSNotification *)notification
+
+{
+    SKPaymentTransaction *transaction = notification.object;
+    
+    if(![self.mainUserData checkForASchoolIDMatch:transaction.payment.productIdentifier])
+    {
+        dispatch_queue_t createQueue = dispatch_queue_create("loginExistingUser", NULL);
+        dispatch_async(createQueue, ^{
+            NSArray *dataArray;
+            dataArray = [self.introData restorePurchaseForUser:self.mainUserData.userID andSchool:transaction.payment.productIdentifier];
+            if ([dataArray count] == 1)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                    
+                    if([[tempDic objectForKey:@"error"] boolValue])
+                    {
+                        [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertExistingUserIncorrectPassword andDelegate:self];
+                        
+                        
+                    }
+                    else
+                    {
+                        if([[tempDic objectForKey:NUMBER_OF_SCHOOLS] integerValue] > 0)
+                        {
+                            
+                            
+                            for(NSDictionary *schoolData in [tempDic objectForKey:@"schoolData"])
+                            {
+                                [self.mainUserData addschoolDataToArray:schoolData];
+                                
+                            }
+                            
+                            [self.mainUserData addSchoolIDtoArray:transaction.payment.productIdentifier];
+                            
+                            NSString *schoolName = [self.mainUserData getSchoolNameFromID:transaction.payment.productIdentifier];
+                            
+                            UIAlertView * restoredAlert = [[UIAlertView alloc]initWithTitle:@"Access Restored" message:[NSString stringWithFormat:@"Your access to %@, has been restored", schoolName] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                            restoredAlert.tag = zAlertProductedRestored;
+                            [restoredAlert show];
+                            
+                        }
+                        
+                    }
+                });
+                
+            }
+        });
+        
+    }
+    
+    
+    
+}
+
+- (void)restoreComplete:(NSNotification *)notification
+{
+    self.loadingIndicatorView.hidden = true;
+    UIAlertView *restoreFailed;
+    if([notification.object integerValue] == 1)
+    {
+        restoreFailed = [[UIAlertView alloc]initWithTitle:@"Restore Complete" message:[NSString stringWithFormat:@"%@ purchase has been restored successfully", notification.object] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    }
+    else
+    {
+        restoreFailed = [[UIAlertView alloc]initWithTitle:@"Restore Complete" message:[NSString stringWithFormat:@"%@ purchases have been restored successfully", notification.object] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        
+    }
+    restoreFailed.tag = zAlertRestoreFailed;
+    [restoreFailed show];
+}
+
+- (void)restoreComplete
+{
+    self.loadingIndicatorView.hidden = true;
+    UIAlertView *restoreFailed = [[UIAlertView alloc]initWithTitle:@"Restore Complete" message:@"All Purchases have already been restored" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+    restoreFailed.tag = zAlertRestoreFailed;
+    [restoreFailed show];
+    
+}
+
+- (IBAction)restorePurchasesButtonPressed
+{
+    self.loadingIndicatorView.hidden = false;
+    self.loadingActivityViewLabel.text = @"Restoring Purchases";
+     [self.loadingActivityIndicator startAnimating];
+    
+    [[SchoolIntercomIAPHelper sharedInstance] restoreCompletedTransactions];
 }
 
 #pragma mark Delegate Section

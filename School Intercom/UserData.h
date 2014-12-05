@@ -16,6 +16,7 @@
 @property (nonatomic) BOOL hasPurchased;
 @property (nonatomic) BOOL wasPasswordReset;
 @property (nonatomic) BOOL isDemoInUse;
+@property (nonatomic) BOOL isAdmin;
 @property (nonatomic, strong) NSString *userID;
 @property (nonatomic, strong) NSString *schoolIDselected;
 @property (nonatomic, strong) NSDictionary *schoolData;

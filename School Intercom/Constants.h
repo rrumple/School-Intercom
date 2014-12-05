@@ -8,20 +8,27 @@
 
 #define FONT_CHARCOAL_CY(s) [UIFont fontWithName:@"Charcoal CY" size:s]
 
+static const CGFloat KEYBOARD_ANIMATION_DURATION = 0.3;
+static const CGFloat MINIMUM_SCROLL_FRACTION = 0.2;
+static const CGFloat MAXIMUM_SCROLL_FRACTION = 0.8;
+static const CGFloat PORTRAIT_KEYBOARD_HEIGHT = 216;
+static const CGFloat LANDSCAPE_KEYBOARD_HEIGHT = 162;
 
 //Pickers
 typedef enum
 {
     zPickerState = 100,
     zPickerCity,
-    zPickerSchool
+    zPickerSchool,
+    zPickerTeacher
 } PickerType;
 
 //LoginScreen Alertview
 typedef enum
 {
     zAlertButtonNew = 0,
-    zAlertButtonExisting
+    zAlertButtonExisting,
+    zAlertButtonAdminLogin
 } AlertButtons;
 
 #define zAlertEnterEmailOK 1
@@ -49,7 +56,11 @@ typedef enum
     zAlertStartRestore,
     zAlertProductedRestored,
     zAlertRestoreFailed,
-    zAlertConfirmRemoveSchool
+    zAlertConfirmRemoveSchool,
+    zAlertTouchIDFailed,
+    zAlertEmailInUseAlert,
+    zAlertEmailSent,
+    zAlertConfirmRemoveTeacher
 } AlertTypes;
 
 typedef enum
@@ -104,6 +115,10 @@ typedef enum
 
 
 //php file defines
+
+#define PHP_LOGIN_USER @"login_user_test.php"
+
+
 #define PHP_GET_STATES @"get_states.php"
 #define PHP_GET_CITIES @"get_cities.php"
 #define PHP_GET_SCHOOLS @"get_schools.php"
@@ -113,7 +128,6 @@ typedef enum
 #define PHP_LOAD_DATA @"load_data.php"
 #define PHP_LOAD_LOCAL_AD @"load_local_ad.php"
 #define PHP_ADD_SCHOOL @"add_school.php"
-#define PHP_LOGIN_USER @"login_user.php"
 #define PHP_SEND_EMAIL @"send_email.php"
 #define PHP_UPDATE_USER_PUSH_PIN @"update_push_pin.php"
 #define PHP_RESET_PASSWORD @"reset_password.php"
@@ -131,6 +145,11 @@ typedef enum
 #define PHP_BADGE_UPDATE @"badge_update.php"
 #define PHP_CHANGE_SCHOOL_STATUS @"change_school_status.php"
 #define PHP_RESTORE_PURCHASE @"restore_purchase.php"
+#define PHP_GET_EMAIL @"get_email.php"
+#define PHP_GET_TEACHERS @"get_teachers.php"
+#define PHP_GET_KID_TEACHERS @"get_kid_teachers.php"
+#define PHP_ADD_TEACHER @"add_teacher.php"
+#define PHP_DELETE_TEACHER_FROM_KID @"delete_teacher_from_kid.php"
 
 //common fields
 #define SCHOOL_ID @"schoolID"
@@ -152,11 +171,14 @@ typedef enum
 #define DEVICE_VERSION @"deviceVersion"
 #define CURRENT_VERSION @"currentVersion"
 #define IS_APP_UP_TO_DATE @"isAppUpToDate"
+#define WAS_UPDATE_ALERT_SHOWN @"wasUpdateAlertShown"
 #define BADGE_COUNT @"badgeCount"
 #define OLD_PASSWORD @"crWcmwaz"
 #define NEW_PASSWORD @"mciwwuUR"
 #define IS_DEMO_IN_USE @"isDemoInUse"
 #define USER_SCHOOL_IS_ACTIVE @"isActive"
+#define USER_IS_ADMIN @"isAdmin"
+#define USER_ACCOUNT_TYPE @"accountType"
 
 //adv table
 #define AD_ID @"adID"
@@ -236,7 +258,16 @@ typedef enum
 #define USER_IS_VERIFIED @"usVerified"
 #define USER_HAS_PURCHASED @"usHasPurchased"
 #define US_PURCHASED_DATE @"purchasedDate"
+#define US_TRANSACTION_ID @"transactionIdentifier"
 
+//teacher table
+#define TEACHER_ID @"teacherID"
+#define TEACHER_PREFIX @"prefix"
+#define TEACHER_FIRST_NAME @"fname"
+#define TEACHER_LAST_NAME @"lname"
+#define GRADE_LEVEL @"grade"
+#define TEACHER_SUBJECT @"subject"
+#define TEACHER_NAME @"teacherName"
 
 //Segues
 #define SEGUE_TO_MAIN_MENU @"mainmenu"

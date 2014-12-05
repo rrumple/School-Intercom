@@ -16,4 +16,6 @@
 + (NSString *)encryptText:(NSString *)input;
 + (BOOL)isEmailValid:(NSString *)email;
 + (NSArray *)listFileAtPath:(NSString *)path;
++ (NSArray *)arrayOfGradeLevels;
++ (NSString *)convertGradeLevel:(NSString *)gradeLevel;
 @end

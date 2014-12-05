@@ -12,6 +12,7 @@
 #import "MainNavigationController.h"
 #import "IntroModel.h"
 #import "RegistrationModel.h"
+#import <LocalAuthentication/LocalAuthentication.h>
 
 @interface IntroViewController : UIViewController <UIAlertViewDelegate, UITextFieldDelegate, RegisterViewControllerDelegate>
 

@@ -41,6 +41,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *loadingActivityIndicatorLabel;
 @property (nonatomic,strong) UIColor *defaultBackgroundColor;
 @property (nonatomic) NSUInteger numberOfSchoolsRestored;
+@property (nonatomic, strong) NSMutableDictionary *restoredSchools;
 
 
 @property (weak, nonatomic) IBOutlet UIView *loadingIndicatorView;
@@ -59,6 +60,12 @@
     if (!_mainUserData)
         _mainUserData = [[UserData alloc]init];
     return _mainUserData;
+}
+
+- (NSMutableDictionary *)restoredSchools
+{
+    if (!_restoredSchools) _restoredSchools = [[NSMutableDictionary alloc]init];
+    return _restoredSchools;
 }
 
 - (NSMutableDictionary *)existingUserData
@@ -171,7 +178,7 @@
 {
     [super viewWillAppear:animated];
     
-    [self checkToEnablePurchases];
+    //[self checkToEnablePurchases];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
@@ -179,13 +186,14 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(productPurchaseFailed) name:IAPHelperProductPurchaseFailedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(productRestored:) name:IAPHelperProductRestoredPurchaseNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete) name:IAPHelperProductRestoreCompleted object:nil];
+      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete:) name:IAPHelperProductRestoreCompletedWithNumber object:nil];
     
     self.isLoadDataComplete = NO;
     self.isLoadImageComplete = NO;
     self.imageDownloading = NO;
     [self.introLabel setFont:FONT_CHARCOAL_CY(26.0f)];
     
- 
+    [self.existingUserData setObject:@"helpMeRonda" forKey:USER_PASSWORD];
     
     if(self.mainUserData.isAccountCreated)
     {
@@ -214,13 +222,14 @@
         else*/
             [self checkForValidUser];
     }
+    /*
     else
     {
         self.mainUserData.hasPurchased = true;
         //[self updateHasPurchasedInDatabase];
         [self checkForValidUser];
         
-    }
+    }*/
     
    
 
@@ -358,7 +367,7 @@
 - (void)showNoAccountAlert
 {
     
-    self.noAccountAlert = [[UIAlertView alloc]initWithTitle:@"New or Existing User?" message:Nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"New User", @"Existing User", nil];
+    self.noAccountAlert = [[UIAlertView alloc]initWithTitle:@"Create an Intercom Account or Restore an Existing Account?" message:Nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"New User", @"Restore Purchases", @"Admin Login", nil];
     self.noAccountAlert.tag = zAlertNoUser;
     
     [self.noAccountAlert show];
@@ -490,6 +499,9 @@
 {
     [super viewDidLoad];
     
+    //hash tester
+    //[HelperMethods encryptText:@"tester"];
+    
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
        
@@ -511,7 +523,7 @@
     self.warningViewed = false;
     self.isPurchaseInProgress = false;
     
-    [self checkToEnablePurchases];
+    //[self checkToEnablePurchases];
     
     self.defaultBackgroundColor = self.micImageView.backgroundColor;
     
@@ -526,12 +538,12 @@
     
 }
 
-- (void)updateHasPurchasedInDatabase
+- (void)updateHasPurchasedInDatabaseWithTransactionID:(NSString *)transactionID
 {
     dispatch_queue_t createQueue = dispatch_queue_create("updateHasPurchased", NULL);
     dispatch_async(createQueue, ^{
         NSArray *dataArray;
-        dataArray = [self.introData updateHasPurchasedinUserSchoolTable:self.mainUserData.userID ofSchool:self.mainUserData.schoolIDselected hasPurchasedBOOL:[[NSUserDefaults standardUserDefaults]objectForKey:USER_HAS_PURCHASED]];
+        dataArray = [self.introData updateHasPurchasedinUserSchoolTable:self.mainUserData.userID ofSchool:self.mainUserData.schoolIDselected hasPurchasedBOOL:[[NSUserDefaults standardUserDefaults]objectForKey:USER_HAS_PURCHASED]withTransactionID:transactionID];
                      
         if ([dataArray count] == 1)
         {
@@ -552,11 +564,74 @@
 
 }
 
+- (void)getUserEmailFromDatabase
+{
+    NSArray *transactionIDs = [self.restoredSchools allValues];
+    
+    dispatch_queue_t createQueue = dispatch_queue_create("getUserEmail", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.introData getUserInfofromTransactionID:[transactionIDs objectAtIndex:0]];
+                     if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertExistingUserIncorrectPassword andDelegate:self];
+                    
+                    
+                }
+                else
+                {
+                    __block int matchCount = 0;
+                    
+                    for (NSDictionary *tempSchoolData in [tempDic objectForKey:SCHOOL_DATA])
+                    {
+                        [self.restoredSchools enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+                         {
+                             if ([[tempSchoolData objectForKey:US_TRANSACTION_ID] isEqualToString:obj] && [[tempSchoolData objectForKey:ID]isEqualToString:key])
+                             {
+                                 matchCount++;
+                                 [self.existingUserData setValue:[tempSchoolData objectForKey:USER_EMAIL] forKey:USER_EMAIL];
+                                 NSString *schoolName = [tempSchoolData objectForKey:SCHOOL_NAME];
+                                 
+                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                     UIAlertView * restoredAlert = [[UIAlertView alloc]initWithTitle:@"Access Restored" message:[NSString stringWithFormat:@"Your access to %@, has been restored", schoolName] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                                     //restoredAlert.tag = zAlertProductedRestored;
+                                     [restoredAlert show];
+                                 });
+                             
+                             }
+                         }];
+                        
+                    }
+                    
+                    if (matchCount == [self.restoredSchools count])
+                    {
+                        [self loginExistingUser];
+                    }
+                }
+            });
+            
+        }
+    });
+
+}
+
+- (void)restoreComplete:(NSNotification *)notification
+{
+    NSLog(@"%lu", (unsigned long)[self.restoredSchools count]);
+    
+    [self getUserEmailFromDatabase];
+}
+
 - (void)restoreComplete
 {
     if (self.numberOfSchoolsRestored == 0)
     {
-        UIAlertView *restoreFailed = [[UIAlertView alloc]initWithTitle:@"Restore Failed" message:@"The apple ID is incorrect please try again using the apple ID you used for the orginal purchase" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+        UIAlertView *restoreFailed = [[UIAlertView alloc]initWithTitle:@"Restore Failed" message:@"The apple ID used has no purchases to restore. Try again using the apple ID you used for the original purchase" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
         restoreFailed.tag = zAlertRestoreFailed;
         [restoreFailed show];
         
@@ -577,19 +652,29 @@
 
 - (void)productRestored:(NSNotification *)notification
 {
-    NSLog(@"%@ restored", notification.object);
     
-    NSString *schoolName = [self.mainUserData getSchoolNameFromID:notification.object];
+    
+    SKPaymentTransaction *transaction = notification.object;
+    NSString *productIdentifier = transaction.payment.productIdentifier;
+    NSString *transactionIdentifier = transaction.transactionIdentifier;
+    NSLog(@"%@ restored", productIdentifier);
+    
+    [self.restoredSchools setObject:transactionIdentifier forKey:productIdentifier];
+    
+    /*NSString *schoolName = [self.mainUserData getSchoolNameFromID:notification.object];
     
     UIAlertView * restoredAlert = [[UIAlertView alloc]initWithTitle:@"Access Restored" message:[NSString stringWithFormat:@"Your access to %@, has been restored", schoolName] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
     restoredAlert.tag = zAlertProductedRestored;
     [restoredAlert show];
+     */
 }
 
 - (void)productPurchased:(NSNotification *)notification
 {
+    
     self.isPurchaseInProgress = false;
-    NSString *productIdentifier = notification.object;
+    SKPaymentTransaction *transaction = notification.object;
+    NSString *productIdentifier = transaction.payment.productIdentifier;
     [self.loadingIndicatorView setHidden:true];
     [self.loadingActivityIndicator stopAnimating];
     if([productIdentifier isEqualToString:self.mainUserData.schoolIDselected])
@@ -598,7 +683,7 @@
         [self.purchseSuccess show];
         self.mainUserData.hasPurchased = true;
         
-        [self updateHasPurchasedInDatabase];
+        [self updateHasPurchasedInDatabaseWithTransactionID:transaction.transactionIdentifier];
     }
 }
 
@@ -649,6 +734,13 @@
     [HelperMethods downloadAndSaveImagesToDiskWithFilename:[self.mainUserData.schoolData objectForKey:SCHOOL_IMAGE_NAME]];
 }
 
+- (void)restoreAccount
+{
+    self.numberOfSchoolsRestored = 0;
+    [[SchoolIntercomIAPHelper sharedInstance] restoreCompletedTransactions];
+
+}
+
 - (void)loginToDemoAccount
 {
     
@@ -667,13 +759,161 @@
     
 }
 
+- (void)finishLogin:(NSDictionary *)tempDic
+{
+    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc]init];
+    [userInfo setObject:[tempDic objectForKey:USER_FIRST_NAME] forKey:USER_FIRST_NAME];
+    [userInfo setObject:[tempDic objectForKey:USER_LAST_NAME] forKey:USER_LAST_NAME];
+    [userInfo setObject:[tempDic objectForKey:USER_EMAIL] forKey:USER_EMAIL];
+    
+    self.mainUserData.userInfo = userInfo;
+    self.mainUserData.userID = [tempDic objectForKey:USER_ID];
+    if([[tempDic objectForKey:NUMBER_OF_SCHOOLS] integerValue] > 0)
+    {
+        
+        
+        for(NSDictionary *schoolData in [tempDic objectForKey:@"schoolData"])
+        {
+            [self.mainUserData addschoolDataToArray:schoolData];
+            
+        }
+        
+        [self.mainUserData addSchoolIDsFromArray:[tempDic objectForKey:@"schoolIDs"]];
+        
+        [self.mainUserData setActiveSchool:[[[tempDic objectForKey:@"schoolData"]objectAtIndex:0]objectForKey:ID]];
+        
+        [HelperMethods downloadSingleImageFromBaseURL:SCHOOL_LOGO_PATH withFilename:[NSString stringWithFormat:@"%@",[self.mainUserData.schoolData objectForKey:SCHOOL_IMAGE_NAME]] saveToDisk:YES replaceExistingImage:NO];
+        
+        
+        NSString *deviceToken = [[NSUserDefaults standardUserDefaults] objectForKey:USER_PUSH_NOTIFICATION_PIN];
+        
+        
+        if(deviceToken && !self.mainUserData.isDemoInUse)
+        {
+            dispatch_queue_t createQueue = dispatch_queue_create("updatePin", NULL);
+            dispatch_async(createQueue, ^{
+                RegistrationModel *registerModel = [[RegistrationModel alloc]init];
+                NSArray *dataArray;
+                dataArray = [registerModel updateUserPushNotificationPinForUserID:self.mainUserData.userID withPin:deviceToken];
+                if ([dataArray count] == 1)
+                {
+                    dispatch_async(dispatch_get_main_queue(), ^{
+                        NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                        
+                        if([[tempDic objectForKey:@"error"] boolValue])
+                        {
+                            [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                            
+                        }
+                        else
+                        {
+                            if(self.isInAppPurchaseEnabled)
+                            {
+                                if(self.mainUserData.isDemoInUse)
+                                {
+                                    [self setBackgroundImage];
+                                    
+                                    [self checkForValidUser];
+                                }
+                                else
+                                {
+                                    //-- Set Notification
+                                    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
+                                    {
+                                        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+                                        [[UIApplication sharedApplication] registerForRemoteNotifications];
+                                    }
+                                    else
+                                    {
+                                        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+                                         (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+                                    }
+                                    
+                                    
+                                    [self setBackgroundImage];
+                                    
+                                    [self checkForValidUser];
+                                    
+                                }
+                                //else if(self.mainUserData.hasPurchased)
+                                //[self restorePurchases];
+                                
+                            }
+                            /*
+                             else
+                             {
+                             self.mainUserData.hasPurchased = true;
+                             
+                             [self updateHasPurchasedInDatabaseWithTransactionID:@"temp"];
+                             
+                             
+                             }*/
+                        }
+                    });
+                    
+                }
+            });
+            
+        }
+        else
+        {
+            if(self.isInAppPurchaseEnabled)
+            {
+                if(self.mainUserData.isDemoInUse)
+                {
+                    [self setBackgroundImage];
+                    
+                    [self checkForValidUser];
+                }
+                else
+                {
+                    //-- Set Notification
+                    if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
+                    {
+                        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIUserNotificationTypeSound | UIUserNotificationTypeAlert | UIUserNotificationTypeBadge) categories:nil]];
+                        [[UIApplication sharedApplication] registerForRemoteNotifications];
+                    }
+                    else
+                    {
+                        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:
+                         (UIUserNotificationTypeBadge | UIUserNotificationTypeSound | UIUserNotificationTypeAlert)];
+                    }
+                    
+                    
+                    [self setBackgroundImage];
+                    
+                    [self checkForValidUser];
+                    
+                }
+                //else if(self.mainUserData.hasPurchased)
+                //[self restorePurchases];
+            }
+            /*
+             else
+             {
+             self.mainUserData.hasPurchased = true;
+             
+             [self updateHasPurchasedInDatabaseWithTransactionID:@"temp"];
+             
+             }
+             */
+        }
+        
+        
+        
+    }
+
+}
+
 - (void)loginExistingUser
 {
+    
+    NSString *accountType = [NSString stringWithFormat:@"%i", self.mainUserData.isAdmin];
     
     dispatch_queue_t createQueue = dispatch_queue_create("loginExistingUser", NULL);
     dispatch_async(createQueue, ^{
         NSArray *dataArray;
-        dataArray = [self.introData loginExistingUserWithEmail:[self.existingUserData objectForKey:USER_EMAIL] andPassword:[self.existingUserData objectForKey:USER_PASSWORD]];
+        dataArray = [self.introData loginExistingUserWithEmail:[self.existingUserData objectForKey:USER_EMAIL] andPassword:[self.existingUserData objectForKey:USER_PASSWORD] andType:accountType];
         if ([dataArray count] == 1)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -687,107 +927,29 @@
                 }
                 else
                 {
-                    NSMutableDictionary *userInfo = [[NSMutableDictionary alloc]init];
-                    [userInfo setObject:[tempDic objectForKey:USER_FIRST_NAME] forKey:USER_FIRST_NAME];
-                    [userInfo setObject:[tempDic objectForKey:USER_LAST_NAME] forKey:USER_LAST_NAME];
-                    [userInfo setObject:[tempDic objectForKey:USER_EMAIL] forKey:USER_EMAIL];
-                    
-                    self.mainUserData.userInfo = userInfo;
-                    self.mainUserData.userID = [tempDic objectForKey:USER_ID];
-                    if([[tempDic objectForKey:NUMBER_OF_SCHOOLS] integerValue] > 0)
+                    if(self.mainUserData.isAdmin)
                     {
-                       
                         
-                        for(NSDictionary *schoolData in [tempDic objectForKey:@"schoolData"])
+                        NSLog(@"%@", tempDic);
+                        
+                        NSString *authString = [HelperMethods encryptText:[NSString stringWithFormat:@"Qciema38dMGN2MdkPOWHDilUa"]];
+                        if ([[tempDic objectForKey:@"auth"] isEqualToString:authString])
                         {
-                            [self.mainUserData addschoolDataToArray:schoolData];
-                            
-                        }
-                        
-                        [self.mainUserData addSchoolIDsFromArray:[tempDic objectForKey:@"schoolIDs"]];
-                        
-                        [self.mainUserData setActiveSchool:[[[tempDic objectForKey:@"schoolData"]objectAtIndex:0]objectForKey:ID]];
-                        
-                       [HelperMethods downloadSingleImageFromBaseURL:SCHOOL_LOGO_PATH withFilename:[NSString stringWithFormat:@"%@",[self.mainUserData.schoolData objectForKey:SCHOOL_IMAGE_NAME]] saveToDisk:YES replaceExistingImage:NO];
-                        
-                        
-                        NSString *deviceToken = [[NSUserDefaults standardUserDefaults] objectForKey:USER_PUSH_NOTIFICATION_PIN];
-                        
-                        
-                        if(deviceToken && !self.mainUserData.isDemoInUse)
-                        {
-                            dispatch_queue_t createQueue = dispatch_queue_create("updatePin", NULL);
-                            dispatch_async(createQueue, ^{
-                                RegistrationModel *registerModel = [[RegistrationModel alloc]init];
-                                NSArray *dataArray;
-                                dataArray = [registerModel updateUserPushNotificationPinForUserID:self.mainUserData.userID withPin:deviceToken];
-                                if ([dataArray count] == 1)
-                                {
-                                    dispatch_async(dispatch_get_main_queue(), ^{
-                                        NSDictionary *tempDic = [dataArray objectAtIndex:0];
-                                        
-                                        if([[tempDic objectForKey:@"error"] boolValue])
-                                        {
-                                            [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
-                                            
-                                        }
-                                        else
-                                        {
-                                            if(self.isInAppPurchaseEnabled)
-                                            {
-                                                if(self.mainUserData.isDemoInUse)
-                                                {
-                                                    [self setBackgroundImage];
-                                                    
-                                                    [self checkForValidUser];
-                                                }
-                                                else if(self.mainUserData.hasPurchased)
-                                                   [self restorePurchases];
-                                                //[self checkForValidUser];
-                                                
-                                            }
-                                            else
-                                            {
-                                                self.mainUserData.hasPurchased = true;
-                                                
-                                                [self updateHasPurchasedInDatabase];
-                                                
-
-                                            }
-                                        }
-                                    });
-                                    
-                                }
-                            });
-                            
+                            [self finishLogin:tempDic];
                         }
                         else
                         {
-                            if(self.isInAppPurchaseEnabled)
-                            {
-                                if(self.mainUserData.isDemoInUse)
-                                {
-                                    [self setBackgroundImage];
-                                    
-                                    [self checkForValidUser];
-                                }
-                                else if(self.mainUserData.hasPurchased)
-                                    [self restorePurchases];
-                            }
-                            
-                            else
-                            {
-                                self.mainUserData.hasPurchased = true;
-                                
-                                [self updateHasPurchasedInDatabase];
-
-                            }
+                            self.mainUserData.isAdmin = false;
+                            UIAlertView *badAdminLogin = [[UIAlertView alloc]initWithTitle:@"Login Failed" message:@"This account does not have admin rights, please use Restore Purchases to gain accesss to School Intercom" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                            badAdminLogin.tag = zAlertRestoreFailed;
+                            [badAdminLogin show];
                         }
-                        
-                        
-                        
                     }
-                    
+                    else
+                    {
+                        [self finishLogin:tempDic];
+                    }
+                        
                 }
             });
             
@@ -836,7 +998,7 @@
 
 - (void)showExistingAccountAlert
 {
-     self.existingAccountAlert = [[UIAlertView alloc]initWithTitle:@"Login" message:nil delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: @"Ok", @"Forgot Password", nil];
+     self.existingAccountAlert = [[UIAlertView alloc]initWithTitle:@"Admin Login" message:@"Administrators enter your email address and password to login." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: @"Ok", @"Forgot Password", nil];
     [self.existingAccountAlert setAlertViewStyle:UIAlertViewStyleLoginAndPasswordInput];
     self.existingAccountAlert.tag = zAlertEnterEmail;
     UITextField *emailField = [self.existingAccountAlert textFieldAtIndex:0];
@@ -855,6 +1017,89 @@
     [self.existingAccountAlert show];
 }
 
+- (void)checkForAuthenticationType
+{
+    LAContext *context = [[LAContext alloc]init];
+    
+    NSError *error = nil;
+    
+    if([context canEvaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics error:&error])
+    {
+        [context evaluatePolicy:LAPolicyDeviceOwnerAuthenticationWithBiometrics
+                localizedReason:@"Authenticate using Touch ID?"
+                          reply:^(BOOL success, NSError *error) {
+                              
+                              if (error.code == LAErrorUserFallback || error.code == LAErrorUserCancel) {
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      [self showExistingAccountAlert];
+                                  });
+                                  
+                                  
+                                    return;
+                              }
+                              else if (error.code == LAErrorAuthenticationFailed)
+                              {
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                      message:@"Authentication Failed!"
+                                                                                     delegate:self
+                                                                            cancelButtonTitle:@"Ok"
+                                                                            otherButtonTitles:nil];
+                                      alert.tag = zAlertTouchIDFailed;
+                                      [alert show];
+                                      
+                                  });
+                                  return;
+
+                              }
+                              else if (error)
+                              {
+                                  dispatch_async(dispatch_get_main_queue(), ^{
+                                      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                      message:@"There was a problem using Touch ID!"
+                                                                                     delegate:self
+                                                                            cancelButtonTitle:@"Ok"
+                                                                            otherButtonTitles:nil];
+                                      alert.tag = zAlertTouchIDFailed;
+                                      [alert show];
+
+                                  });
+                                  return;
+
+                                  
+                              }
+                              dispatch_async(dispatch_get_main_queue(), ^{
+                              if (success) {
+                                  
+                                      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Success"
+                                                                                      message:@"You are the device owner!"
+                                                                                     delegate:nil
+                                                                            cancelButtonTitle:@"Ok"
+                                                                            otherButtonTitles:nil];
+                                      [alert show];
+                                      
+                                  } else {
+                                      UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Error"
+                                                                                      message:@"Authentication Failed!"
+                                                                                     delegate:self
+                                                                            cancelButtonTitle:@"Ok"
+                                                                            otherButtonTitles:nil];
+                                      alert.tag = zAlertTouchIDFailed;
+                                      [alert show];
+                                  }
+
+                                  });
+
+                                  
+                          }];
+
+    }
+    else
+    {
+        [self showExistingAccountAlert];
+    }
+}
+
 #pragma mark Delegate Section
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -867,8 +1112,14 @@
         }
         else if (buttonIndex == zAlertButtonExisting)
         {
-            [self showExistingAccountAlert];
+            
             self.numberOfSchoolsRestored = 0;
+            [[SchoolIntercomIAPHelper sharedInstance] restoreCompletedTransactions];
+            //[self showExistingAccountAlert];
+        }
+        else if (buttonIndex == zAlertButtonAdminLogin)
+        {
+            [self showExistingAccountAlert];
         }
     }
     else if (alertView.tag == zAlertEnterEmail)
@@ -877,7 +1128,7 @@
         {
             [self.existingUserData setValue:[[alertView textFieldAtIndex:0]text] forKey:USER_EMAIL];
             [self.existingUserData setValue:[HelperMethods encryptText:[[alertView textFieldAtIndex:1]text]] forKey:USER_PASSWORD];
-            
+            self.mainUserData.isAdmin = true;
             [self loginExistingUser];
            
 
@@ -906,7 +1157,14 @@
     }
     else if (alertView.tag == zAlertForgotPassword)
     {
-        [self recoverPasswordForEmail:[[alertView textFieldAtIndex:0]text]];
+        if(buttonIndex == 0)
+        {
+            [self showExistingAccountAlert];
+        }
+        else if(buttonIndex == 1)
+        {
+            [self recoverPasswordForEmail:[[alertView textFieldAtIndex:0]text]];
+        }
     }
     else if (alertView.tag == zAlertInAppPurchaseEnabledAlert)
     {
@@ -982,6 +1240,10 @@
         [self.mainUserData clearAllData];
         [self checkForValidUser];
 
+    }
+    else if (alertView.tag == zAlertTouchIDFailed)
+    {
+        [self showExistingAccountAlert];
     }
 }
 

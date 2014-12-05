@@ -20,5 +20,6 @@
 @protocol RegisterViewControllerDelegate <NSObject>
 
 - (void)loginToDemoAccount;
+- (void)restoreAccount;
 
 @end

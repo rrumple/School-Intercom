@@ -26,6 +26,7 @@
 @property (nonatomic, strong) UpdateProfileModel *updateProfileData;
 @property (nonatomic, strong) IntroModel *introData;
 @property (weak, nonatomic) IBOutlet UIView *activityIndicatorView;
+@property (weak, nonatomic) IBOutlet UIButton *restorePurchasesButton;
 
 @end
 
@@ -35,11 +36,11 @@
 #define CHANGE_PASSWORD_VIEW_END_Y 163.0
 
 @implementation UpdateProfileViewController
-static const CGFloat KEYBOARD_ANIMATION_DURATION = 0.3;
-static const CGFloat MINIMUM_SCROLL_FRACTION = 0.2;
-static const CGFloat MAXIMUM_SCROLL_FRACTION = 0.8;
-static const CGFloat PORTRAIT_KEYBOARD_HEIGHT = 216;
-static const CGFloat LANDSCAPE_KEYBOARD_HEIGHT = 162;
+//static const CGFloat KEYBOARD_ANIMATION_DURATION = 0.3;
+//static const CGFloat MINIMUM_SCROLL_FRACTION = 0.2;
+//static const CGFloat MAXIMUM_SCROLL_FRACTION = 0.8;
+//static const CGFloat PORTRAIT_KEYBOARD_HEIGHT = 216;
+//static const CGFloat LANDSCAPE_KEYBOARD_HEIGHT = 162;
 
 - (IntroModel *)introData
 {
@@ -71,6 +72,7 @@ static const CGFloat LANDSCAPE_KEYBOARD_HEIGHT = 162;
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete:) name:IAPHelperProductRestoreCompletedWithNumber object:nil];
 
 }
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -92,6 +94,9 @@ static const CGFloat LANDSCAPE_KEYBOARD_HEIGHT = 162;
     [self.activityIndicatorView.layer setShadowOpacity:0.8];
     [self.activityIndicatorView.layer setShadowRadius:3.0];
     [self.activityIndicatorView.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
+    
+    if(self.mainUserData.isAdmin)
+        self.restorePurchasesButton.hidden = true;
 
 
 }
@@ -265,13 +270,14 @@ static const CGFloat LANDSCAPE_KEYBOARD_HEIGHT = 162;
 - (void)restorePurchasesFromDatabase:(NSNotification *)notification
 
 {
+    SKPaymentTransaction *transaction = notification.object;
     
-    if(![self.mainUserData checkForASchoolIDMatch:notification.object])
+    if(![self.mainUserData checkForASchoolIDMatch:transaction.payment.productIdentifier])
     {
         dispatch_queue_t createQueue = dispatch_queue_create("loginExistingUser", NULL);
         dispatch_async(createQueue, ^{
             NSArray *dataArray;
-            dataArray = [self.introData restorePurchaseForUser:self.mainUserData.userID andSchool:notification.object];
+            dataArray = [self.introData restorePurchaseForUser:self.mainUserData.userID andSchool:transaction.payment.productIdentifier];
             if ([dataArray count] == 1)
             {
                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -295,9 +301,9 @@ static const CGFloat LANDSCAPE_KEYBOARD_HEIGHT = 162;
                                 
                             }
                             
-                            [self.mainUserData addSchoolIDtoArray:notification.object];
+                            [self.mainUserData addSchoolIDtoArray:transaction.payment.productIdentifier];
                             
-                            NSString *schoolName = [self.mainUserData getSchoolNameFromID:notification.object];
+                            NSString *schoolName = [self.mainUserData getSchoolNameFromID:transaction.payment.productIdentifier];
                             
                             UIAlertView * restoredAlert = [[UIAlertView alloc]initWithTitle:@"Access Restored" message:[NSString stringWithFormat:@"Your access to %@, has been restored", schoolName] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
                             restoredAlert.tag = zAlertProductedRestored;

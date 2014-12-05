@@ -129,7 +129,9 @@
     for(int i = 0;i < CC_SHA1_DIGEST_LENGTH;i++)
         [output appendFormat:@"%02x",digest[i]];
     
+    NSLog(@"%@", output);
     return output;
+    
 }
 
 + (BOOL)isEmailValid:(NSString *)email
@@ -159,6 +161,65 @@
     return directoryContent;
 }
 
++(NSArray *)arrayOfGradeLevels
+{
+    return @[@"K",
+             @"1",
+             @"2",
+             @"3",
+             @"4",
+             @"5",
+             @"6",
+             @"7",
+             @"8",
+             @"9",
+             @"10",
+             @"11",
+             @"12"
+             ];
+}
+
++ (NSString *)convertGradeLevel:(NSString *)gradeLevel
+{
+    
+    if([gradeLevel isEqualToString:@"K"])
+        return @"K";
+    else
+    {
+        int gradeInt = [gradeLevel intValue];
+        
+        switch (gradeInt)
+        {
+            case 1:
+                return [NSString stringWithFormat:@"%@st", gradeLevel];
+                break;
+            case 2:
+                return [NSString stringWithFormat:@"%@nd", gradeLevel];
+                break;
+            case 3:
+                return [NSString stringWithFormat:@"%@rd", gradeLevel];
+                break;
+            case 4:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+            case 12:
+                return [NSString stringWithFormat:@"%@th", gradeLevel];
+                break;
+                
+                
+            default:
+                break;
+        }
+  
+    }
+    
+    return gradeLevel;
+}
 
 
 @end

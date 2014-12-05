@@ -32,9 +32,19 @@
     return dataArray;
 }
 
-- (NSArray *)loginExistingUserWithEmail:(NSString *)email andPassword:(NSString *)password
+- (NSArray *)getUserInfofromTransactionID:(NSString *)transactionID
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_LOGIN_USER withKeys:@[USER_EMAIL, USER_PASSWORD] andData:@[email, password]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_EMAIL withKeys:@[US_TRANSACTION_ID] andData:@[transactionID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+}
+
+
+- (NSArray *)loginExistingUserWithEmail:(NSString *)email andPassword:(NSString *)password andType:(NSString *)accountType
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_LOGIN_USER withKeys:@[USER_EMAIL, USER_PASSWORD, USER_ACCOUNT_TYPE] andData:@[email, password, accountType]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
@@ -59,9 +69,9 @@
     return dataArray;
 }
 
-- (NSArray *)updateHasPurchasedinUserSchoolTable:(NSString *)userID ofSchool:(NSString *)schoolID hasPurchasedBOOL:(NSString *)hasPurchased
+- (NSArray *)updateHasPurchasedinUserSchoolTable:(NSString *)userID ofSchool:(NSString *)schoolID hasPurchasedBOOL:(NSString *)hasPurchased withTransactionID:(NSString *)transactionID
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_HAS_PURCHASED withKeys:@[USER_ID, SCHOOL_ID, USER_HAS_PURCHASED] andData:@[userID, schoolID, hasPurchased]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_HAS_PURCHASED withKeys:@[USER_ID, SCHOOL_ID, USER_HAS_PURCHASED, US_TRANSACTION_ID] andData:@[userID, schoolID, hasPurchased, transactionID]];
     
     NSArray *dataArray;
                            

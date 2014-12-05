@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RegistrationModel.h"
+#import "IntroModel.h"
 
 @interface AddSchoolViewController : UIViewController <UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, UIGestureRecognizerDelegate>
 

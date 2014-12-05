@@ -17,9 +17,17 @@
 
 - (NSArray *)getKidsInfoFromDatabase:(NSString *)userID;
 
+- (NSArray *)queryDatabaseForTeachersAtSchool:(NSString *)schoolID;
+
+- (NSArray *)getKidsTeachersFromDatabase:(NSString *)kidID;
+
 - (NSArray *)updateKidFromKidDicData:(NSDictionary *)kidData;
 
 - (NSArray *)deleteKidFromDatabase:(NSString *)kidID;
+
+- (NSArray *)deleteTeacher:(NSString *)teacherID fromKidInDatabase:(NSString *)kidID;
+
+- (NSArray *)addTeacher:(NSString *)teacherID ToKidInDatabase:(NSString *)kidID;
 
 - (NSArray *)zeroOutBadgeForSchoolID:(NSString *)schoolID ofUser:(NSString *)userID;
 

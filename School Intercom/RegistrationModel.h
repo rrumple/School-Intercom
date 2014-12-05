@@ -35,7 +35,9 @@
 - (NSArray *)queryDatabaseForSchoolsUsingState:
     (NSString *)state andCity:(NSString *)city;
 
-- (NSArray *)queryDatabaseForSchoolsUsingStateWithNoArrayProcessing:(NSString *)state andCity:(NSString *)city;
+- (NSArray *)queryDatabaseForTeachersAtSchool:(NSString *)schoolID;
+
+- (NSArray *)queryDatabaseForSchoolsUsingStateWithNoArrayProcessing:(NSString *)state andCity:(NSString *)city andUserID:(NSString *)userID;
 
 - (NSArray *)addAdditionalSchoolToUser:(NSString *)userID andSchool:(NSString *)schoolID;
 
@@ -51,6 +53,6 @@
 
 - (NSArray *)getCurrentAppVersion;
 
-- (NSArray *)sendEmailToRequestSchoolAdditionBy:(NSString *)name forSchoolNamed:(NSString *)schoolName inCity:(NSString *)city inState:(NSString *)state withSchoolContactName:(NSString *)schoolContactName;
+- (NSArray *)sendEmailToRequestSchoolAdditionBy:(NSString *)name emailAddress:(NSString *)email forSchoolNamed:(NSString *)schoolName inCity:(NSString *)city inState:(NSString *)state withSchoolContactName:(NSString *)schoolContactName;
 
 @end
