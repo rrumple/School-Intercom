@@ -7,6 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		940296F41A32A3C8007E0E89 /* AdminToolsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940296F31A32A3C8007E0E89 /* AdminToolsTableViewController.m */; };
+		940296F71A32A668007E0E89 /* SendAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940296F61A32A668007E0E89 /* SendAlertViewController.m */; };
+		940296FB1A32BC50007E0E89 /* AdminModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 940296FA1A32BC50007E0E89 /* AdminModel.m */; };
+		940297381A3DB9B4007E0E89 /* ApproveUsersTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940297371A3DB9B4007E0E89 /* ApproveUsersTableViewController.m */; };
+		9402973B1A3E47FB007E0E89 /* AdStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9402973A1A3E47FB007E0E89 /* AdStatsViewController.m */; };
+		940297751A3FE6FF007E0E89 /* LandscapeNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940297741A3FE6FF007E0E89 /* LandscapeNavigationController.m */; };
+		940297781A3FEC84007E0E89 /* GraphView.m in Sources */ = {isa = PBXBuildFile; fileRef = 940297771A3FEC84007E0E89 /* GraphView.m */; };
+		9402977A1A43F4B1007E0E89 /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 940297791A43F4B1007E0E89 /* MessageUI.framework */; };
 		940D6A8E184797840013EA7B /* NewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A8D184797840013EA7B /* NewsViewController.m */; };
 		940D6A94184797A70013EA7B /* HomeViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A93184797A70013EA7B /* HomeViewController.m */; };
 		940D6A97184797B20013EA7B /* ContactViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A96184797B20013EA7B /* ContactViewController.m */; };
@@ -14,6 +22,7 @@
 		940D6A9E18479F740013EA7B /* MainMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6A9D18479F740013EA7B /* MainMenuViewController.m */; };
 		940D6AA11847A1F80013EA7B /* MainNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6AA01847A1F80013EA7B /* MainNavigationController.m */; };
 		940D6AA71847D2F20013EA7B /* UIView+AddOns.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6AA61847D2F20013EA7B /* UIView+AddOns.m */; };
+		940E81571A50633F00F12ADA /* ManageUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940E81561A50633F00F12ADA /* ManageUsersViewController.m */; };
 		9412DE80184ECED60046D297 /* HelperMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 9412DE7F184ECED60046D297 /* HelperMethods.m */; };
 		9427379919874431002CEA3F /* UpdateKidViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9427379819874431002CEA3F /* UpdateKidViewController.m */; };
 		942DD8511870D21600FB8F71 /* UpdateProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DD8501870D21600FB8F71 /* UpdateProfileViewController.m */; };
@@ -28,6 +37,10 @@
 		9447E51A19152F390002C556 /* SchoolIntercomIAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9447E51919152F390002C556 /* SchoolIntercomIAPHelper.m */; };
 		9447E51C1921BF3B0002C556 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9447E51B1921BF3B0002C556 /* AVFoundation.framework */; };
 		9447E51E192460CE0002C556 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9447E51D192460CE0002C556 /* QuartzCore.framework */; };
+		94502C771A51B80400F1E775 /* ManageSingleUserTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94502C761A51B80400F1E775 /* ManageSingleUserTableViewController.m */; };
+		94502C7A1A52506D00F1E775 /* SelectUsertypeTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94502C791A52506D00F1E775 /* SelectUsertypeTableViewController.m */; };
+		94502C7D1A525CDA00F1E775 /* UsersSchoolsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94502C7C1A525CDA00F1E775 /* UsersSchoolsTableViewController.m */; };
+		94502C801A5273FF00F1E775 /* SingleSchoolTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94502C7F1A5273FF00F1E775 /* SingleSchoolTableViewController.m */; };
 		945D61831A20D12300FEFEA2 /* RequestSchoolViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 945D61821A20D12300FEFEA2 /* RequestSchoolViewController.m */; };
 		947AB4E2196A489C00C4AD80 /* LunchMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 947AB4E1196A489C00C4AD80 /* LunchMenuViewController.m */; };
 		948E085118B082E800B3A854 /* AdModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 948E085018B082E800B3A854 /* AdModel.m */; };
@@ -122,6 +135,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		940296F21A32A3C8007E0E89 /* AdminToolsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdminToolsTableViewController.h; sourceTree = "<group>"; };
+		940296F31A32A3C8007E0E89 /* AdminToolsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdminToolsTableViewController.m; sourceTree = "<group>"; };
+		940296F51A32A668007E0E89 /* SendAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendAlertViewController.h; sourceTree = "<group>"; };
+		940296F61A32A668007E0E89 /* SendAlertViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SendAlertViewController.m; sourceTree = "<group>"; };
+		940296F91A32BC50007E0E89 /* AdminModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdminModel.h; sourceTree = "<group>"; };
+		940296FA1A32BC50007E0E89 /* AdminModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdminModel.m; sourceTree = "<group>"; };
+		940297361A3DB9B4007E0E89 /* ApproveUsersTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApproveUsersTableViewController.h; sourceTree = "<group>"; };
+		940297371A3DB9B4007E0E89 /* ApproveUsersTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ApproveUsersTableViewController.m; sourceTree = "<group>"; };
+		940297391A3E47FB007E0E89 /* AdStatsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdStatsViewController.h; sourceTree = "<group>"; };
+		9402973A1A3E47FB007E0E89 /* AdStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdStatsViewController.m; sourceTree = "<group>"; };
+		940297731A3FE6FF007E0E89 /* LandscapeNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LandscapeNavigationController.h; sourceTree = "<group>"; };
+		940297741A3FE6FF007E0E89 /* LandscapeNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LandscapeNavigationController.m; sourceTree = "<group>"; };
+		940297761A3FEC84007E0E89 /* GraphView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphView.h; sourceTree = "<group>"; };
+		940297771A3FEC84007E0E89 /* GraphView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphView.m; sourceTree = "<group>"; };
+		940297791A43F4B1007E0E89 /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		940D6A8C184797840013EA7B /* NewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsViewController.h; sourceTree = "<group>"; };
 		940D6A8D184797840013EA7B /* NewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsViewController.m; sourceTree = "<group>"; };
 		940D6A92184797A70013EA7B /* HomeViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HomeViewController.h; sourceTree = "<group>"; };
@@ -136,6 +164,8 @@
 		940D6AA01847A1F80013EA7B /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
 		940D6AA51847D2F20013EA7B /* UIView+AddOns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AddOns.h"; sourceTree = "<group>"; };
 		940D6AA61847D2F20013EA7B /* UIView+AddOns.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+AddOns.m"; sourceTree = "<group>"; };
+		940E81551A50633F00F12ADA /* ManageUsersViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageUsersViewController.h; sourceTree = "<group>"; };
+		940E81561A50633F00F12ADA /* ManageUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageUsersViewController.m; sourceTree = "<group>"; };
 		9412DE7E184ECED60046D297 /* HelperMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelperMethods.h; sourceTree = "<group>"; };
 		9412DE7F184ECED60046D297 /* HelperMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelperMethods.m; sourceTree = "<group>"; };
 		9427379719874431002CEA3F /* UpdateKidViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateKidViewController.h; sourceTree = "<group>"; };
@@ -160,6 +190,14 @@
 		9447E51919152F390002C556 /* SchoolIntercomIAPHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SchoolIntercomIAPHelper.m; sourceTree = "<group>"; };
 		9447E51B1921BF3B0002C556 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		9447E51D192460CE0002C556 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		94502C751A51B80400F1E775 /* ManageSingleUserTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageSingleUserTableViewController.h; sourceTree = "<group>"; };
+		94502C761A51B80400F1E775 /* ManageSingleUserTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageSingleUserTableViewController.m; sourceTree = "<group>"; };
+		94502C781A52506D00F1E775 /* SelectUsertypeTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SelectUsertypeTableViewController.h; sourceTree = "<group>"; };
+		94502C791A52506D00F1E775 /* SelectUsertypeTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SelectUsertypeTableViewController.m; sourceTree = "<group>"; };
+		94502C7B1A525CDA00F1E775 /* UsersSchoolsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UsersSchoolsTableViewController.h; sourceTree = "<group>"; };
+		94502C7C1A525CDA00F1E775 /* UsersSchoolsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UsersSchoolsTableViewController.m; sourceTree = "<group>"; };
+		94502C7E1A5273FF00F1E775 /* SingleSchoolTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleSchoolTableViewController.h; sourceTree = "<group>"; };
+		94502C7F1A5273FF00F1E775 /* SingleSchoolTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SingleSchoolTableViewController.m; sourceTree = "<group>"; };
 		945D61811A20D12300FEFEA2 /* RequestSchoolViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequestSchoolViewController.h; sourceTree = "<group>"; };
 		945D61821A20D12300FEFEA2 /* RequestSchoolViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequestSchoolViewController.m; sourceTree = "<group>"; };
 		947AB4E0196A489C00C4AD80 /* LunchMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LunchMenuViewController.h; sourceTree = "<group>"; };
@@ -320,6 +358,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9402977A1A43F4B1007E0E89 /* MessageUI.framework in Frameworks */,
 				9447E51E192460CE0002C556 /* QuartzCore.framework in Frameworks */,
 				9447E51C1921BF3B0002C556 /* AVFoundation.framework in Frameworks */,
 				9447E51419152A9A0002C556 /* StoreKit.framework in Frameworks */,
@@ -343,6 +382,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		940296F81A32A670007E0E89 /* Admin views */ = {
+			isa = PBXGroup;
+			children = (
+				94502C7E1A5273FF00F1E775 /* SingleSchoolTableViewController.h */,
+				94502C7F1A5273FF00F1E775 /* SingleSchoolTableViewController.m */,
+				94502C7B1A525CDA00F1E775 /* UsersSchoolsTableViewController.h */,
+				94502C7C1A525CDA00F1E775 /* UsersSchoolsTableViewController.m */,
+				94502C781A52506D00F1E775 /* SelectUsertypeTableViewController.h */,
+				94502C791A52506D00F1E775 /* SelectUsertypeTableViewController.m */,
+				94502C751A51B80400F1E775 /* ManageSingleUserTableViewController.h */,
+				94502C761A51B80400F1E775 /* ManageSingleUserTableViewController.m */,
+				940E81551A50633F00F12ADA /* ManageUsersViewController.h */,
+				940E81561A50633F00F12ADA /* ManageUsersViewController.m */,
+				940297731A3FE6FF007E0E89 /* LandscapeNavigationController.h */,
+				940297741A3FE6FF007E0E89 /* LandscapeNavigationController.m */,
+				940297391A3E47FB007E0E89 /* AdStatsViewController.h */,
+				9402973A1A3E47FB007E0E89 /* AdStatsViewController.m */,
+				940297361A3DB9B4007E0E89 /* ApproveUsersTableViewController.h */,
+				940297371A3DB9B4007E0E89 /* ApproveUsersTableViewController.m */,
+				940296F51A32A668007E0E89 /* SendAlertViewController.h */,
+				940296F61A32A668007E0E89 /* SendAlertViewController.m */,
+				940296F21A32A3C8007E0E89 /* AdminToolsTableViewController.h */,
+				940296F31A32A3C8007E0E89 /* AdminToolsTableViewController.m */,
+			);
+			name = "Admin views";
+			sourceTree = "<group>";
+		};
 		940D6A9B184797E70013EA7B /* Main Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -414,6 +480,7 @@
 		94BD73BC183DA63D009E1129 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				940297791A43F4B1007E0E89 /* MessageUI.framework */,
 				9447E51D192460CE0002C556 /* QuartzCore.framework */,
 				9447E51B1921BF3B0002C556 /* AVFoundation.framework */,
 				9447E51319152A9A0002C556 /* StoreKit.framework */,
@@ -429,6 +496,7 @@
 		94BD73C3183DA63D009E1129 /* School Intercom */ = {
 			isa = PBXGroup;
 			children = (
+				940296F81A32A670007E0E89 /* Admin views */,
 				943A0CFF1879FE9300D0910F /* iPad */,
 				94E33BDE1869D63300DB9A82 /* Tapku Addon */,
 				94BD73F9183DAAB7009E1129 /* Constants.h */,
@@ -446,6 +514,8 @@
 		94BD73C4183DA63D009E1129 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				940297761A3FEC84007E0E89 /* GraphView.h */,
+				940297771A3FEC84007E0E89 /* GraphView.m */,
 				94BD73D5183DA63D009E1129 /* Images.xcassets */,
 				9447E51519152AE40002C556 /* IAPHelper.h */,
 				9447E51619152AE40002C556 /* IAPHelper.m */,
@@ -499,6 +569,8 @@
 				94BD73FB183DAC12009E1129 /* UserData.m */,
 				94451F571866EA1100136ED2 /* IntroModel.h */,
 				94451F581866EA1100136ED2 /* IntroModel.m */,
+				940296F91A32BC50007E0E89 /* AdminModel.h */,
+				940296FA1A32BC50007E0E89 /* AdminModel.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -765,10 +837,14 @@
 				94E33C921869E3E700DB9A82 /* TKGradientView.m in Sources */,
 				94E33CA11869E3E700DB9A82 /* TKRetroButton.m in Sources */,
 				940D6AA11847A1F80013EA7B /* MainNavigationController.m in Sources */,
+				94502C7A1A52506D00F1E775 /* SelectUsertypeTableViewController.m in Sources */,
 				94E33C871869E3E700DB9A82 /* TKButtonCell.m in Sources */,
+				94502C7D1A525CDA00F1E775 /* UsersSchoolsTableViewController.m in Sources */,
 				94E33CB71869E3E700DB9A82 /* UIImagePickerController+TKCategory.m in Sources */,
 				94E33CB21869E3E700DB9A82 /* UIColor+TKCategory.m in Sources */,
+				940296F71A32A668007E0E89 /* SendAlertViewController.m in Sources */,
 				94BD73F6183DA722009E1129 /* IntroViewController.m in Sources */,
+				940297781A3FEC84007E0E89 /* GraphView.m in Sources */,
 				94E33CA91869E3E700DB9A82 /* TKTextView.m in Sources */,
 				9447E51A19152F390002C556 /* SchoolIntercomIAPHelper.m in Sources */,
 				94E33C811869E3E700DB9A82 /* NSDate+TKCategory.m in Sources */,
@@ -778,6 +854,7 @@
 				940D6A8E184797840013EA7B /* NewsViewController.m in Sources */,
 				940D6A97184797B20013EA7B /* ContactViewController.m in Sources */,
 				94E33C8F1869E3E700DB9A82 /* TKEmptyView.m in Sources */,
+				940296F41A32A3C8007E0E89 /* AdminToolsTableViewController.m in Sources */,
 				94E33C7F1869E3E700DB9A82 /* NSArray+TKCategory.m in Sources */,
 				94AB780C186A9A1E00F5A56F /* NSString+TKCategory.m in Sources */,
 				94E33CAA1869E3E700DB9A82 /* TKTextViewCell.m in Sources */,
@@ -788,6 +865,8 @@
 				94E33CB61869E3E700DB9A82 /* UIImage+TKCategory.m in Sources */,
 				94BD73FC183DAC13009E1129 /* UserData.m in Sources */,
 				940D6A9E18479F740013EA7B /* MainMenuViewController.m in Sources */,
+				940E81571A50633F00F12ADA /* ManageUsersViewController.m in Sources */,
+				940297381A3DB9B4007E0E89 /* ApproveUsersTableViewController.m in Sources */,
 				940D6AA71847D2F20013EA7B /* UIView+AddOns.m in Sources */,
 				94BD73CA183DA63D009E1129 /* main.m in Sources */,
 				947AB4E2196A489C00C4AD80 /* LunchMenuViewController.m in Sources */,
@@ -797,6 +876,7 @@
 				940D6A9A184797BB0013EA7B /* SwitchViewController.m in Sources */,
 				94E33C901869E3E700DB9A82 /* TKGlobal.m in Sources */,
 				94E33C821869E3E700DB9A82 /* NSMutableArray+TKCategory.m in Sources */,
+				94502C801A5273FF00F1E775 /* SingleSchoolTableViewController.m in Sources */,
 				94E33C991869E3E700DB9A82 /* TKLabelTextFieldCell.m in Sources */,
 				94E33CA31869E3E700DB9A82 /* TKShimmerLabel.m in Sources */,
 				94E33CA21869E3E700DB9A82 /* TKShapeView.m in Sources */,
@@ -817,11 +897,13 @@
 				9447E51719152AE40002C556 /* IAPHelper.m in Sources */,
 				94E33CB11869E3E700DB9A82 /* UIButton+TKCategory.m in Sources */,
 				94E33C861869E3E700DB9A82 /* TKAppDelegate.m in Sources */,
+				940297751A3FE6FF007E0E89 /* LandscapeNavigationController.m in Sources */,
 				940D6A94184797A70013EA7B /* HomeViewController.m in Sources */,
 				94E33CB01869E3E700DB9A82 /* UIBarButtonItem+TKCategory.m in Sources */,
 				94E33CBA1869E3E700DB9A82 /* UIScrollview+TKCategory.m in Sources */,
 				945D61831A20D12300FEFEA2 /* RequestSchoolViewController.m in Sources */,
 				94E33C9F1869E3E700DB9A82 /* TKProgressCircleView.m in Sources */,
+				940296FB1A32BC50007E0E89 /* AdminModel.m in Sources */,
 				9427379919874431002CEA3F /* UpdateKidViewController.m in Sources */,
 				94E33C891869E3E700DB9A82 /* TKCalendarDayView.m in Sources */,
 				94E33C8D1869E3E700DB9A82 /* TKCalendarMonthViewController.m in Sources */,
@@ -831,9 +913,11 @@
 				94E33CA51869E3E700DB9A82 /* TKSwitchCell.m in Sources */,
 				94E33CAD1869E3E700DB9A82 /* TKWindow.m in Sources */,
 				94E33CB51869E3E700DB9A82 /* UIGestureRecognizer+TKCategory.m in Sources */,
+				94502C771A51B80400F1E775 /* ManageSingleUserTableViewController.m in Sources */,
 				94E33CAE1869E3E700DB9A82 /* UIActionSheet+TKCategory.m in Sources */,
 				94E33C9D1869E3E700DB9A82 /* TKProgressAlertView.m in Sources */,
 				94E33C881869E3E700DB9A82 /* TKCalendarDayEventView.m in Sources */,
+				9402973B1A3E47FB007E0E89 /* AdStatsViewController.m in Sources */,
 				94E33CB31869E3E700DB9A82 /* UIDevice+TKCategory.m in Sources */,
 				94E33C981869E3E700DB9A82 /* TKLabelSwitchCell.m in Sources */,
 			);
@@ -961,7 +1045,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Developer: Randy Rumple (C76WF49FKB)";
+				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution: School Intercom Inc. (4QR8727ADF)";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
@@ -981,7 +1065,7 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution: School Intercom Inc. (4QR8727ADF)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: School Intercom Inc. (4QR8727ADF)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School Intercom/School Intercom-Info.plist";

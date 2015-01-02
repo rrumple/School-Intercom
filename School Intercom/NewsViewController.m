@@ -16,6 +16,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *adImageButton;
 @property (nonatomic, strong) NSDictionary *adData;
 @property (nonatomic, strong) AdModel *adModel;
+@property (weak, nonatomic) IBOutlet UIView *overlay1;
+@property (weak, nonatomic) IBOutlet UIView *helpOverlay;
 
 @end
 
@@ -58,6 +60,50 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if([self.mainUserData getTutorialStatusOfView:mv_News])
+        [self showHelp];
+}
+
+- (void)showHelp
+{
+    self.helpOverlay.hidden = false;
+    self.overlay1.hidden = false;
+    
+    [UIView animateWithDuration:1 animations:^{
+        
+        
+        self.overlay1.alpha = 0.5;
+        self.helpOverlay.alpha = 1.0;
+        //self.dismissButton.alpha = 1.0;
+        //self.help1.alpha = 1.0;
+    }];
+}
+
+- (IBAction)hideHelpPressed
+{
+    [self.mainUserData turnOffTutorialForView:mv_News];
+    [UIView animateWithDuration:.75 animations:^{
+        self.overlay1.alpha = 0.0;
+        self.helpOverlay.alpha = 0.0;
+        //self.dismissButton.alpha = 1.0;
+        //self.help1.alpha = 1.0;
+        
+    }completion:^(BOOL finished){
+        self.overlay1.hidden = true;
+        self.helpOverlay.hidden = true;
+    }];
+    
+    
+    
+    
+    
+}
+
 - (IBAction)adButtonclicked
 {
     NSString *urlString;
@@ -85,7 +131,7 @@
     dispatch_queue_t createQueue = dispatch_queue_create("updateAdClickCount", NULL);
     dispatch_async(createQueue, ^{
         NSArray *dataArray;
-        dataArray = [self.adModel updateAdClickCountInDatabse:[self.adData objectForKey:ID]];
+        dataArray = [self.adModel updateAdClickCountInDatabse:[self.adData objectForKey:ID]fromSchool:self.mainUserData.schoolIDselected];
         if ([dataArray count] == 1)
         {
             dispatch_async(dispatch_get_main_queue(), ^{

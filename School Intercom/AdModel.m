@@ -35,11 +35,11 @@
     
 }
 
-- (NSArray *)updateAdClickCountInDatabse:(NSString *)adID
+- (NSArray *)updateAdClickCountInDatabse:(NSString *)adID fromSchool:(NSString *)schoolID
 {
     NSArray *dataArray;
-    NSArray *keys = @[AD_ID];
-    NSArray *data = @[adID];
+    NSArray *keys = @[AD_ID, SCHOOL_ID];
+    NSArray *data = @[adID, schoolID];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_AD_CLICKED withKeys:keys andData:data];
     

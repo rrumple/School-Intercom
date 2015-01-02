@@ -19,6 +19,8 @@
 
 @property (nonatomic, strong) NSDictionary *kidDicToEdit;
 @property (nonatomic) BOOL addingNewKid;
+@property (weak, nonatomic) IBOutlet UIView *overlay1;
+@property (weak, nonatomic) IBOutlet UIView *helpOverlay;
 @end
 
 @implementation UpdateKidsViewController
@@ -94,6 +96,41 @@
 
 }
 
+- (void)deleteKidFromDatabase
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("deleteKid", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.updateProfileData deleteKidFromDatabase:[self.kidDicToEdit objectForKey:ID]];
+        if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                    
+                }
+                else
+                {
+                    
+                    UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Kid Deleted" message:[NSString stringWithFormat:@"%@ has been removed successfully", [self.kidDicToEdit objectForKey:KID_FIRST_NAME]] delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                    alert.tag = zAlertDeleteKidSuccess;
+                                          
+                    [alert show];
+                    
+                    [self loadKidsFromDatabase];
+                    self.kidDicToEdit = nil;
+                }
+            });
+            
+        }
+    });
+    
+}
+
+
 
 - (void)viewDidLoad
 {
@@ -103,7 +140,7 @@
     
     [self.headerLabel setFont:FONT_CHARCOAL_CY(17.0f)];
     
-    
+    //[self loadKidsFromDatabase];
 
     
     
@@ -115,8 +152,46 @@
     [super viewDidAppear:animated];
     
     [self loadKidsFromDatabase];
+    
+    if([self.mainUserData getTutorialStatusOfView:sv_UpdateKids])
+        [self showHelp];
 }
 
+
+- (void)showHelp
+{
+    self.helpOverlay.hidden = false;
+    self.overlay1.hidden = false;
+    
+    [UIView animateWithDuration:1 animations:^{
+        
+        
+        self.overlay1.alpha = 0.5;
+        self.helpOverlay.alpha = 1.0;
+        //self.dismissButton.alpha = 1.0;
+        //self.help1.alpha = 1.0;
+    }];
+}
+
+- (IBAction)hideHelpPressed
+{
+    [self.mainUserData turnOffTutorialForView:sv_UpdateKids];
+    [UIView animateWithDuration:.75 animations:^{
+        self.overlay1.alpha = 0.0;
+        self.helpOverlay.alpha = 0.0;
+        //self.dismissButton.alpha = 1.0;
+        //self.help1.alpha = 1.0;
+        
+    }completion:^(BOOL finished){
+        self.overlay1.hidden = true;
+        self.helpOverlay.hidden = true;
+    }];
+    
+    
+    
+    
+    
+}
 
 - (IBAction)addPressed:(id)sender
 {
@@ -293,6 +368,49 @@
     
     
 }
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        
+        self.kidDicToEdit = [self.kidsArray objectAtIndex:indexPath.row];
+        
+        UIAlertView *deleteConfrimAlert = [[UIAlertView alloc]initWithTitle:@"Remove Kid" message:[NSString stringWithFormat:@"You are about to remove %@ from your profile, are you sure?", [self.kidDicToEdit objectForKey:KID_FIRST_NAME]] delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        deleteConfrimAlert.tag = zAlertDeleteKid;
+        [deleteConfrimAlert show];
+        
+        
+        
+        //[tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        
+        
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex
+{
+    switch (alertView.tag)
+    {
+        case zAlertDeleteKid:
+        {
+            switch (buttonIndex)
+            {
+                case 0:
+                    break;
+                case 1:
+                    [self deleteKidFromDatabase];
+                    break;
+            }
+        }
+            break;
+            
+    }
+    
+    
+    
+}
+
+
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {

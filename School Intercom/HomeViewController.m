@@ -18,6 +18,9 @@
 @property (weak, nonatomic) IBOutlet UIButton *adImageButton;
 @property (nonatomic, strong) NSDictionary *adData;
 @property (nonatomic, strong) AdModel *adModel;
+@property (weak, nonatomic) IBOutlet UIView *overlay1;
+@property (weak, nonatomic) IBOutlet UIView *helpOverlay;
+
 
 
 
@@ -40,7 +43,7 @@
 - (void)setMainUserData:(UserData *)mainUserData
 {
     _mainUserData = mainUserData;
-    self.alertData = [mainUserData.appData objectForKey:ALERT_DATA];
+    [self sortAlerts];
     [self.alertTableView reloadData];
     
     [self updateBadgeCount];
@@ -57,6 +60,39 @@
 {
     if(!_alertData) _alertData = [[NSArray alloc] init];
     return _alertData;
+}
+
+- (void)sortAlerts
+{
+    
+    NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+    
+    
+    if([self.mainUserData.appData objectForKey:ALERT_DATA] != (id)[NSNull null])
+    {
+        [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:ALERT_DATA]];
+
+    }
+    if([self.mainUserData.appData objectForKey:@"teacherAlerts"] != (id)[NSNull null])
+    {
+       [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:@"teacherAlerts"]];
+        
+    }
+    if([self.mainUserData.appData objectForKey:@"corpAlerts"] != (id)[NSNull null])
+    {
+       [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:@"corpAlerts"]];
+    }
+
+
+    if(tempArray != (id)[NSNull null])
+    {
+        self.alertData = tempArray;
+    
+        NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:ALERT_TIME_SENT  ascending:NO];
+        self.alertData=[self.alertData sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]];
+    }
+
+
 }
 
 - (void)updateBadgeCount
@@ -126,7 +162,7 @@
     dispatch_queue_t createQueue = dispatch_queue_create("updateAdClickCount", NULL);
     dispatch_async(createQueue, ^{
         NSArray *dataArray;
-        dataArray = [self.adModel updateAdClickCountInDatabse:[self.adData objectForKey:ID]];
+        dataArray = [self.adModel updateAdClickCountInDatabse:[self.adData objectForKey:ID]fromSchool:self.mainUserData.schoolIDselected];
         if ([dataArray count] == 1)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -220,7 +256,11 @@
     
     NSLog(@"HOME PAGE DATA RECIEVED: %@", self.mainUserData.appData);
     
-    self.alertData = [self.mainUserData.appData objectForKey:ALERT_DATA];
+    [self sortAlerts];
+    
+    
+    
+    
     
     NSDictionary *schoolData = self.mainUserData.schoolData;
     
@@ -235,6 +275,49 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if([self.mainUserData getTutorialStatusOfView:mv_Home])
+        [self showHelp];
+}
+
+- (void)showHelp
+{
+    self.helpOverlay.hidden = false;
+    self.overlay1.hidden = false;
+
+    [UIView animateWithDuration:1 animations:^{
+        
+        
+        self.overlay1.alpha = 0.5;
+        self.helpOverlay.alpha = 1.0;
+        //self.dismissButton.alpha = 1.0;
+        //self.help1.alpha = 1.0;
+    }];
+}
+
+- (IBAction)hideHelpPressed
+{
+    [self.mainUserData turnOffTutorialForView:mv_Home];
+    [UIView animateWithDuration:.75 animations:^{
+        self.overlay1.alpha = 0.0;
+        self.helpOverlay.alpha = 0.0;
+        //self.dismissButton.alpha = 1.0;
+        //self.help1.alpha = 1.0;
+
+    }completion:^(BOOL finished){
+        self.overlay1.hidden = true;
+        self.helpOverlay.hidden = true;
+    }];
+        
+
+    
+    
+    
 }
 
 - (IBAction)menuPressed
@@ -292,6 +375,7 @@
     
     
     UILabel *cellLabel = (UILabel *)[cell.contentView viewWithTag:2];
+    UILabel *dateLabel = (UILabel *)[cell viewWithTag:3];
     
     if(self.alertData != (id)[NSNull null])
     {
@@ -306,6 +390,9 @@
         }
         */
         cellLabel.text = [[self.alertData objectAtIndex:indexPath.row]objectForKey:ALERT_TEXT];
+        NSArray *tempDate = [HelperMethods getDateArrayFromString:[[self.alertData objectAtIndex:indexPath.row]objectForKey:ALERT_TIME_SENT]];
+        
+        dateLabel.text = [NSString stringWithFormat:@"%@/%@/%@", tempDate[1], tempDate[2], tempDate[0]];
     }
     else
         cellLabel.text = @"No Current Alerts";

@@ -171,11 +171,11 @@
     
 }
 
-- (NSArray *)updateUserVersionUserID:(NSString *)userID withVersion:(NSString *)version
+- (NSArray *)updateUserVersionAndModelUserID:(NSString *)userID withVersion:(NSString *)version andModel:(NSString *)model
 {
     NSArray *dataArray;
-    NSArray *keys = @[USER_ID, DEVICE_VERSION];
-    NSArray *data = @[userID, version];
+    NSArray *keys = @[USER_ID, DEVICE_VERSION, DEVICE_MODEL];
+    NSArray *data = @[userID, version, model];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_DEVICE_VERSION withKeys:keys andData:data];
     
@@ -213,7 +213,23 @@
     
 }
 
+- (NSArray *)sendAPNSResponseForMessage:(NSString *)messageID
+{
+    {
+        NSArray *dataArray;
+        NSArray *keys = @[MESSAGE_ID];
+        NSArray *data = @[messageID];
+        
+        NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_APNS_RESPONSE withKeys:keys andData:data];
+        
+        
+        dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+        
+        return dataArray;
+        
+    }
 
+}
 
 
 

@@ -72,6 +72,17 @@
     return _registerData;
 }
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -421,6 +432,7 @@
                 {
                     self.mainUserData.userID = [tempDic objectForKey:USER_ID];
                     self.mainUserData.schoolIDselected = self.schoolIDSelected;
+                    self.mainUserData.isPendingVerification = [[tempDic objectForKey:IS_PENDING_APPROVAL] boolValue];
                     [self.mainUserData addSchoolIDtoArray:self.schoolIDSelected];
                     [self.mainUserData addschoolDataToArray:[[tempDic objectForKey:SCHOOL_DATA] objectAtIndex:0]];
                     [self.mainUserData setActiveSchool:self.schoolIDSelected];
@@ -431,11 +443,12 @@
                     NSString *deviceToken = [[NSUserDefaults standardUserDefaults] objectForKey:USER_PUSH_NOTIFICATION_PIN];
                     
                     NSString *iosVersion = [[UIDevice currentDevice] systemVersion];
+                    NSString *deviceModel = [HelperMethods getDeviceModel];
                     
                     dispatch_queue_t createQueue = dispatch_queue_create("updateIOSVersion", NULL);
                     dispatch_async(createQueue, ^{
                         NSArray *dataArray;
-                        dataArray = [self.registerData updateUserVersionUserID:[[NSUserDefaults standardUserDefaults]objectForKey:USER_ID] withVersion:iosVersion];
+                        dataArray = [self.registerData updateUserVersionAndModelUserID:[[NSUserDefaults standardUserDefaults]objectForKey:USER_ID] withVersion:iosVersion andModel:deviceModel];
                         if ([dataArray count] == 1)
                         {
                             dispatch_async(dispatch_get_main_queue(), ^{
@@ -576,7 +589,8 @@
     if([self.delegate respondsToSelector:@selector(loginToDemoAccount)])
     {
         self.mainUserData.isAccountCreated = YES;
-        self.mainUserData.isRegistered = YES;
+        self.mainUserData.isPendingVerification = NO;
+        self.mainUserData.isApproved = YES;
         self.mainUserData.isDemoInUse = YES;
         [self.delegate loginToDemoAccount];
     }
@@ -665,7 +679,7 @@
         }
         else
         {
-            return [NSString stringWithFormat:@"%@ %@ - %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME], [HelperMethods convertGradeLevel:[[self.teachers objectAtIndex:row] objectForKey:@"grade"]]];
+            return [NSString stringWithFormat:@"%@ %@ - %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME], [HelperMethods convertGradeLevel:[[self.teachers objectAtIndex:row] objectForKey:@"grade"] appendGrade:YES]];
 
         }
     }
@@ -785,6 +799,7 @@
     }
     else if(self.childGradeLevel.isFirstResponder && [self.childGradeLevel.text isEqualToString:@""])
     {
+        self.teacherSelected = @"0";
         self.childGradeLevel.text = @"Don't Know";
     }
 }
@@ -922,7 +937,8 @@
             if([self.delegate respondsToSelector:@selector(restoreAccount)])
             {
                 self.mainUserData.isAccountCreated = NO;
-                self.mainUserData.isRegistered = NO;
+                self.mainUserData.isPendingVerification = NO;
+                self.mainUserData.isApproved = NO;
                 self.mainUserData.isDemoInUse = NO;
                 [self.delegate restoreAccount];
             }

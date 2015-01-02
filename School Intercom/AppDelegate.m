@@ -9,6 +9,8 @@
 #import "AppDelegate.h"
 #import "SchoolIntercomIAPHelper.h"
 
+NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
+
 @implementation AppDelegate
 
 - (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
@@ -40,10 +42,41 @@
     NSLog(@"Failed to get token, error: %@", error);
 }
 
+
+
 - (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
-    UINavigationController *navigationController = (UINavigationController*)_window.rootViewController;
-    NSLog(@"%@", navigationController.viewControllers);
+    UIApplicationState state = application.applicationState;
+    
+     [[NSNotificationCenter defaultCenter] postNotificationName:ADLoadDataNotification object:nil userInfo:nil];
+    
+    if(state == UIApplicationStateActive)
+    {
+        
+        
+        UINavigationController *navigationController = (UINavigationController*)_window.rootViewController;
+        
+         NSString *message = [[userInfo valueForKey:@"aps"]valueForKey:@"alert"];
+        NSString *schoolID = [[userInfo valueForKey:@"aps"]valueForKey:@"schoolID"];
+        
+        [HelperMethods CreateAndDisplayOverHeadAlertInView: (UIView *)navigationController.visibleViewController.view withMessage:message andSchoolID:schoolID];
+        NSLog(@"%@", navigationController.viewControllers);
+
+        
+        
+            }
+
+    NSString *messageID = [[userInfo valueForKey:@"aps"]valueForKey:@"messageID"];
+   // UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Alert" message:messageID delegate:self cancelButtonTitle:@"View" otherButtonTitles: nil];
+    //[alert show];
+
+    RegistrationModel *registerData = [[RegistrationModel alloc]init];
+    
+    dispatch_queue_t createQueue = dispatch_queue_create("updateAPNS", NULL);
+    dispatch_async(createQueue, ^{
+        [registerData sendAPNSResponseForMessage:messageID];
+    });
+
     
     int badgeNumber = [[[NSUserDefaults standardUserDefaults]objectForKey:BADGE_COUNT] intValue];
     
@@ -71,7 +104,8 @@
     
     NSString *iosVersion = [[UIDevice currentDevice] systemVersion];
     NSLog(@"%@", iosVersion);
-    
+    NSString *deviceModel = [HelperMethods getDeviceModel];
+    NSLog(@"%@", deviceModel);
     if ([[[NSUserDefaults standardUserDefaults]objectForKey:ACCOUNT_CREATED]boolValue])
     {
         RegistrationModel *registerData = [[RegistrationModel alloc]init];
@@ -79,7 +113,7 @@
         dispatch_queue_t createQueue = dispatch_queue_create("updateIOSVersion", NULL);
         dispatch_async(createQueue, ^{
             NSArray *dataArray;
-            dataArray = [registerData updateUserVersionUserID:[[NSUserDefaults standardUserDefaults]objectForKey:USER_ID] withVersion:iosVersion];
+            dataArray = [registerData updateUserVersionAndModelUserID:[[NSUserDefaults standardUserDefaults]objectForKey:USER_ID] withVersion:iosVersion andModel:deviceModel];
             if ([dataArray count] == 1)
             {
                 dispatch_async(dispatch_get_main_queue(), ^{

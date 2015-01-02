@@ -11,7 +11,8 @@
 
 @interface UserData : NSObject
 
-@property (nonatomic) BOOL isRegistered;
+@property (nonatomic) BOOL isPendingVerification;
+@property (nonatomic) BOOL isApproved;
 @property (nonatomic) BOOL isAccountCreated;
 @property (nonatomic) BOOL hasPurchased;
 @property (nonatomic) BOOL wasPasswordReset;
@@ -22,6 +23,8 @@
 @property (nonatomic, strong) NSDictionary *schoolData;
 @property (nonatomic, strong) NSDictionary *appData;
 @property (nonatomic, strong) NSDictionary *userInfo;
+@property (nonatomic, strong) NSString *accountType;
+
 
 
 - (NSUInteger)getNumberOfSchools;
@@ -50,6 +53,12 @@
 
 - (BOOL)removeSchoolFromPhone:(NSString *)schoolID;
 
+- (void)resetTutorials;
 
+- (BOOL)getTutorialStatusOfView:(int)viewID;
+
+- (void)turnOffTutorialForView:(int)viewID;
+
+- (void)turnOffTutorial;
 
 @end

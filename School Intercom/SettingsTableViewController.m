@@ -23,6 +23,9 @@
     return self;
 }
 
+
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -94,6 +97,7 @@
     return YES;
 
 }
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:SEGUE_TO_UPDATE_PROFILE_VIEW])
@@ -112,6 +116,16 @@
         ASVC.mainUserData = self.mainUserData;
     }
 }
+
+- (IBAction)resetTutorialPressed
+{
+    [self.mainUserData resetTutorials];
+    
+    UIAlertView *resetTutorialAlert = [[UIAlertView alloc]initWithTitle:@"Tutorials Reset" message:@"Each screen will now display it's tutorial the first time you view it." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+    
+    [resetTutorialAlert show];
+}
+
 
 #pragma mark - Table view data source
 /*

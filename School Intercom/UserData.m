@@ -15,6 +15,7 @@
 
 @property (nonatomic, strong) NSArray *schoolDataArray;
 @property (nonatomic, strong) NSArray *schoolIDs;
+@property (nonatomic, strong) NSArray *tutorials;
 
 @end
 
@@ -26,6 +27,7 @@
 @synthesize schoolIDselected = _schoolIDselected;
 @synthesize schoolDataArray = _schoolDataArray;
 @synthesize userInfo = _userInfo;
+
 
 
 - (instancetype)init
@@ -51,8 +53,9 @@
         }
 
         self.schoolIDs = [[NSUserDefaults standardUserDefaults]objectForKey:SCHOOL_ID_ARRAY];
-        //self.isRegistered = [[self.schoolData objectForKey:USER_IS_VERIFIED]boolValue];
-        self.isRegistered = [[[NSUserDefaults standardUserDefaults]objectForKey:USER_IS_VERIFIED]boolValue];
+        //self.isPendingVerification = [[self.schoolData objectForKey:USER_IS_VERIFIED]boolValue];
+        self.isPendingVerification = [[[NSUserDefaults standardUserDefaults]objectForKey:IS_PENDING_APPROVAL]boolValue];
+        self.isApproved = [[[NSUserDefaults standardUserDefaults]objectForKey:USER_APPROVED]boolValue];
         self.isAccountCreated = [[[NSUserDefaults standardUserDefaults]objectForKey:ACCOUNT_CREATED]boolValue];
         self.wasPasswordReset = [[[NSUserDefaults standardUserDefaults] objectForKey:PASSWORD_RESET]boolValue];
         self.hasPurchased = [[[NSUserDefaults standardUserDefaults]objectForKey:USER_HAS_PURCHASED]boolValue];
@@ -60,7 +63,21 @@
         self.userInfo = [[NSUserDefaults standardUserDefaults] objectForKey:USER_INFO];
         self.isDemoInUse = [[[NSUserDefaults standardUserDefaults] objectForKey:IS_DEMO_IN_USE] boolValue];
         self.isAdmin = [[[NSUserDefaults standardUserDefaults]objectForKey:USER_IS_ADMIN] boolValue];
+        self.accountType = [[NSUserDefaults standardUserDefaults] objectForKey:USER_ACCOUNT_TYPE];
         
+        if(![[NSUserDefaults standardUserDefaults]objectForKey:@"tutorials"])
+        {
+            NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+            for (int i = 0; i < mvsvCount; i++)
+            {
+                [tempArray addObject:@"1"];
+            }
+            
+            self.tutorials = tempArray;
+        }
+        
+        else
+            self.tutorials = [[NSUserDefaults standardUserDefaults]objectForKey:@"tutorials"];
                 
         NSLog(@"%@", self.schoolDataArray);
         NSLog(@"%@", self.schoolIDs);
@@ -69,6 +86,7 @@
     
     return self;
 }
+
 
 - (NSDictionary *)userInfo
 {
@@ -112,6 +130,13 @@
     return _schoolIDs;
 }
 
+- (void)setTutorials:(NSArray *)tutorials
+{
+    _tutorials = tutorials;
+    [[NSUserDefaults standardUserDefaults]setValue:tutorials forKeyPath:@"tutorials"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+}
+
 - (void)setWasPasswordReset:(BOOL)wasPasswordReset
 {
     _wasPasswordReset = wasPasswordReset;
@@ -143,15 +168,22 @@
     NSLog(@"isAccountCreated set to %d",isAccountCreated);
 }
 
-- (void)setIsRegistered:(BOOL)isRegistered
+- (void)setIsApproved:(BOOL)isApproved
 {
-    _isRegistered = isRegistered;
-    NSMutableDictionary *tempdic = [self.schoolData mutableCopy];
-    [tempdic setObject:[NSString stringWithFormat:@"%d", isRegistered] forKey:@"usApproved"];
-    [self updateSchoolDataInArray:tempdic];
-    [[NSUserDefaults standardUserDefaults]setValue:[NSString stringWithFormat:@"%d",isRegistered] forKey:USER_IS_VERIFIED];
+    _isApproved = isApproved;
+    [[NSUserDefaults standardUserDefaults]setValue:[NSString stringWithFormat:@"%d", isApproved] forKey:USER_APPROVED];
     [[NSUserDefaults standardUserDefaults]synchronize];
-    NSLog(@"isRegisterd is set to %d", isRegistered);
+}
+
+- (void)setisPendingVerification:(BOOL)isPendingVerification
+{
+    _isPendingVerification = isPendingVerification;
+    //NSMutableDictionary *tempdic = [self.schoolData mutableCopy];
+    //[tempdic setObject:[NSString stringWithFormat:@"%d", isPendingVerification] forKey:@"usApproved"];
+    //[self updateSchoolDataInArray:tempdic];
+    [[NSUserDefaults standardUserDefaults]setValue:[NSString stringWithFormat:@"%d",isPendingVerification] forKey:IS_PENDING_APPROVAL];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+    NSLog(@"isRegisterd is set to %d", isPendingVerification);
 }
 
 - (void)setHasPurchased:(BOOL)hasPurchased
@@ -163,6 +195,13 @@
     [[NSUserDefaults standardUserDefaults]setValue:[NSString stringWithFormat:@"%d", hasPurchased] forKey:USER_HAS_PURCHASED];
     [[NSUserDefaults standardUserDefaults]synchronize];
     NSLog(@"hasPurchased is set to %d", hasPurchased);
+}
+
+- (void)setAccountType:(NSString *)accountType
+{
+    _accountType = accountType;
+    [[NSUserDefaults standardUserDefaults]setValue:accountType forKey:USER_ACCOUNT_TYPE];
+    [[NSUserDefaults standardUserDefaults]synchronize];
 }
 
 - (void)setUserID:(NSString *)userID
@@ -186,6 +225,7 @@
     [[NSUserDefaults standardUserDefaults] setValue:schoolIDselected forKey:WORKING_SCHOOL_ID];
     [[NSUserDefaults standardUserDefaults]synchronize];
 }
+
 
 - (void)setSchoolDataArray:(NSArray *)schoolDataArray
 {
@@ -291,7 +331,12 @@
         {
             self.schoolData = school;
             NSLog(@"%@", school);
-            self.isRegistered = [[school objectForKey:@"usApproved"]boolValue];
+            
+            self.isApproved = [[school objectForKey:USER_APPROVED]boolValue];
+            if(self.isApproved)
+                self.isPendingVerification = NO;
+            else
+                self.isPendingVerification = YES;
             self.hasPurchased = [[school objectForKey:USER_HAS_PURCHASED]boolValue];
             self.schoolIDselected = schoolID;
 
@@ -358,7 +403,8 @@
 
 - (void)clearAllData
 {
-    self.isRegistered = NO;
+    self.isPendingVerification = NO;
+    self.isApproved = NO;
     self.isAccountCreated = NO;
     self.hasPurchased = NO;
     self.wasPasswordReset = NO;
@@ -371,6 +417,9 @@
     self.schoolDataArray = @[];
     self.schoolIDs = @[];
     self.isAdmin = NO;
+    self.accountType = @"";
+    
+    [self resetTutorials];
 }
 
 - (BOOL)removeSchoolFromPhone:(NSString *)schoolID
@@ -427,7 +476,38 @@
     return switchSchool;
 }
 
+- (void)resetTutorials
+{
+    NSMutableArray *tempArray = [self.tutorials mutableCopy];
+   
+    for (int i = 0; i < [tempArray count]; i++)
+        tempArray[i] = @"1";
+    
+    self.tutorials = tempArray;
+    
+}
 
+- (BOOL)getTutorialStatusOfView:(int)viewID
+{
+    return [self.tutorials[viewID] boolValue];
+}
+
+- (void)turnOffTutorialForView:(int)viewID
+{
+    NSMutableArray *tempArray = [self.tutorials mutableCopy];
+    tempArray[viewID] = @"0";
+    self.tutorials = tempArray;
+}
+
+- (void)turnOffTutorial
+{
+    NSMutableArray *tempArray = [self.tutorials mutableCopy];
+    
+    for (int i = 0; i < [tempArray count]; i++)
+        tempArray[i] = @"0";
+    
+    self.tutorials = tempArray;
+}
 
 
 @end

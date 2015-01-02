@@ -20,7 +20,12 @@ typedef enum
     zPickerState = 100,
     zPickerCity,
     zPickerSchool,
-    zPickerTeacher
+    zPickerTeacher,
+    zPickerGroup,
+    zPickerSecondGroup,
+    zPickerThirdGroup,
+    zPickerFourthGroup,
+    zPickerFifthGroup
 } PickerType;
 
 //LoginScreen Alertview
@@ -32,6 +37,35 @@ typedef enum
 } AlertButtons;
 
 #define zAlertEnterEmailOK 1
+
+typedef enum
+{
+    groupTextbox1 = 1,
+    groupTextbox2,
+    groupTextbox3,
+    groupTextbox4,
+    groupTextbox5
+}AlertGroupTextFields;
+
+typedef enum
+{
+    quGetAllParent = 1,
+    quGetAllTeachers,
+    quGetAllSchools,
+    quGetAllCorps
+}queryTypes;
+
+typedef enum
+{
+    utParent,
+    utTeacher,
+    utSecretary,
+    utPrincipal,
+    utSuperintendent,
+    utSales,
+    utSuperUser,
+    utBetaTester
+}userTypes;
 
 typedef enum
 {
@@ -60,13 +94,19 @@ typedef enum
     zAlertTouchIDFailed,
     zAlertEmailInUseAlert,
     zAlertEmailSent,
-    zAlertConfirmRemoveTeacher
+    zAlertConfirmRemoveTeacher,
+    zAlertConfirmSendAlert,
+    zAlertUserApproved,
+    zAlertUserDenied,
+    zAlertEnterMessage,
+    zAlertPasswordChangeSuccess
 } AlertTypes;
 
 typedef enum
 {
     zTextFieldEmail = 20,
-    zTextFieldPin
+    zTextFieldPin,
+    zTextFieldMessage
     
 } TextFieldTypes;
 
@@ -78,8 +118,26 @@ typedef enum
     mv_Contact,
     mv_Switch,
     mv_Calendar,
-    mv_LunchMenu
-} MainViews;
+    mv_LunchMenu,
+    mv_AdminTools,
+    sv_UpdateKids,
+    sv_UpdateKid,
+    sv_UpdateProfile,
+    sv_NewsDetail,
+    sv_AddSchool,
+    av_SendAlert,
+    mvsvCount
+} MainAndSubViews;
+
+typedef enum
+{
+   agAllUsers = 1,
+   agSchoolCorporation,
+   agOneSchool,
+   agOneClassroom,
+   agOneTeacher,
+   agOneParent
+}AlertGroups;
 
 typedef enum
 {
@@ -113,6 +171,26 @@ typedef enum
 #define RETINA_SUFFIX @"@2x.png"
 #define IPHONE5_SUFFIX @"-568h@2x.png"
 
+
+//cellTypes
+#define CELL_SEND_ALERT @"sendAlertCell"
+#define CELL_APP_STATS @"appStatsCell"
+#define CELL_MANAGE_TEACHERS @"manageTeachersCell"
+#define CELL_MANAGE_USERS @"manageUsersCell"
+#define CELL_EXIT @"exitCell"
+#define CELL_USER_APPROVALS @"userApprovalsCell"
+#define CELL_AD_STATS @"adStatsCell"
+
+#define CELL_FIRST_NAME @"firstNameCell"
+#define CELL_LAST_NAME @"lastNameCell"
+#define CELL_EMAIL @"emailCell"
+#define CELL_RESET_PASSWORD @"resetPasswordCell"
+#define CELL_ACCOUNT_TYPE @"accountTypeCell"
+#define CELL_SCHOOLS @"schoolsCell"
+#define CELL_PUSHPIN @"pushPinCell"
+#define CELL_CREATED_ON @"createdOnCell"
+#define CELL_DEVICE_MODEL @"deviceModelCell"
+#define CELL_DEVICE_VERSION @"deviceVersionCell"
 
 //php file defines
 
@@ -150,8 +228,20 @@ typedef enum
 #define PHP_GET_KID_TEACHERS @"get_kid_teachers.php"
 #define PHP_ADD_TEACHER @"add_teacher.php"
 #define PHP_DELETE_TEACHER_FROM_KID @"delete_teacher_from_kid.php"
+#define PHP_GET_ALERT_GROUPS @"get_alert_groups.php"
+#define PHP_GET_SECONDARY_ALERT_GROUP @"get_secondary_alert_groups.php"
+#define PHP_INSERT_ALERT @"insert_alert.php"
+#define PHP_GET_ADS @"get_ads.php"
+#define PHP_GET_AD_STATS @"get_ad_stats.php"
+#define PHP_APNS_RESPONSE @"apns_response.php"
+#define PHP_UPDATE_USER_APPROVAL_STATUS @"update_approval_status.php"
+#define PHP_GET_NEW_PENDING_USERS @"get_new_pending_users.php"
+#define PHP_GET_USERS @"get_users.php"
+#define PHP_GET_SINGLE_USER @"get_single_user.php"
+#define PHP_GET_USERS_SCHOOLS @"get_users_schools.php"
 
 //common fields
+#define MESSAGE_ID @"messageID"
 #define SCHOOL_ID @"schoolID"
 #define USER_ID @"userID"
 #define ID @"id"
@@ -169,6 +259,7 @@ typedef enum
 #define EMAIL_BODY @"emailBody"
 #define PASSWORD_RESET @"passwordRest"
 #define DEVICE_VERSION @"deviceVersion"
+#define DEVICE_MODEL @"deviceModel"
 #define CURRENT_VERSION @"currentVersion"
 #define IS_APP_UP_TO_DATE @"isAppUpToDate"
 #define WAS_UPDATE_ALERT_SHOWN @"wasUpdateAlertShown"
@@ -178,7 +269,13 @@ typedef enum
 #define IS_DEMO_IN_USE @"isDemoInUse"
 #define USER_SCHOOL_IS_ACTIVE @"isActive"
 #define USER_IS_ADMIN @"isAdmin"
-#define USER_ACCOUNT_TYPE @"accountType"
+#define USER_ACCOUNT_TYPE @"userType"
+#define DATA @"data"
+#define IS_PENDING_APPROVAL @"isPendingApproval"
+
+//alert_groups table
+#define ALERT_GROUP_NAME @"groupName"
+#define ALERT_GROUP_ID @"alertGroupID"
 
 //adv table
 #define AD_ID @"adID"
@@ -193,6 +290,8 @@ typedef enum
 #define ALERT_TEXT @"alertText"
 #define ALERT_LINK_URL @"alertLinkURL"
 #define ALERT_TIME_SENT @"alertTimeSent"
+#define ALERT_TYPE @"alertType"
+#define ALERT_EXPIRE_DATE  @"alertExpireDate"
 
 //calendar table
 #define CAL_TITLE @"calTitle"
@@ -225,6 +324,7 @@ typedef enum
 
 //school table
 #define SCHOOL_NAME @"schoolName"
+#define SCHOOL_CORP_ID @"corpID"
 #define SCHOOL_COLOR_1 @"schoolColor1"
 #define SCHOOL_COLOR_2 @"schoolColor2"
 #define SCHOOL_IMAGE_NAME @"schoolImageName"
@@ -239,6 +339,8 @@ typedef enum
 #define SCHOOL_NEWS_HEADER @"schoolNewsHeader"
 #define SCHOOL_LUNCH @"schoolLunch"
 
+//corporation table
+#define CORP_ID @"corpID"
 
 //user table
 #define USER_FIRST_NAME @"userFName"
@@ -251,20 +353,21 @@ typedef enum
 //verify queue Table
 #define VQ_MESSAGE @"vqMessage"
 #define VQ_DATE_ADDED @"dateAdded"
-#define VQ_DATE_APPROVED @"dateApproved"
+#define DATE_DENIED @"dateDenied"
 
 //user schools table
 #define US_NUMBER_OF_KIDS @"usNumOfKids"
-#define USER_IS_VERIFIED @"usVerified"
+#define USER_APPROVED @"usApproved"
 #define USER_HAS_PURCHASED @"usHasPurchased"
 #define US_PURCHASED_DATE @"purchasedDate"
 #define US_TRANSACTION_ID @"transactionIdentifier"
+#define US_IS_ACTIVE @"isActive"
 
 //teacher table
 #define TEACHER_ID @"teacherID"
 #define TEACHER_PREFIX @"prefix"
-#define TEACHER_FIRST_NAME @"fname"
-#define TEACHER_LAST_NAME @"lname"
+#define TEACHER_FIRST_NAME @"userFName"
+#define TEACHER_LAST_NAME @"userLName"
 #define GRADE_LEVEL @"grade"
 #define TEACHER_SUBJECT @"subject"
 #define TEACHER_NAME @"teacherName"
@@ -284,7 +387,15 @@ typedef enum
 #define SEGUE_TO_NEWS_DETAIL_VIEW @"newsdetailview"
 #define SEGUE_TO_LUNCH_MENU_VIEW @"lunchMenuSegue"
 #define SEGUE_TO_UPDATE_KID_VIEW @"updateKidSegue"
-
+#define SEGUE_TO_ADMIN_TOOLS @"adminToolsSegue"
+#define SEGUE_TO_SEND_ALERTS_VIEW @"sendAlertSegue"
+#define SEGUE_TO_USER_APPROVALS @"userApprovalsSegue"
+#define SEGUE_TO_AD_STATS @"adStatsSegue"
+#define SEGUE_TO_MANAGE_USERS @"manageUsersSegue"
+#define SEGUE_TO_EDIT_SINGLE_USER @"editUserSegue"
+#define SEGUE_TO_SELECT_USER_TYPE @"accountTypeSegue"
+#define SEGUE_TO_USERS_SCHOOLS @"usersSchoolsSegue"
+#define SEGUE_TO_SINGLE_SCHOOL @"singleSchoolSegue"
 
 //Dictionary keys
 #define DIC_CALENDAR_DATA @"calendarData"

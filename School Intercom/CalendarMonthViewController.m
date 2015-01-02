@@ -39,10 +39,27 @@
 @property (nonatomic, strong) NSDictionary *detailViewDic;
 @property (nonatomic, strong) NSDictionary *selectedEventData;
 @property (nonatomic, strong) NSArray *eventsArray;
+@property (nonatomic, strong) UIView *overlay1;
+@property (nonatomic, strong) UIView *helpOverlay;
+@property (nonatomic, strong) AdModel *adModel;
+@property (nonatomic, strong) NSDictionary *adData;
+@property (strong, nonatomic) UIButton *adImageButton;
 @end
 
 #pragma mark - CalendarMonthViewController
 @implementation CalendarMonthViewController
+
+- (AdModel *)adModel
+{
+    if(!_adModel) _adModel = [[AdModel alloc]init];
+    return _adModel;
+}
+
+-(NSDictionary *)adData
+{
+    if(!_adData) _adData = [[NSDictionary alloc]init];
+    return _adData;
+}
 
 -(NSArray *)eventsArray
 {
@@ -88,6 +105,50 @@
     
 }
 
+- (IBAction)adButtonclicked
+{
+    NSString *urlString;
+    
+    switch ([[self.adData objectForKey:AD_TYPE]intValue])
+    {
+        case 0:
+        case 1:
+        {
+            urlString = [self.adData objectForKey:AD_URL_LINK];
+        }
+            break;
+        case 2:
+        {
+            urlString = [NSString stringWithFormat:@"%@?id=%@&user=%@", AD_OFFER_LINK, [self.adData objectForKey:ID], self.mainUserData.userID];
+        }
+            break;
+            
+        default:
+            break;
+    }
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:urlString]];
+    
+    
+    dispatch_queue_t createQueue = dispatch_queue_create("updateAdClickCount", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.adModel updateAdClickCountInDatabse:[self.adData objectForKey:ID]fromSchool:self.mainUserData.schoolIDselected];
+        if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    NSLog(@"%@", tempDic);
+                }
+            });
+            
+        }
+    });
+    
+}
+
 
 - (NSArray *)getDateArrayFromString:(NSString *)date
 {
@@ -96,6 +157,61 @@
     return dateArray;
     
 }
+
+- (void)loadAdImage
+{
+    NSString *fileName = [self.adData objectForKey:AD_IMAGE_NAME];
+    
+    NSString *baseImageURL = [NSString stringWithFormat:@"%@%@%@", AD_IMAGE_URL, AD_DIRECTORY, fileName];
+    
+    NSLog(@"%@", baseImageURL);
+    
+    dispatch_queue_t downloadQueue = dispatch_queue_create("get Image", NULL);
+    dispatch_async(downloadQueue, ^{
+        
+        
+        
+        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:baseImageURL]];
+        dispatch_async(dispatch_get_main_queue(),^{
+            UIImage *image = [UIImage imageWithData:data];
+            [self.adImageButton setImage:image forState:UIControlStateNormal];
+            //[spinner stopAnimating];
+            NSLog(@"%f, %f", image.size.width, image.size.height);
+        });
+        
+        
+    });
+    
+}
+
+- (void)getAdFromDatabase
+{
+    
+    
+    dispatch_queue_t createQueue = dispatch_queue_create("getLocalAd", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *adDataArray;
+        adDataArray = [self.adModel getAdFromDatabase:self.mainUserData.schoolIDselected];
+        
+        if ([adDataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [[adDataArray objectAtIndex:0] objectForKey:@"adData"];
+                
+                self.adData = tempDic;
+                
+                if(self.adData != (id)[NSNull null])
+                    [self loadAdImage];
+                else
+                    self.adImageButton.enabled = false;
+                
+            });
+            
+        }
+    });
+    
+}
+
 
 - (void)loadUsersCalendar
 {
@@ -435,9 +551,9 @@
     self.monthView.frame = rect;
     CGRect viewRect = self.view.frame;
     rect = self.tableView.frame;
-    rect.size.height = viewRect.size.height - 58;
+    rect.size.height = viewRect.size.height - 128;
     
-    rect.origin.y = viewRect.origin.y + 58;
+    rect.origin.y = viewRect.origin.y + 64;
     rect.origin.x = viewRect.origin.x;
     self.tableView.frame = rect;
     [self.monthView removeFromSuperview];
@@ -458,6 +574,30 @@
     [menuButton setImage:[UIImage imageNamed:@"menuIcon"] forState:UIControlStateNormal];
     [self.view addSubview:menuButton];
     [self.view addSubview:pageTitle];
+    
+    self.overlay1 = [[UIView alloc]initWithFrame:CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height)];
+    self.helpOverlay = [[UIView alloc]initWithFrame:CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height)];
+    
+    self.overlay1.alpha = 0;
+    self.helpOverlay.alpha = 0;
+    
+    self.overlay1.backgroundColor = [UIColor blackColor];
+    self.helpOverlay.backgroundColor = [UIColor clearColor];
+    
+    [self.view addSubview:self.overlay1];
+    [self.view addSubview:self.helpOverlay];
+    
+    UIButton *dismissButton = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width/2) - (118/2), self.view.frame.size.height-38, 118, 30)];
+    [dismissButton setTitle:@"Dismiss Help" forState:UIControlStateNormal];
+    [dismissButton addTarget:self action:@selector(hideHelpPressed) forControlEvents:UIControlEventTouchDown];
+    [self.helpOverlay addSubview:dismissButton];
+    
+    self.adImageButton = [[UIButton alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height - 60, 320, 60)];
+    [self.adImageButton addTarget:self action:@selector(adButtonclicked) forControlEvents:UIControlEventTouchDown];
+    [self.adImageButton setTitle:@"" forState:UIControlStateNormal];
+    
+    [self.view addSubview:self.adImageButton];
+    
     /*
     UIView *detailViewControls = [[UIView alloc]initWithFrame:CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width, 40)];
     UIButton *backButton = [[UIButton alloc]initWithFrame:CGRectMake(20, 0, 40, 40)];
@@ -480,6 +620,57 @@
     [self loadUsersCalendar];
 
 }
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    [self getAdFromDatabase];
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if([self.mainUserData getTutorialStatusOfView:mv_Calendar])
+        [self showHelp];
+}
+
+- (void)showHelp
+{
+    self.helpOverlay.hidden = false;
+    self.overlay1.hidden = false;
+    
+    [UIView animateWithDuration:1 animations:^{
+        
+        
+        self.overlay1.alpha = 0.5;
+        self.helpOverlay.alpha = 1.0;
+        //self.dismissButton.alpha = 1.0;
+        //self.help1.alpha = 1.0;
+    }];
+}
+
+- (IBAction)hideHelpPressed
+{
+    [self.mainUserData turnOffTutorialForView:mv_Calendar];
+    [UIView animateWithDuration:.75 animations:^{
+        self.overlay1.alpha = 0.0;
+        self.helpOverlay.alpha = 0.0;
+        //self.dismissButton.alpha = 1.0;
+        //self.help1.alpha = 1.0;
+        
+    }completion:^(BOOL finished){
+        self.overlay1.hidden = true;
+        self.helpOverlay.hidden = true;
+    }];
+    
+    
+    
+    
+    
+}
+
 
 - (void)menuPressed
 {
@@ -721,11 +912,12 @@
         {
             cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"DetailViewTitleCell"];
             
-            UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 20, 306, 21)];
+            UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 20, 306, 30)];
             UILabel *dateLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 49, 306, 41)];
             dateLabel.numberOfLines = 2;
             dateLabel.font = [UIFont systemFontOfSize:8.0];
-            titleLabel.font = [UIFont systemFontOfSize:13.0];
+            titleLabel.font = [UIFont systemFontOfSize:12.0];
+            titleLabel.numberOfLines = 2;
             
             
             titleLabel.text = [self.detailViewDic objectForKey:CAL_TITLE];;
@@ -794,14 +986,14 @@
         //UILabel *cellLabel = (UILabel *)[cell.contentView viewWithTag:2];
         //UILabel *calLabel = (UILabel *)[cell.contentView viewWithTag:1];
         
-        UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 11, 185, 21)];
+        UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 1, 185, 40)];
         UILabel *dateLabel = [[UILabel alloc]initWithFrame:CGRectMake(238, 11, 62, 21)];
         
         dateLabel.textAlignment = NSTextAlignmentRight;
         
         dateLabel.font = [UIFont systemFontOfSize:10.0];
-        titleLabel.font = [UIFont systemFontOfSize:15.0];
-
+        titleLabel.font = [UIFont systemFontOfSize:14.0];
+        titleLabel.numberOfLines = 2;
         
         UIButton *addButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 7, 30, 30)];
 

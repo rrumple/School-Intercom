@@ -22,6 +22,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *updateAppButton;
 @property (weak, nonatomic) IBOutlet UILabel *switchSchoolBadge;
 @property (weak, nonatomic) IBOutlet UIButton *logOutButton;
+@property (nonatomic, strong) NSArray *calendarData;
 @end
 
 @implementation MainMenuViewController
@@ -54,8 +55,7 @@
 
     [super viewDidLoad];
     
-    
-	//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:ADLoadDataNotification object:nil];	//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
     
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(loadPreviousView)];
@@ -97,6 +97,9 @@
             break;
         case mv_LunchMenu:
             [self performSegueWithIdentifier:SEGUE_TO_LUNCH_MENU_VIEW sender:self];
+            break;
+        case mv_AdminTools:
+            [self performSegueWithIdentifier:SEGUE_TO_ADMIN_TOOLS sender:self];
             break;
             
     }
@@ -204,6 +207,13 @@
     if(self.mainUserData.isAdmin)
     {
         self.logOutButton.hidden = false;
+        [self.lunchMenuButton setTitle:@"Admin Tools" forState:UIControlStateNormal];
+        self.lunchMenuButton.hidden = false;
+    }
+    else if(![[self.mainUserData.schoolData objectForKey:SCHOOL_LUNCH] isEqualToString:@"None"])
+    {
+        [self.lunchMenuButton setTitle:@"Lunch Menu" forState:UIControlStateNormal];
+        [self.lunchMenuButton setHidden:false];
     }
     
     if(self.mainUserData.isDemoInUse)
@@ -252,8 +262,7 @@
         
     }
     
-    if(![[self.mainUserData.schoolData objectForKey:SCHOOL_LUNCH] isEqualToString:@"None"])
-        [self.lunchMenuButton setHidden:false];
+    
     NSLog(@"%@", [[NSUserDefaults standardUserDefaults] objectForKey:IS_APP_UP_TO_DATE]);
     if (![[NSUserDefaults standardUserDefaults] objectForKey:IS_APP_UP_TO_DATE] || [[[NSUserDefaults standardUserDefaults] objectForKey:IS_APP_UP_TO_DATE]boolValue])
         self.updateAppButton.hidden = YES;
@@ -346,15 +355,63 @@
         [self performSegueWithIdentifier:SEGUE_TO_SWITCH_VIEW sender:self];
    }
 }
+- (IBAction)lunchButtonPressed:(UIButton *)sender
+{
+    if([sender.titleLabel.text isEqualToString:@"Lunch Menu"])
+    {
+        [self performSegueWithIdentifier:SEGUE_TO_LUNCH_MENU_VIEW sender:self];
+    }
+    else if([sender.titleLabel.text isEqualToString:@"Admin Tools"])
+    {
+        [self performSegueWithIdentifier:SEGUE_TO_ADMIN_TOOLS sender:self];
+    }
+}
+
+- (void)sortCalendar
+{
+    
+    NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+    
+    
+    if([self.mainUserData.appData objectForKey:DIC_CALENDAR_DATA] != (id)[NSNull null])
+    {
+        [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:DIC_CALENDAR_DATA]];
+        
+    }
+    if([self.mainUserData.appData objectForKey:@"corpCalData"] != (id)[NSNull null])
+    {
+        [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:@"corpCalData"]];
+        
+    }
+    if([self.mainUserData.appData objectForKey:@"teacherCalData"] != (id)[NSNull null])
+    {
+        [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:@"teacherCalData"]];
+    }
+    
+    
+    if(tempArray != (id)[NSNull null])
+    {
+        self.calendarData = tempArray;
+        
+        NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"calStartDate"  ascending:YES];
+        self.calendarData=[self.calendarData sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]];
+    }
+    
+    
+}
+
 
 - (IBAction)calendarPressed
 {
+    [self sortCalendar];
     self.lastViewSelected = mv_Calendar;
     CalendarMonthViewController *vc = [[CalendarMonthViewController alloc] initWithSunday:YES];
-    vc.calendarData = [self.mainUserData.appData objectForKey:DIC_CALENDAR_DATA];
+    vc.calendarData = self.calendarData;
     vc.delegate = self;
     vc.backgroundColor = self.view.backgroundColor;
     vc.headerFont = self.headerFont;
+    vc.mainUserData = self.mainUserData;
+    
     [self.navigationController pushViewController:vc animated:YES];
 }
 
@@ -380,6 +437,7 @@
         VC.newsData = [self.mainUserData.appData objectForKey:@"newsData"];
         VC.newsHeader = [self.mainUserData.schoolData objectForKey:SCHOOL_NEWS_HEADER];
         VC.schoolID = [self.mainUserData.schoolData objectForKey:ID];
+        VC.mainUserData = self.mainUserData;
 
         VC.delegate = self;
     }
@@ -411,6 +469,13 @@
         LunchMenuViewController *LMVC = segue.destinationViewController;
         LMVC.delegate = self;
         LMVC.mainUserData = self.mainUserData;
+    }
+    else if([segue.identifier isEqualToString:SEGUE_TO_ADMIN_TOOLS])
+    {
+        self.lastViewSelected = mv_AdminTools;
+        AdminToolsTableViewController *ATTVC = segue.destinationViewController;
+        ATTVC.delegate = self;
+        ATTVC.mainUserData = self.mainUserData;
     }
 }
 

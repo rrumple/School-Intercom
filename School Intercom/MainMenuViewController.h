@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 #import "HomeViewController.h"
 #import "CalendarMonthViewController.h"
 #import "NewsViewController.h"
@@ -16,6 +17,7 @@
 #import "CalendarMonthViewController.h"
 #import "IntroModel.h"
 #import "LunchMenuViewController.h"
+#import "AdminToolsTableViewController.h"
 
 
 
@@ -25,7 +27,7 @@
 
 @protocol MainMenuControllerDelegate;
 
-@interface MainMenuViewController : UIViewController <HomeViewControllerDelegate, NewsViewControllerDelegate, CalendarMonthViewControllerDelegate, ContactViewControllerDelegate, SwitchViewControllerDelegate, SettingsTableViewControllerDelegate, LunchMenuViewControllerDelegate>
+@interface MainMenuViewController : UIViewController <HomeViewControllerDelegate, NewsViewControllerDelegate, CalendarMonthViewControllerDelegate, ContactViewControllerDelegate, SwitchViewControllerDelegate, SettingsTableViewControllerDelegate, LunchMenuViewControllerDelegate, AdminToolsTableViewControllerDelegate>
 
 @property (nonatomic, weak) id<MainMenuControllerDelegate> delegate;
 @property (nonatomic, strong) UserData *mainUserData;

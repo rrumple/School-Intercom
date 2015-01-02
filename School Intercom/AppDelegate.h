@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RegistrationModel.h"
+UIKIT_EXTERN NSString * const ADLoadDataNotification;
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 

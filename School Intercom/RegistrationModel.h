@@ -49,10 +49,12 @@
 
 - (NSArray *)updateUserPushNotificationPinForUserID:(NSString *)userID withPin:(NSString *)deviceToken;
 
-- (NSArray *)updateUserVersionUserID:(NSString *)userID withVersion:(NSString *)version;
+- (NSArray *)updateUserVersionAndModelUserID:(NSString *)userID withVersion:(NSString *)version andModel:(NSString *)model;
 
 - (NSArray *)getCurrentAppVersion;
 
 - (NSArray *)sendEmailToRequestSchoolAdditionBy:(NSString *)name emailAddress:(NSString *)email forSchoolNamed:(NSString *)schoolName inCity:(NSString *)city inState:(NSString *)state withSchoolContactName:(NSString *)schoolContactName;
+
+- (NSArray *)sendAPNSResponseForMessage:(NSString *)messageID;
 
 @end

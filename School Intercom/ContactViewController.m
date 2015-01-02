@@ -20,6 +20,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *zipCodeLabel;
 @property (weak, nonatomic) IBOutlet UILabel *schoolEmailLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
+@property (weak, nonatomic) IBOutlet UIView *overlay1;
+@property (weak, nonatomic) IBOutlet UIView *helpOverlay;
 @end
 
 @implementation ContactViewController
@@ -66,6 +68,50 @@
     [self.headerLabel setFont:FONT_CHARCOAL_CY(17.0f)];
 
 }
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    if([self.mainUserData getTutorialStatusOfView:mv_Contact])
+        [self showHelp];
+}
+
+- (void)showHelp
+{
+    self.helpOverlay.hidden = false;
+    self.overlay1.hidden = false;
+    
+    [UIView animateWithDuration:1 animations:^{
+        
+        
+        self.overlay1.alpha = 0.5;
+        self.helpOverlay.alpha = 1.0;
+        //self.dismissButton.alpha = 1.0;
+        //self.help1.alpha = 1.0;
+    }];
+}
+
+- (IBAction)hideHelpPressed
+{
+    [self.mainUserData turnOffTutorialForView:mv_Contact];
+    [UIView animateWithDuration:.75 animations:^{
+        self.overlay1.alpha = 0.0;
+        self.helpOverlay.alpha = 0.0;
+        //self.dismissButton.alpha = 1.0;
+        //self.help1.alpha = 1.0;
+        
+    }completion:^(BOOL finished){
+        self.overlay1.hidden = true;
+        self.helpOverlay.hidden = true;
+    }];
+    
+    
+    
+    
+    
+}
+
 
 -(void)hideKeyboard
 {

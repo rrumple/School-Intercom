@@ -13,5 +13,5 @@
 
 - (NSArray *)getAdFromDatabase:(NSString *)schoolID;
 
-- (NSArray *)updateAdClickCountInDatabse:(NSString *)adID;
+- (NSArray *)updateAdClickCountInDatabse:(NSString *)adID fromSchool:(NSString *)schoolID;
 @end

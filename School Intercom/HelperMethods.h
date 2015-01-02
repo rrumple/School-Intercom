@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+UIKIT_EXTERN NSString * const HelperMethodsImageDownloadCompleted;
 
 @interface HelperMethods : NSObject
 
@@ -17,5 +18,10 @@
 + (BOOL)isEmailValid:(NSString *)email;
 + (NSArray *)listFileAtPath:(NSString *)path;
 + (NSArray *)arrayOfGradeLevels;
-+ (NSString *)convertGradeLevel:(NSString *)gradeLevel;
++ (NSString *)convertGradeLevel:(NSString *)gradeLevel appendGrade:(BOOL)addGradeText;
++ (NSString *)getDeviceModel;
++ (void)CreateAndDisplayOverHeadAlertInView:(UIView *)view withMessage:(NSString *)message andSchoolID:(NSString *)schoolID;
++ (NSArray *)getDateArrayFromString:(NSString *)date;
++ (NSArray *)getDictonaryOfUserTypes;
+
 @end

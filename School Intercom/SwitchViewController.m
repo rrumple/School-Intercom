@@ -8,6 +8,7 @@
 
 #import "SwitchViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "UserData.h"
 
 @interface SwitchViewController () <UIAlertViewDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *headerLabel;
@@ -15,6 +16,7 @@
 @property (nonatomic, strong) NSArray *allSchools;
 @property (nonatomic) NSInteger rowSelected;
 @property (nonatomic, strong) UpdateProfileModel *updateProfileData;
+
 
 
 @end
@@ -114,6 +116,8 @@
     }
     
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    
     
     NSString *pngFilePath = [NSString stringWithFormat:@"%@/%@",docDir, [[self.allSchools objectAtIndex:indexPath.row] objectForKey:SCHOOL_IMAGE_NAME]];
     

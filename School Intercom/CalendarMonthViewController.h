@@ -30,6 +30,9 @@
  */
 #import <EventKit/EventKit.h>
 #import "TapkuLibrary.h"
+#import "AdModel.h"
+#import "UserData.h"
+
 @import UIKit;
 
 
@@ -43,6 +46,7 @@
 @property (nonatomic, strong) NSArray *calendarData;
 @property (nonatomic, strong) UIColor *backgroundColor;
 @property (nonatomic, strong) UIFont *headerFont;
+@property (nonatomic, strong) UserData *mainUserData;
 
 @property (nonatomic, weak) id<CalendarMonthViewControllerDelegate> delegate;
 

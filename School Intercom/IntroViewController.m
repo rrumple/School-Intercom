@@ -85,6 +85,17 @@
     
 }
 
+- (BOOL)shouldAutorotate
+{
+    return NO;
+}
+
+- (NSUInteger)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+
 - (void)showHomeScreen
 {
     if(self.isLoadDataComplete && self.isLoadImageComplete)
@@ -331,15 +342,19 @@
                 else
                 {
                     
-                    self.mainUserData.isRegistered = [[tempDic objectForKey:@"usApproved"] boolValue];
+                    self.mainUserData.isPendingVerification = [[tempDic objectForKey:IS_PENDING_APPROVAL] boolValue];
+                    self.mainUserData.isApproved = [[tempDic objectForKey:USER_APPROVED]boolValue];
                     
-                    if (self.mainUserData.isRegistered  && [[tempDic objectForKey:USER_IS_VERIFIED]boolValue])
+                    if (!self.mainUserData.isPendingVerification && self.mainUserData.isApproved)
                     {
                         [self checkForValidUser];
                     }
-                    else if(!self.mainUserData.isRegistered && [[tempDic objectForKey:USER_IS_VERIFIED]boolValue] )
+                    else if(!self.mainUserData.isPendingVerification && !self.mainUserData.isApproved )
                     {
-                        [self showDeniedAlert];
+                        if([tempDic objectForKey:VQ_MESSAGE] != (id)[NSNull null])
+                            [self showDeniedAlertWithMessage:[tempDic objectForKey:VQ_MESSAGE]];
+                        else
+                            [self showDeniedAlertWithMessage:@""];
                     }
                     else
                         [self showNotApprovedAlert];
@@ -351,9 +366,14 @@
 
 }
 
-- (void)showDeniedAlert
+- (void)showDeniedAlertWithMessage:(NSString *)message
 {
-    self.notApprovedAlert = [[UIAlertView alloc] initWithTitle:@"Access Denied" message:@"Your access has been denied at this time, please email the school for more information" delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
+    if([message length] < 2)
+    {
+        message = @"Your access has been denied at this time, please contact the school for more information";
+    }
+    
+    self.notApprovedAlert = [[UIAlertView alloc] initWithTitle:@"Access Denied" message:message delegate:self cancelButtonTitle:nil otherButtonTitles:nil];
     [self.notApprovedAlert show];
 }
 
@@ -415,7 +435,7 @@
 - (void)checkForValidUser
 {
     
-    if (self.mainUserData.isAccountCreated && self.mainUserData.isRegistered)
+    if (self.mainUserData.isAccountCreated && self.mainUserData.isApproved)
     {
         if(self.mainUserData.hasPurchased)
         {
@@ -442,7 +462,7 @@
     {
         [self showNoAccountAlert];
     }
-    else if (self.mainUserData.isAccountCreated && !self.mainUserData.isRegistered)
+    else if (self.mainUserData.isAccountCreated)
     {
         //check the database to see if the users Registered status has changed
         [self checkVerifyStatus];
@@ -500,7 +520,8 @@
     [super viewDidLoad];
     
     //hash tester
-    //[HelperMethods encryptText:@"tester"];
+    NSLog(@"%@", [HelperMethods encryptText:@"tester"]);
+    
     
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
@@ -556,7 +577,12 @@
                     
                 }
                 else
+                {
+                    //Take this line of code out once tutorials are complete
+                    [self.mainUserData turnOffTutorial];
+                    
                     [self checkForValidUser];
+                }
             });
             
         }
@@ -695,6 +721,7 @@
     
         
 }
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -761,13 +788,23 @@
 
 - (void)finishLogin:(NSDictionary *)tempDic
 {
+
+    //turn is back on for Live version
+    //if(self.mainUserData.isAdmin)
+       [self.mainUserData turnOffTutorial];
+    
+    
+    
     NSMutableDictionary *userInfo = [[NSMutableDictionary alloc]init];
     [userInfo setObject:[tempDic objectForKey:USER_FIRST_NAME] forKey:USER_FIRST_NAME];
     [userInfo setObject:[tempDic objectForKey:USER_LAST_NAME] forKey:USER_LAST_NAME];
     [userInfo setObject:[tempDic objectForKey:USER_EMAIL] forKey:USER_EMAIL];
+    self.mainUserData.accountType = [tempDic objectForKey:USER_ACCOUNT_TYPE];
     
     self.mainUserData.userInfo = userInfo;
     self.mainUserData.userID = [tempDic objectForKey:USER_ID];
+    
+    
     if([[tempDic objectForKey:NUMBER_OF_SCHOOLS] integerValue] > 0)
     {
         
@@ -980,9 +1017,14 @@
                     }
                     else
                     {
-                        
-                        [self showExistingAccountAlert];
                         self.mainUserData.wasPasswordReset = YES;
+                        UIAlertView *passwordChangeSuccessAlert = [[UIAlertView alloc]initWithTitle:@"Password Reset" message:@"An email has been sent with further instructions on how to reset your password." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                        
+                        passwordChangeSuccessAlert.tag = zAlertPasswordChangeSuccess;
+                        
+                        [passwordChangeSuccessAlert show];
+                        
+                        
                     }
                 });
                 
@@ -1242,6 +1284,10 @@
 
     }
     else if (alertView.tag == zAlertTouchIDFailed)
+    {
+        [self showExistingAccountAlert];
+    }
+    else if (alertView.tag == zAlertPasswordChangeSuccess)
     {
         [self showExistingAccountAlert];
     }

@@ -8,6 +8,13 @@
 
 #import "HelperMethods.h"
 #import <CommonCrypto/CommonDigest.h>
+#import <QuartzCore/QuartzCore.h>
+#import <sys/sysctl.h>
+#import "UserData.h"
+
+NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownloadCompleted";
+
+
 
 @implementation HelperMethods
 
@@ -37,7 +44,9 @@
                                                                     
                                                                     NSData *data1 = [NSData dataWithData:UIImagePNGRepresentation(image)];
                                                                     [data1 writeToFile:pngFilePath atomically:YES];
-                                                                    NSLog(@"%@, %@ download complete", fileName, suffix);
+                                                                    
+                                                   
+                                                                  NSLog(@"%@, %@ download complete", fileName, suffix);
                                                                 }
                                                             }];
             [task resume];
@@ -74,6 +83,11 @@
                                                                     NSData *data1 = [NSData dataWithData:UIImagePNGRepresentation(image)];
                                                                     [data1 writeToFile:pngFilePath atomically:YES];
                                                                     NSLog(@"%@ download complete", fileName);
+                                                                    dispatch_async(dispatch_get_main_queue(), ^{
+                                                                        [[NSNotificationCenter defaultCenter]postNotificationName:HelperMethodsImageDownloadCompleted object:nil];
+                                                                        
+                                                                    });
+
                                                                 }
                                                             }];
             [task resume];
@@ -94,6 +108,7 @@
                                                                     NSData *data1 = [NSData dataWithData:UIImagePNGRepresentation(image)];
                                                                     [data1 writeToFile:pngFilePath atomically:YES];
                                                                     NSLog(@"%@ download complete", fileName);
+                                                                    
                                                                 }
                                                             }];
             [task resume];
@@ -179,11 +194,11 @@
              ];
 }
 
-+ (NSString *)convertGradeLevel:(NSString *)gradeLevel
++ (NSString *)convertGradeLevel:(NSString *)gradeLevel appendGrade:(BOOL)addGradeText
 {
     
     if([gradeLevel isEqualToString:@"K"])
-        return @"K";
+        return @"Kindergarten";
     else
     {
         int gradeInt = [gradeLevel intValue];
@@ -208,7 +223,7 @@
             case 10:
             case 11:
             case 12:
-                return [NSString stringWithFormat:@"%@th", gradeLevel];
+                return [NSString stringWithFormat:@"%@th" , gradeLevel];
                 break;
                 
                 
@@ -218,8 +233,196 @@
   
     }
     
-    return gradeLevel;
+    if(addGradeText)
+        return [NSString stringWithFormat:@"%@ grade", gradeLevel];
+    else
+        return gradeLevel;
 }
+
+
++ (NSString *)getDeviceModel
+{
+    size_t size;
+    sysctlbyname("hw.machine", NULL, &size, NULL, 0);
+    char *machine = malloc(size);
+    sysctlbyname("hw.machine", machine, &size, NULL, 0);
+    NSString *platform = [NSString stringWithCString:machine encoding:NSUTF8StringEncoding];
+    
+    
+    if ([platform isEqualToString:@"iPhone1,1"])    return @"iPhone 1G";
+    if ([platform isEqualToString:@"iPhone1,2"])    return @"iPhone 3G";
+    if ([platform isEqualToString:@"iPhone2,1"])    return @"iPhone 3GS";
+    if ([platform isEqualToString:@"iPhone3,1"])    return @"iPhone 4";
+    if ([platform isEqualToString:@"iPhone3,3"])    return @"Verizon iPhone 4";
+    if ([platform isEqualToString:@"iPhone4,1"])    return @"iPhone 4S";
+    if ([platform isEqualToString:@"iPhone5,1"])    return @"iPhone 5 (GSM)";
+    if ([platform isEqualToString:@"iPhone5,2"])    return @"iPhone 5 (GSM+CDMA)";
+    if ([platform isEqualToString:@"iPhone5,3"])    return @"iPhone 5c (GSM)";
+    if ([platform isEqualToString:@"iPhone5,4"])    return @"iPhone 5c (GSM+CDMA)";
+    if ([platform isEqualToString:@"iPhone6,1"])    return @"iPhone 5s (GSM)";
+    if ([platform isEqualToString:@"iPhone6,2"])    return @"iPhone 5s (GSM+CDMA)";
+    if ([platform isEqualToString:@"iPhone7,2"])    return @"iPhone 6";
+    if ([platform isEqualToString:@"iPhone7,1"])    return @"iPhone 6 Plus";
+    if ([platform isEqualToString:@"iPod1,1"])      return @"iPod Touch 1G";
+    if ([platform isEqualToString:@"iPod2,1"])      return @"iPod Touch 2G";
+    if ([platform isEqualToString:@"iPod3,1"])      return @"iPod Touch 3G";
+    if ([platform isEqualToString:@"iPod4,1"])      return @"iPod Touch 4G";
+    if ([platform isEqualToString:@"iPod5,1"])      return @"iPod Touch 5G";
+    if ([platform isEqualToString:@"iPad1,1"])      return @"iPad";
+    if ([platform isEqualToString:@"iPad2,1"])      return @"iPad 2 (WiFi)";
+    if ([platform isEqualToString:@"iPad2,2"])      return @"iPad 2 (GSM)";
+    if ([platform isEqualToString:@"iPad2,3"])      return @"iPad 2 (CDMA)";
+    if ([platform isEqualToString:@"iPad2,4"])      return @"iPad 2 (WiFi)";
+    if ([platform isEqualToString:@"iPad2,5"])      return @"iPad Mini (WiFi)";
+    if ([platform isEqualToString:@"iPad2,6"])      return @"iPad Mini (GSM)";
+    if ([platform isEqualToString:@"iPad2,7"])      return @"iPad Mini (GSM+CDMA)";
+    if ([platform isEqualToString:@"iPad3,1"])      return @"iPad 3 (WiFi)";
+    if ([platform isEqualToString:@"iPad3,2"])      return @"iPad 3 (GSM+CDMA)";
+    if ([platform isEqualToString:@"iPad3,3"])      return @"iPad 3 (GSM)";
+    if ([platform isEqualToString:@"iPad3,4"])      return @"iPad 4 (WiFi)";
+    if ([platform isEqualToString:@"iPad3,5"])      return @"iPad 4 (GSM)";
+    if ([platform isEqualToString:@"iPad3,6"])      return @"iPad 4 (GSM+CDMA)";
+    if ([platform isEqualToString:@"iPad4,1"])      return @"iPad Air (WiFi)";
+    if ([platform isEqualToString:@"iPad4,2"])      return @"iPad Air (Cellular)";
+    if ([platform isEqualToString:@"iPad4,3"])      return @"iPad Air";
+    if ([platform isEqualToString:@"iPad4,4"])      return @"iPad Mini 2G (WiFi)";
+    if ([platform isEqualToString:@"iPad4,5"])      return @"iPad Mini 2G (Cellular)";
+    if ([platform isEqualToString:@"iPad4,6"])      return @"iPad Mini 2G";
+    if ([platform isEqualToString:@"i386"])         return @"Simulator";
+    if ([platform isEqualToString:@"x86_64"])       return @"Simulator";
+    
+    return @"Not Found";
+}
+
++ (void)CreateAndDisplayOverHeadAlertInView:(UIView *)view withMessage:(NSString *)message andSchoolID:(NSString *)schoolID
+{
+    UIView *overlay1 = [[UIView alloc]initWithFrame:CGRectMake(view.frame.origin.x, -115, view.frame.size.width, 100)];
+    UIView *alertOverlay = [[UIView alloc]initWithFrame:overlay1.frame];
+    
+    overlay1.tag = 10;
+    alertOverlay.tag = 11;
+    overlay1.alpha = .7;
+    
+    
+    overlay1.backgroundColor = [UIColor blackColor];
+    alertOverlay.backgroundColor = [UIColor clearColor];
+    
+    [overlay1.layer setCornerRadius:15.0f];
+    //[overlay1.layer setBorderColor:[UIColor lightGrayColor].CGColor];
+    //[overlay1.layer setBorderWidth:1.5f];
+    [overlay1.layer setShadowColor:[UIColor blackColor].CGColor];
+    [overlay1.layer setShadowOpacity:0.8];
+    [overlay1.layer setShadowRadius:4.0];
+    [overlay1.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
+    
+    [alertOverlay.layer setCornerRadius:15.0f];
+    //[alertOverlay.layer setBorderColor:[UIColor lightGrayColor].CGColor];
+    //[alertOverlay.layer setBorderWidth:1.5f];
+    [alertOverlay.layer setShadowColor:[UIColor blackColor].CGColor];
+    [alertOverlay.layer setShadowOpacity:0.8];
+    [alertOverlay.layer setShadowRadius:4.0];
+    [alertOverlay.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
+
+
+    
+    
+    [view addSubview:overlay1];
+    [view addSubview:alertOverlay];
+    
+    UILabel *label = [[UILabel alloc]initWithFrame:CGRectMake(51, 8, alertOverlay.frame.size.width - 59, alertOverlay.frame.size.height - 16)];
+    
+    UIImageView *schoolImage = [[UIImageView alloc]initWithFrame:CGRectMake(8, alertOverlay.frame.size.height/2 - (35 /2), 35, 35)];
+    
+    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+    
+    NSData *data = [[NSUserDefaults standardUserDefaults]objectForKey:SCHOOL_DATA_ARRAY];
+    
+    NSArray *schoolDataArray = [NSKeyedUnarchiver unarchiveObjectWithData:data];
+    NSString *imageName;
+    for (NSDictionary *tempDic in schoolDataArray)
+    {
+        if([[tempDic objectForKey:ID]isEqualToString:schoolID])
+        {
+            imageName = [tempDic objectForKey:SCHOOL_IMAGE_NAME];
+        }
+    }
+
+    
+    NSString *pngFilePath = [NSString stringWithFormat:@"%@/%@",docDir, imageName];
+    
+    if([[NSFileManager defaultManager] fileExistsAtPath:pngFilePath])
+    {
+        
+        UIImage *image = [UIImage imageWithContentsOfFile:pngFilePath];
+        
+        
+        
+        
+        schoolImage .image = image;
+        
+    }
+
+    [alertOverlay addSubview:schoolImage];
+    label.text = message;
+    
+    label.textColor = [UIColor whiteColor];
+    //label.textAlignment = NSTextAlignmentCenter;
+    
+    label.font = [UIFont systemFontOfSize:17.0];
+    label.numberOfLines = 3;
+    label.tag = 12;
+    [alertOverlay addSubview:label];
+    
+    [UIView animateWithDuration:1.0 animations:^{
+        CGRect rect = overlay1.frame;
+        rect.origin.y = -20;
+        overlay1.frame = rect;
+        alertOverlay.frame = rect;
+        
+        
+    }completion:^(BOOL finished){
+        
+        [UIView animateWithDuration:1.0 delay:3.5 options:UIViewAnimationOptionCurveEaseOut animations:^{
+            
+            CGRect rect = overlay1.frame;
+            rect.origin.y = -110;
+            overlay1.frame = rect;
+            alertOverlay.frame = rect;
+        
+        } completion:^(BOOL finished){
+            
+            [alertOverlay removeFromSuperview];
+            [overlay1 removeFromSuperview];
+        }];
+        
+    }];
+    
+    
+    
+    //UIButton *dismissButton = [[UIButton alloc]initWithFrame:CGRectMake(8, 31, 30, 30)];
+    //[dismissButton setTitle:@"✗" forState:UIControlStateNormal];
+    //[dismissButton addTarget:view.superview action:@selector(hideHelpPressed) forControlEvents:UIControlEventTouchDown];
+    //[alertOverlay addSubview:dismissButton];
+
+}
+
++ (NSArray *)getDateArrayFromString:(NSString *)date
+{
+    NSArray *dateArray = [date componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"- :/"]];
+    
+    return dateArray;
+    
+}
+
++ (NSArray *)getDictonaryOfUserTypes
+{
+    return @[@"Users", @"Teacher", @"Secretary", @"Principal", @"Superintendent", @"Sales", @"Super User", @"Beta Tester"
+             
+             
+             ];
+}
+
+
 
 
 @end

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "NewsDetailViewController.h"
 #import "AdModel.h"
+#import "UserData.h"
 
 @protocol NewsViewControllerDelegate;
 
@@ -19,6 +20,7 @@
 @property (nonatomic, strong) NSString *newsHeader;
 @property (nonatomic, strong) NSString *schoolID;
 @property (nonatomic, strong) NSString *userID;
+@property (nonatomic, strong) UserData *mainUserData;
 
 
 @end
