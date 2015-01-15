@@ -8,9 +8,15 @@
 
 #import <UIKit/UIKit.h>
 #import "SingleSchoolTableViewController.h"
+#import "UserData.h"
 
 @interface UsersSchoolsTableViewController : UITableViewController
 
 @property (nonatomic, strong) NSString *userIDSelected;
+@property (nonatomic, strong) UserData *mainUserData;
+@property (nonatomic, strong) NSDictionary *schoolSelected;
+
+
+- (void)getSchoolsForUserSelected;
 
 @end

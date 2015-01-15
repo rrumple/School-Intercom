@@ -23,6 +23,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *switchSchoolBadge;
 @property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 @property (nonatomic, strong) NSArray *calendarData;
+@property (weak, nonatomic) IBOutlet UIButton *adminToolsButton;
 @end
 
 @implementation MainMenuViewController
@@ -37,13 +38,19 @@
 {
     NSLog(@"APP WENT IN BACKGROUND");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    [self.navigationController popToRootViewControllerAnimated:NO];
-    self.reloadData = true;
-    self.isFirstLoad = true;
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+
+    //[self.navigationController popToRootViewControllerAnimated:NO];
+    //self.reloadData = true;
+    //self.isFirstLoad = true;
 }
 
 - (void)appWillEnterForeground
 {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:@"LOAD_DATA" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:ADLoadDataNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
     [self loadData];
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
@@ -55,7 +62,9 @@
 
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:ADLoadDataNotification object:nil];	//[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:@"LOAD_DATA" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:ADLoadDataNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
     
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(loadPreviousView)];
@@ -207,10 +216,11 @@
     if(self.mainUserData.isAdmin)
     {
         self.logOutButton.hidden = false;
-        [self.lunchMenuButton setTitle:@"Admin Tools" forState:UIControlStateNormal];
-        self.lunchMenuButton.hidden = false;
+        self.adminToolsButton.hidden = false;
+        
     }
-    else if(![[self.mainUserData.schoolData objectForKey:SCHOOL_LUNCH] isEqualToString:@"None"])
+    
+    if(![[self.mainUserData.schoolData objectForKey:SCHOOL_LUNCH] isEqualToString:@"None"])
     {
         [self.lunchMenuButton setTitle:@"Lunch Menu" forState:UIControlStateNormal];
         [self.lunchMenuButton setHidden:false];
@@ -331,8 +341,8 @@
 
 - (IBAction)updateSchoolButtonPressed
 {
-    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/school-intercom/id917103099?ls=1&mt=8"]];
-    //Make sure to change this link to the app store
+    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/school-intercom/id917103099?mt=8&uo=4"]];
+    //Does not work in Simulator
 }
 
 - (void)exitOutOfSchool
@@ -355,16 +365,16 @@
         [self performSegueWithIdentifier:SEGUE_TO_SWITCH_VIEW sender:self];
    }
 }
+- (IBAction)adminButtonPressed
+{
+     [self performSegueWithIdentifier:SEGUE_TO_ADMIN_TOOLS sender:self];
+}
+
 - (IBAction)lunchButtonPressed:(UIButton *)sender
 {
-    if([sender.titleLabel.text isEqualToString:@"Lunch Menu"])
-    {
-        [self performSegueWithIdentifier:SEGUE_TO_LUNCH_MENU_VIEW sender:self];
-    }
-    else if([sender.titleLabel.text isEqualToString:@"Admin Tools"])
-    {
-        [self performSegueWithIdentifier:SEGUE_TO_ADMIN_TOOLS sender:self];
-    }
+    
+    [self performSegueWithIdentifier:SEGUE_TO_LUNCH_MENU_VIEW sender:self];
+
 }
 
 - (void)sortCalendar

@@ -8,7 +8,7 @@
 
 #import "HomeViewController.h"
 @import AVFoundation;
-
+#import "UIColor+TKCategory.h"
 
 @interface HomeViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *schoolNameLabel;
@@ -20,6 +20,8 @@
 @property (nonatomic, strong) AdModel *adModel;
 @property (weak, nonatomic) IBOutlet UIView *overlay1;
 @property (weak, nonatomic) IBOutlet UIView *helpOverlay;
+@property (nonatomic, strong) UIRefreshControl *refreshControl;
+
 
 
 
@@ -246,6 +248,11 @@
     
 }
 
+- (void)refresh
+{
+    [self.refreshControl endRefreshing];
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -253,6 +260,15 @@
     self.alertTableView.dataSource = self;
     self.alertTableView.delegate = self;
     
+    /*
+    self.refreshControl = [[UIRefreshControl alloc]init];
+    self.refreshControl.backgroundColor = [UIColor greenColor];
+    self.refreshControl.tintColor = [UIColor whiteColor];
+    [self.refreshControl addTarget:self action:@selector(refresh) forControlEvents:UIControlEventValueChanged];
+    NSAttributedString *text = [[NSAttributedString alloc]initWithString:@"Refreshing Alerts"];
+    self.refreshControl.attributedTitle = text;
+    [self.alertTableView addSubview:self.refreshControl];
+    */
     
     NSLog(@"HOME PAGE DATA RECIEVED: %@", self.mainUserData.appData);
     
@@ -368,6 +384,15 @@
 
 }
 
+-(UIColor *)getColorFromHex:(NSString *)str
+{
+    const char *cStr = [str cStringUsingEncoding:NSASCIIStringEncoding];
+    long x = strtol(cStr +1, NULL, 16);
+    
+    return [UIColor colorWithHex:(unsigned int)x];
+}
+
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"alertCell";
@@ -376,6 +401,9 @@
     
     UILabel *cellLabel = (UILabel *)[cell.contentView viewWithTag:2];
     UILabel *dateLabel = (UILabel *)[cell viewWithTag:3];
+    UILabel *fromLabel = (UILabel *)[cell viewWithTag:4];
+    
+    UIView *backdrop = (UIView *)[cell viewWithTag:6];
     
     if(self.alertData != (id)[NSNull null])
     {
@@ -393,6 +421,33 @@
         NSArray *tempDate = [HelperMethods getDateArrayFromString:[[self.alertData objectAtIndex:indexPath.row]objectForKey:ALERT_TIME_SENT]];
         
         dateLabel.text = [NSString stringWithFormat:@"%@/%@/%@", tempDate[1], tempDate[2], tempDate[0]];
+        
+        if([[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromLabel"] length] > 1)
+           fromLabel.text =[NSString stringWithFormat:@"From: %@", [[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromLabel"]];
+        else
+            fromLabel.text = @"";
+        
+        
+        if([[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromSchoolID"] length] > 1)
+        {
+
+            switch([[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"alertType"] intValue])
+            {
+                case 1: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getSchoolNameFromID:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromSchoolID"]]];
+                    break;
+                case 3: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getSchoolNameFromID:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromSchoolID"]]];
+                    break;
+                    
+                    
+            }
+        }
+
+        
+        [backdrop setBackgroundColor:[UIColor clearColor]];
+
+        
+        
+        
     }
     else
         cellLabel.text = @"No Current Alerts";

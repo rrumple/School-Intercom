@@ -44,11 +44,17 @@
 @property (nonatomic, strong) AdModel *adModel;
 @property (nonatomic, strong) NSDictionary *adData;
 @property (strong, nonatomic) UIButton *adImageButton;
+@property (nonatomic, strong) NSDateFormatter *dateFormatter;
 @end
 
 #pragma mark - CalendarMonthViewController
 @implementation CalendarMonthViewController
 
+- (NSDateFormatter *)dateFormatter
+{
+    if (!_dateFormatter) _dateFormatter = [[NSDateFormatter alloc]init];
+    return _dateFormatter;
+}
 - (AdModel *)adModel
 {
     if(!_adModel) _adModel = [[AdModel alloc]init];
@@ -538,6 +544,10 @@
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
+    NSLocale *usLocale = [[NSLocale alloc]initWithLocaleIdentifier:@"en-US"];
+    [self.dateFormatter setLocale:usLocale];
+    [self.dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+
     self.view.backgroundColor = self.backgroundColor;
     [[NSNotificationCenter defaultCenter]addObserver:self selector:@selector(loadUsersCalendar) name:UIApplicationDidBecomeActiveNotification object:nil];
 
@@ -559,9 +569,10 @@
     [self.monthView removeFromSuperview];
     
     UIButton *menuButton = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, 40, 40)];
-    UILabel *pageTitle = [[UILabel alloc]initWithFrame:CGRectMake(131, 19, 80, 21)];
+    UILabel *pageTitle = [[UILabel alloc]initWithFrame:CGRectMake((self.view.frame.size.width/2) - 100, (58/2 - 22), 200, 44)];
+    pageTitle.numberOfLines = 2;
     
-    pageTitle.text = @"Calendar";
+    pageTitle.text = [NSString stringWithFormat:@"%@ Calendar",[self.mainUserData.schoolData objectForKey:SCHOOL_NAME]];
     [pageTitle setTextAlignment:NSTextAlignmentCenter];
     [pageTitle setTextColor:[UIColor whiteColor]];
     
@@ -700,10 +711,8 @@
 - (void)addEventToUserCalendar
 {
     //NSString *dateString = @"Mon, 02 Sep 2013 00:00:45";
-    NSLocale *usLocale = [[NSLocale alloc]initWithLocaleIdentifier:@"en-US"];
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
-    [dateFormatter setLocale:usLocale];
-    [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+   
+   
     
     
     EKEventStore *store = [[EKEventStore alloc]init];
@@ -723,8 +732,8 @@
         EKEvent *event = [EKEvent eventWithEventStore:store];
         event.title = [self.selectedEventData objectForKey:CAL_TITLE];
         event.allDay = [[self.selectedEventData objectForKey:CAL_IS_ALL_DAY] boolValue];
-        event.startDate = [dateFormatter dateFromString:[self.selectedEventData objectForKey:CAL_START_DATE]];
-        event.endDate = [dateFormatter dateFromString:[self.selectedEventData objectForKey:CAL_END_DATE]];
+        event.startDate = [self.dateFormatter dateFromString:[self.selectedEventData objectForKey:CAL_START_DATE]];
+        event.endDate = [self.dateFormatter dateFromString:[self.selectedEventData objectForKey:CAL_END_DATE]];
         event.location = [self.selectedEventData objectForKey:CAL_LOCATION];
         event.notes = [self.selectedEventData objectForKey:CAL_MORE_INFO];
         [event setCalendar:[store defaultCalendarForNewEvents]];
@@ -752,9 +761,18 @@
     
     for (EKEvent *usersEvent in self.eventsArray)
     {
-     
+
+        
+        
+        
        
-        if ([usersEvent.title isEqualToString:[event objectForKey:CAL_TITLE]] && [usersEvent.location isEqualToString:[event objectForKey:CAL_LOCATION]])
+        NSString *tempDate = [self.dateFormatter stringFromDate:usersEvent.startDate];
+        
+        NSLog(@"%@", [event objectForKey:CAL_START_DATE]);
+        NSLog(@"%@", tempDate);
+      
+       
+        if ([usersEvent.title isEqualToString:[event objectForKey:CAL_TITLE]] && [usersEvent.location isEqualToString:[event objectForKey:CAL_LOCATION]] && [tempDate isEqualToString:[event objectForKey:CAL_START_DATE]])
         {
             return YES;
         }

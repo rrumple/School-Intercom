@@ -8,6 +8,7 @@
 
 #import "SelectUsertypeTableViewController.h"
 #import "ManageSingleUserTableViewController.h"
+#import "AddNewUserTableViewController.h"
 
 @interface SelectUsertypeTableViewController ()
 
@@ -81,6 +82,13 @@
             if([self.usertypeSelected intValue] != indexPath.row)
                 MSUTVC.saveChangesButton.hidden = false;
             MSUTVC.userTypeSelected = [NSString stringWithFormat:@"%li",(long)indexPath.row];
+            [self.navigationController popViewControllerAnimated:YES];
+            break;
+        }
+        else if([viewController isKindOfClass:[AddNewUserTableViewController class]])
+        {
+            AddNewUserTableViewController *ANUTVC = viewController;
+            ANUTVC.userTypeSelected = [NSString stringWithFormat:@"%li",(long)indexPath.row];
             [self.navigationController popViewControllerAnimated:YES];
             break;
         }

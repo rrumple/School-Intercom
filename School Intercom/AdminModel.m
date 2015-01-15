@@ -55,9 +55,9 @@
     return dataArray;
 }
 
-- (NSArray *)getAdStats:(NSString *)generalID ofType:(NSString *)queryType withSchoolID:(NSString *)schoolID
+- (NSArray *)getAdStats:(NSString *)generalID ofType:(NSString *)queryType withSchoolID:(NSString *)schoolID withTimeframe:(NSString *)timeframe
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_AD_STATS withKeys:@[ID, @"queryType", SCHOOL_ID] andData:@[generalID, queryType, schoolID]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_AD_STATS withKeys:@[ID, @"queryType", SCHOOL_ID, @"timeframe"] andData:@[generalID, queryType, schoolID, timeframe]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
@@ -121,9 +121,95 @@
     
 }
 
+- (NSArray *)getSchoolsFromDatabaseForAccountType:(NSString *)accountType andID:(NSString *)generalID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_ALL_SCHOOLS withKeys:@[@"userType", ID] andData:@[accountType, generalID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)getAllCorpsForAccountType:(NSString *)accountType
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_ALL_CORPS withKeys:@[@"userType"] andData:@[accountType]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
 
 
 
+- (NSArray *)addUserToDatabseWithFirstName:(NSString *)fName andLastName:(NSString *)lName andUserType:(NSString *)userType andEmail:(NSString *)email toSchoolID:(NSString *)schoolID withPrefix:(NSString *)prefix andGrade:(NSString *)grade andSubject:(NSString *)subject andCorpID:(NSString *)corpID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADMIN_ADD_USER withKeys:@[USER_FIRST_NAME, USER_LAST_NAME, USER_EMAIL, USER_ACCOUNT_TYPE, SCHOOL_ID, TEACHER_PREFIX, GRADE_LEVEL, TEACHER_SUBJECT, CORP_ID] andData:@[fName, lName, email, userType, schoolID, prefix, grade, subject, corpID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)deleteUserFromDatabase:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADMIN_DELETE_USER withKeys:@[USER_ID] andData:@[userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)updateUserInDatabseWithFirstName:(NSString *)fName andLastName:(NSString *)lName andUserType:(NSString *)userType andEmail:(NSString *)email withPrefix:(NSString *)prefix andGrade:(NSString *)grade andSubject:(NSString *)subject andUserID:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADMIN_UPDATE_USER withKeys:@[USER_FIRST_NAME, USER_LAST_NAME, USER_EMAIL, USER_ACCOUNT_TYPE, TEACHER_PREFIX, GRADE_LEVEL, TEACHER_SUBJECT, USER_ID] andData:@[fName, lName, email, userType, prefix, grade, subject, userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)addSchoolToUser:(NSString *)userID withSchoolID:(NSString *)schoolID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADMIN_ADD_USER_SCHOOL withKeys:@[USER_ID, SCHOOL_ID] andData:@[userID, schoolID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)deleteSchoolFromUser:(NSString *)userID withSchoolID:(NSString *)schoolID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADMIN_DELETE_USER_SCHOOL withKeys:@[USER_ID, SCHOOL_ID] andData:@[userID, schoolID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)updateSchoolForUser:(NSString *)userSchoolsID isActive:(NSString *)isActive andIsApproved:(NSString *)usApproved
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADMIN_UPDATE_USER_SCHOOL withKeys:@[@"userSchoolsID", US_IS_ACTIVE, USER_APPROVED] andData:@[userSchoolsID, isActive, usApproved]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
 
 
 @end

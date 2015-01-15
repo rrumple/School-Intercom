@@ -598,7 +598,7 @@
     dispatch_async(createQueue, ^{
         NSArray *dataArray;
         dataArray = [self.introData getUserInfofromTransactionID:[transactionIDs objectAtIndex:0]];
-                     if ([dataArray count] == 1)
+        if ([dataArray count] == 1)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
                 NSDictionary *tempDic = [dataArray objectAtIndex:0];

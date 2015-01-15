@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "UserData.h"
 #import "AdModel.h"
 #import "UpdateProfileModel.h"

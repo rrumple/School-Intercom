@@ -8,6 +8,7 @@
 
 #import "UpdateKidViewController.h"
 
+
 @interface UpdateKidViewController () <UITableViewDataSource, UITableViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate,UIGestureRecognizerDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *teacherTableView;
 @property (nonatomic, strong) UpdateProfileModel *updateProfileData;
@@ -195,6 +196,7 @@
                 else
                 {
                     [self getKidsTeachersFromDatabase];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"LOAD_DATA" object:nil userInfo:nil];
                     
                 }
             });
@@ -227,6 +229,7 @@
                     self.gradeTF.hidden = true;
                     self.showAddTeacherButton.hidden = false;
                     [self.addUpdateButton setTitle:@"Update Kid" forState:UIControlStateNormal];
+                    [[NSNotificationCenter defaultCenter] postNotificationName:@"LOAD_DATA" object:nil userInfo:nil];
                 }
             });
             
@@ -540,6 +543,8 @@
 - (IBAction)addTeacherButtonPressed
 {
     self.teacherAdded = true;
+   
+
     [self addTeacherToKidInDatabase];
 }
 
@@ -715,7 +720,7 @@
     {
         if([[[self.teachers objectAtIndex:row]objectForKey:ID] isEqualToString:@"999"])
             return @"No Teachers to Display";
-        else if(![[[self.teachers objectAtIndex:row]objectForKey:TEACHER_SUBJECT]isEqualToString:@""])
+        else if(![[[self.teachers objectAtIndex:row]objectForKey:TEACHER_SUBJECT]isEqualToString:@" "])
         {
             return [NSString stringWithFormat:@"%@ %@ - %@ %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME], [HelperMethods convertGradeLevel:[[self.teachers objectAtIndex:row] objectForKey:@"grade"]appendGrade:NO], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_SUBJECT]];
         }
@@ -736,7 +741,7 @@
     if(pickerView.tag == zPickerTeacher)
     {
         self.teacherSelected = [[self.teachers objectAtIndex:row] objectForKey:ID];
-        if(![[[self.teachers objectAtIndex:row]objectForKey:TEACHER_SUBJECT]isEqualToString:@""])
+        if(![[[self.teachers objectAtIndex:row]objectForKey:TEACHER_SUBJECT]isEqualToString:@" "])
         {
             self.gradeTF.text = [NSString stringWithFormat:@"%@ %@ - %@", [[self.teachers objectAtIndex:row]objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_LAST_NAME], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_SUBJECT]];
             
@@ -774,7 +779,7 @@
 {
     if(self.gradeTF.isFirstResponder && [self.gradeTF.text length] == 0 && ![[[self.teachers objectAtIndex:0]objectForKey:ID] isEqualToString:@"999"] )
     {
-        if(![[[self.teachers objectAtIndex:0]objectForKey:TEACHER_SUBJECT] isEqualToString:@""])
+        if(![[[self.teachers objectAtIndex:0]objectForKey:TEACHER_SUBJECT] isEqualToString:@" "])
         {
             self.gradeTF.text = [NSString stringWithFormat:@"%@ %@ - %@", [[self.teachers objectAtIndex:0]objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:0]objectForKey:TEACHER_LAST_NAME], [[self.teachers objectAtIndex:0]objectForKey:TEACHER_SUBJECT]];
 

@@ -87,22 +87,32 @@ CGRect barRect;
 {
     float kLineGraphHeight = self.frame.size.height - kBottomOffset - kBarTop;
     //float data[] = {0.7, 0.4, 0.9, 1.0, 0.2, 0.85, 0.11, 0.75, 0.53, 0.44, 0.88, 0.77, 0.99, 0.55};
-    int count = (int)[self.lineData count];
+    //int count = (int)[self.lineData count];
     
-    float data[count];
+    //float data[count];
+    NSMutableArray *floatData = [[NSMutableArray alloc]init];
     
-    NSLog(@"%i", (int)sizeof(data)/4);
+    //NSLog(@"%i", (int)sizeof(data)/4);
     
+    float maxHeight = 0.0;
     
+    for (int i = 0; i < [self.lineData count]; i++)
+    {
+        if ([self.lineData[i] floatValue] > maxHeight)
+            maxHeight = [self.lineData[i] floatValue];
+        
+    }
+
    
     
     CGContextSetLineWidth(ctx, 2.0);
     CGContextSetStrokeColorWithColor(ctx, [[UIColor colorWithRed:1.0 green:0.5 blue:0 alpha:1.0]CGColor]);
-    
-    int maxGraphHeight = kLineGraphHeight - kOffsetY;
+    maxHeight = maxHeight * 1.5;
+    int maxGraphHeight = self.kGraphHeight - kOffsetY;
     for (int i = 0; i < [self.lineData count]; i++)
     {
-        data[i]  = [self.lineData[i] floatValue]  /(float)maxGraphHeight;
+        [floatData addObject:[NSString stringWithFormat:@"%f", [self.lineData[i] floatValue]  /(float)maxHeight]];
+        //data[i]  = [self.lineData[i] floatValue]  /(float)maxGraphHeight;
         //self.chartData2[i] = [NSString stringWithFormat:@"%f", [self.clicks[i] floatValue] / maxGraphHeight];
     }
 
@@ -125,12 +135,20 @@ CGRect barRect;
     
     CGContextBeginPath(ctx);
     CGContextMoveToPoint(ctx, self.kOffsetX, kLineGraphHeight);
+    /*
     CGContextAddLineToPoint(ctx, self.kOffsetX, kLineGraphHeight - maxGraphHeight * data[0]);
     for (int i = 1; i < sizeof(data)/4; i++)
     {
         CGContextAddLineToPoint(ctx, self.kOffsetX + i * kStepX, kLineGraphHeight - maxGraphHeight * data[i]);
     }
-    CGContextAddLineToPoint(ctx, self.kOffsetX + (sizeof(data)/4  - 1) * kStepX, kLineGraphHeight);
+*/
+    
+    CGContextAddLineToPoint(ctx, self.kOffsetX, kLineGraphHeight - maxGraphHeight * [[floatData objectAtIndex:0]floatValue]);
+    for (int i = 1; i < [floatData count]; i++)
+    {
+        CGContextAddLineToPoint(ctx, self.kOffsetX + i * kStepX, kLineGraphHeight - maxGraphHeight * [[floatData objectAtIndex:i]floatValue]);
+    }
+    CGContextAddLineToPoint(ctx, self.kOffsetX + ([floatData count]  - 1) * kStepX, kLineGraphHeight);
     CGContextClosePath(ctx);
     
     //CGContextDrawPath(ctx, kCGPathFill);
@@ -146,6 +164,7 @@ CGRect barRect;
     
     
     CGContextBeginPath(ctx);
+    /*
     CGContextMoveToPoint(ctx, self.kOffsetX, kLineGraphHeight - maxGraphHeight * data[0]);
     
     for (int i = 1; i < [self.lineData count]; i++)
@@ -153,7 +172,16 @@ CGRect barRect;
         //float data = [self.lineData[i] floatValue];
         CGContextAddLineToPoint(ctx, self.kOffsetX+ i * kStepX, kLineGraphHeight-maxGraphHeight * data[i]);
     }
+    */
     
+    CGContextMoveToPoint(ctx, self.kOffsetX, kLineGraphHeight - maxGraphHeight * [[floatData objectAtIndex:0]floatValue]);
+    
+    for (int i = 1; i < [self.lineData count]; i++)
+    {
+        //float data = [self.lineData[i] floatValue];
+        CGContextAddLineToPoint(ctx, self.kOffsetX+ i * kStepX, kLineGraphHeight-maxGraphHeight * [floatData[i] floatValue]);
+    }
+
     CGContextDrawPath(ctx, kCGPathStroke);
     
     
@@ -163,7 +191,8 @@ CGRect barRect;
     {
         //float data = [self.lineData[i] floatValue];
         float x = self.kOffsetX + i * kStepX;
-        float y = kLineGraphHeight - maxGraphHeight * data[i];
+        //float y = kLineGraphHeight - maxGraphHeight * data[i];
+        float y = kLineGraphHeight - maxGraphHeight * [floatData[i] floatValue];
         
         CGRect rect = CGRectMake(x - kCircleRadius, y - kCircleRadius, 2 * kCircleRadius, 2 * kCircleRadius);
         CGContextAddEllipseInRect(ctx, rect);
@@ -349,9 +378,10 @@ CGRect barRect;
             
             [self addSubview:label];
             
-            UILabel *label2 = [[UILabel alloc]initWithFrame:CGRectMake(touchAreas[i].origin.x + 10, touchAreas[i].origin.y + 5, 20, 10)];
+            UILabel *label2 = [[UILabel alloc]initWithFrame:CGRectMake(touchAreas[i].origin.x - 5, touchAreas[i].origin.y + 5, 50, 10)];
             
             label2.text = self.impressions[i];
+            
             
             label2.font = [UIFont systemFontOfSize:11];
             label2.textAlignment = NSTextAlignmentCenter;

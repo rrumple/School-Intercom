@@ -30,13 +30,16 @@
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
 @property (weak, nonatomic) IBOutlet UILabel *loadingActivityViewLabel;
 @property (nonatomic, strong) IntroModel *introData;
+@property (weak, nonatomic) IBOutlet UIButton *restorePurchasesButton;
 
 @property (weak, nonatomic) IBOutlet UIView *overlay1;
 @property (weak, nonatomic) IBOutlet UIView *helpOverlay;
 
+
 @end
 
 @implementation AddSchoolViewController
+
 
 - (IntroModel *)introData
 {
@@ -125,6 +128,12 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
+    if([self.mainUserData.accountType intValue] > 0)
+    {
+        self.restorePurchasesButton.hidden = true;
+    }
+    
+    
     [self.headerLabel setFont:FONT_CHARCOAL_CY(17.0f)];
     [self.stateTextField setDelegate:self];
     [self.cityTextField setDelegate:self];
@@ -162,6 +171,7 @@
     
        
 }
+
 
 - (void)addSchoolToUserInDatabase
 {

@@ -8,16 +8,21 @@
 
 #import "UsersSchoolsTableViewController.h"
 #import "AdminModel.h"
+#import "AllSchoolsTableViewController.h"
+#import "ManageSingleUserTableViewController.h"
 
 @interface UsersSchoolsTableViewController ()
 
 @property (nonatomic, strong) NSArray *schoolData;
 @property (nonatomic, strong) AdminModel *adminData;
-@property (nonatomic, strong) NSDictionary *schoolSelected;
+@property (nonatomic) BOOL addingSchool;
+
 
 @end
 
 @implementation UsersSchoolsTableViewController
+
+@synthesize schoolSelected = _schoolSelected;
 
 - (NSDictionary *)schoolSelected
 {
@@ -31,12 +36,110 @@
     return _adminData;
 }
 
+- (void)setSchoolSelected:(NSDictionary *)schoolSelected
+{
+    _schoolSelected = schoolSelected;
+    
+    if(self.addingSchool)
+    {
+        [self addschoolToUserInDatabase];
+        self.addingSchool = NO;
+    }
+}
+
+
 - (void)getSchoolsForUserSelected
 {
     dispatch_queue_t createQueue = dispatch_queue_create("queryDatabaseForUsers", NULL);
     dispatch_async(createQueue, ^{
         NSArray *dataArray;
         dataArray = [self.adminData getSchoolsForSelectedUser:self.userIDSelected];
+        
+        if (dataArray)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                    
+                }
+                else
+                {
+                    NSMutableArray *tempArray = [[NSMutableArray alloc]initWithObjects:@[@""], nil];
+                    [tempArray addObjectsFromArray:[tempDic objectForKey:@"data"]];
+                    
+                    for(NSDictionary * school in [tempDic objectForKey:@"data"])
+                    {
+                        
+                        [HelperMethods downloadSingleImageFromBaseURL:SCHOOL_LOGO_PATH withFilename:[NSString stringWithFormat:@"%@",[school objectForKey:SCHOOL_IMAGE_NAME]] saveToDisk:YES replaceExistingImage:NO];
+                    }
+                    
+                    self.schoolData = tempArray;
+                    [self.tableView reloadData];
+                    
+                }
+            });
+            
+            
+        }
+    });
+
+}
+
+- (void)deleteSchoolFromUserInDatabase
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("deleteSchoolFromUser", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.adminData deleteSchoolFromUser:self.userIDSelected withSchoolID:[self.schoolSelected objectForKey:ID]];
+        
+        if (dataArray)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                    
+                }
+                else
+                {
+                    self.schoolSelected = nil;
+                    UIAlertView *addSuccess = [[UIAlertView alloc]initWithTitle:@"Remove School" message:@"The school has been removed from user successfully." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                    
+                    [addSuccess show];
+                    [self getSchoolsForUserSelected];
+                    
+                    for (id viewController in self.navigationController.viewControllers)
+                    {
+                        if([viewController isKindOfClass:[ManageSingleUserTableViewController class]])
+                        {
+                            ManageSingleUserTableViewController *MSUTVC = viewController;
+                            [MSUTVC subtractOneFromSchoolLabel];
+                            break;
+                        }
+                        
+                    }
+
+                }
+            });
+            
+            
+        }
+    });
+
+}
+
+- (void)addschoolToUserInDatabase
+{
+    
+    dispatch_queue_t createQueue = dispatch_queue_create("addSchooltoUser", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.adminData addSchoolToUser:self.userIDSelected withSchoolID:[self.schoolSelected objectForKey:ID]];
         
         if (dataArray)
         {
@@ -50,18 +153,22 @@
                     }
                     else
                     {
-                        NSMutableArray *tempArray = [[NSMutableArray alloc]initWithObjects:@[@""], nil];
-                        [tempArray addObjectsFromArray:[tempDic objectForKey:@"data"]];
+                        self.schoolSelected = nil;
+                        UIAlertView *addSuccess = [[UIAlertView alloc]initWithTitle:@"Add School" message:@"The school has been added successfully." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
                         
-                        for(NSDictionary * school in [tempDic objectForKey:@"data"])
+                        [addSuccess show];
+                        [self getSchoolsForUserSelected];
+                        for (id viewController in self.navigationController.viewControllers)
                         {
+                            if([viewController isKindOfClass:[ManageSingleUserTableViewController class]])
+                            {
+                                ManageSingleUserTableViewController *MSUTVC = viewController;
+                                [MSUTVC addOneToSchoolLabel];
+                                break;
+                            }
                             
-                            [HelperMethods downloadSingleImageFromBaseURL:SCHOOL_LOGO_PATH withFilename:[NSString stringWithFormat:@"%@",[school objectForKey:SCHOOL_IMAGE_NAME]] saveToDisk:YES replaceExistingImage:NO];
                         }
-                        
-                        self.schoolData = tempArray;
-                        [self.tableView reloadData];
-                        
+
                     }
                 });
             
@@ -99,6 +206,7 @@
     [super viewDidLoad];
     
     [self getSchoolsForUserSelected];
+    self.addingSchool = NO;
     
     // Uncomment the following line to preserve selection between presentations.
     // self.clearsSelectionOnViewWillAppear = NO;
@@ -122,7 +230,18 @@
     {
         SingleSchoolTableViewController *SSTVC = segue.destinationViewController;
         SSTVC.schoolData = self.schoolSelected;
+        SSTVC.mainUserData = self.mainUserData;
     }
+    else if([segue.identifier isEqualToString:SEGUE_TO_LIST_ALL_SCHOOLS])
+    {
+        NSMutableArray *tempArray = [self.schoolData mutableCopy];
+        [tempArray removeObjectAtIndex:0];
+        self.addingSchool = YES;
+        AllSchoolsTableViewController *ASTVC = segue.destinationViewController;
+        ASTVC.mainUserData = self.mainUserData;
+        ASTVC.existingSchools = tempArray;
+    }
+
 }
 
 #pragma mark - Table view data source
@@ -199,35 +318,69 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(indexPath.section == 0 && indexPath.row == 1)
-    {
+    
         self.schoolSelected = [self.schoolData objectAtIndex:indexPath.row];
         [self performSegueWithIdentifier:SEGUE_TO_SINGLE_SCHOOL sender:self];
         
-    }
+    
     
     
 }
 
-/*
+
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
     // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
-*/
+    
+    if(indexPath.row == 0)
+        return NO;
+    else
+    {
+        if([self.schoolData count] > 2)
+        {
+            if([[[self.schoolData objectAtIndex:indexPath.row]objectForKey:US_PURCHASED_DATE] isEqualToString:@"0000-00-00 00:00:00"])
+                return YES;
+            else
+                return NO;
+        }
+        else
+            return NO;
 
-/*
+    }
+    
+    
+    
+}
+
 // Override to support editing the table view.
 - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        // Delete the row from the data source
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-    }   
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        self.schoolSelected = [self.schoolData objectAtIndex:indexPath.row];
+        
+        UIAlertView *deleteConfrimAlert = [[UIAlertView alloc]initWithTitle:@"Remove School" message:[NSString stringWithFormat:@"You are about to remove %@ from this user. Are you sure?", [self.schoolSelected objectForKey:SCHOOL_NAME]] delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        deleteConfrimAlert.tag = zAlertDeleteUserSchool;
+        [deleteConfrimAlert show];
+
+    }
 }
-*/
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(alertView.tag == zAlertDeleteUserSchool)
+    {
+        if(buttonIndex == 1)
+        {
+            [self deleteSchoolFromUserInDatabase];
+            
+            if([self.mainUserData.userID isEqualToString:self.userIDSelected])
+            {
+                [self.mainUserData removeSchoolFromPhone:[self.schoolSelected objectForKey:ID]];
+            }
+        }
+    }
+}
+
 
 /*
 // Override to support rearranging the table view.

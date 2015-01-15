@@ -18,6 +18,7 @@ UIKIT_EXTERN NSString * const HelperMethodsImageDownloadCompleted;
 + (BOOL)isEmailValid:(NSString *)email;
 + (NSArray *)listFileAtPath:(NSString *)path;
 + (NSArray *)arrayOfGradeLevels;
++ (NSArray *)arrayOfPrefixes;
 + (NSString *)convertGradeLevel:(NSString *)gradeLevel appendGrade:(BOOL)addGradeText;
 + (NSString *)getDeviceModel;
 + (void)CreateAndDisplayOverHeadAlertInView:(UIView *)view withMessage:(NSString *)message andSchoolID:(NSString *)schoolID;

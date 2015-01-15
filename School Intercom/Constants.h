@@ -25,7 +25,9 @@ typedef enum
     zPickerSecondGroup,
     zPickerThirdGroup,
     zPickerFourthGroup,
-    zPickerFifthGroup
+    zPickerFifthGroup,
+    zPickerGrade,
+    zPickerPrefix
 } PickerType;
 
 //LoginScreen Alertview
@@ -52,7 +54,8 @@ typedef enum
     quGetAllParent = 1,
     quGetAllTeachers,
     quGetAllSchools,
-    quGetAllCorps
+    quGetAllCorps,
+    quGetAllParentsForOneSchool
 }queryTypes;
 
 typedef enum
@@ -99,7 +102,9 @@ typedef enum
     zAlertUserApproved,
     zAlertUserDenied,
     zAlertEnterMessage,
-    zAlertPasswordChangeSuccess
+    zAlertPasswordChangeSuccess,
+    zAlertDeleteUser,
+    zAlertDeleteUserSchool
 } AlertTypes;
 
 typedef enum
@@ -180,6 +185,8 @@ typedef enum
 #define CELL_EXIT @"exitCell"
 #define CELL_USER_APPROVALS @"userApprovalsCell"
 #define CELL_AD_STATS @"adStatsCell"
+#define CELL_MANAGE_CALENDAR @"manageCalendarCell"
+#define CELL_MANAGE_NEWS @"manageNewsCell"
 
 #define CELL_FIRST_NAME @"firstNameCell"
 #define CELL_LAST_NAME @"lastNameCell"
@@ -239,6 +246,14 @@ typedef enum
 #define PHP_GET_USERS @"get_users.php"
 #define PHP_GET_SINGLE_USER @"get_single_user.php"
 #define PHP_GET_USERS_SCHOOLS @"get_users_schools.php"
+#define PHP_GET_ALL_SCHOOLS @"get_all_schools.php"
+#define PHP_GET_ALL_CORPS @"get_all_corps.php"
+#define PHP_ADMIN_ADD_USER @"admin_add_user.php"
+#define PHP_ADMIN_DELETE_USER @"delete_user.php"
+#define PHP_ADMIN_UPDATE_USER @"admin_update_user.php"
+#define PHP_ADMIN_ADD_USER_SCHOOL @"admin_add_user_school.php"
+#define PHP_ADMIN_DELETE_USER_SCHOOL @"admin_delete_user_school.php"
+#define PHP_ADMIN_UPDATE_USER_SCHOOL @"admin_update_user_school.php"
 
 //common fields
 #define MESSAGE_ID @"messageID"
@@ -396,6 +411,8 @@ typedef enum
 #define SEGUE_TO_SELECT_USER_TYPE @"accountTypeSegue"
 #define SEGUE_TO_USERS_SCHOOLS @"usersSchoolsSegue"
 #define SEGUE_TO_SINGLE_SCHOOL @"singleSchoolSegue"
+#define SEGUE_TO_ADD_NEW_USER @"addUserSegue"
+#define SEGUE_TO_LIST_ALL_SCHOOLS @"allSchoolsSegue"
 
 //Dictionary keys
 #define DIC_CALENDAR_DATA @"calendarData"

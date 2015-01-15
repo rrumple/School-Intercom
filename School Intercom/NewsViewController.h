@@ -7,6 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <QuartzCore/QuartzCore.h>
 #import "NewsDetailViewController.h"
 #import "AdModel.h"
 #import "UserData.h"

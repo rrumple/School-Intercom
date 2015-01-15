@@ -88,7 +88,7 @@
             break;
         case utSecretary://schoolAdmin is logged in
         case utPrincipal:
-            self.groupPickerValues = @[@"3", @"4", @"5", @"6"];
+            self.groupPickerValues = @[@"3", @"4", @"6"];
               break;
         case utSuperintendent://Corp Admin is logged in
             self.groupPickerValues = @[@"2", @"3"];
@@ -500,17 +500,12 @@
                     break;
                 case zPickerFourthGroup:
                     runQuery = YES;
-                    self.queryType = [NSString stringWithFormat:@"%i", quGetAllTeachers];
+                    self.queryType = [NSString stringWithFormat:@"%i", quGetAllParentsForOneSchool];
                     self.idToSendToDatabase = [self.thirdGroupSelected objectForKey:ID];
-                    break;
-                case zPickerFifthGroup:
-                    runQuery = YES;
-                    self.queryType = [NSString stringWithFormat:@"%i", quGetAllParent];
-                    self.idToSendToDatabase = [self.fourthGroupSelected objectForKey:ID];
                     break;
                 default:
                     self.sendAlertButton.hidden = false;
-                    self.alertIDToInsert = [self.fifthGroupSelected objectForKey:ID];
+                    self.alertIDToInsert = [self.fourthGroupSelected objectForKey:ID];
                     break;
             }
 
@@ -648,9 +643,7 @@
                     //self.thirdGroupTextField.hidden = false;
                     self.thirdGroupTextField.placeholder = @"Select School";
                     //self.fourthGroupTextField.hidden = false;
-                    self.fourthGroupTextField.placeholder = @"Select Teacher";
-                    //self.fifthGroupTextField.hidden = false;
-                    self.fifthGroupTextField.placeholder = @"Select Parent";
+                    self.fourthGroupTextField.placeholder = @"Select Parent";
                     break;
             }
             break;

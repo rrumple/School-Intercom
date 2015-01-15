@@ -9,8 +9,9 @@
 #import "ManageUsersViewController.h"
 #import "AdminModel.h"
 #import "ManageSingleUserTableViewController.h"
+#import "AddNewUserTableViewController.h"
 
-@interface ManageUsersViewController ()<UIPickerViewDataSource, UIPickerViewDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate>
+@interface ManageUsersViewController ()<UIPickerViewDataSource, UIPickerViewDelegate, UIGestureRecognizerDelegate, UITextFieldDelegate, UIAlertViewDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *userGroupTextfield;
 @property (weak, nonatomic) IBOutlet UITableView *userTableview;
 @property (nonatomic, strong) NSArray *userData;
@@ -20,6 +21,7 @@
 @property (nonatomic, strong) NSString *idToQuery;
 @property (nonatomic, strong) AdminModel *adminData;
 @property (nonatomic, strong) NSString *userIDSelected;
+@property (nonatomic, strong) NSString *corpIDSelected;
 
 
 @end
@@ -59,6 +61,16 @@
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    if(self.needsReload)
+    {
+        [self queryDatabaseforUsers];
+        self.needsReload = NO;
+    }
+}
 
 - (void)viewDidLoad
 {
@@ -235,6 +247,46 @@
 }
 
 
+- (void)deleteUserFromDatabase
+{
+    if(self.corpIDSelected == (id)[NSNull null])
+        self.corpIDSelected = @"";
+    
+    dispatch_queue_t createQueue = dispatch_queue_create("deleteUser", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.adminData deleteUserFromDatabase:self.userIDSelected];
+        
+        if (dataArray)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                    
+                    if([[tempDic objectForKey:@"error"] boolValue])
+                    {
+                        [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                        
+                    }
+                    else
+                    {
+                        
+                        
+                        [self queryDatabaseforUsers];
+                    }
+                });
+                
+                
+                
+                
+                
+            });
+            
+        }
+    });
+}
+
+
 
 #pragma mark - Navigation
 
@@ -248,6 +300,11 @@
         MSUTVC.userIDSelected = self.userIDSelected;
         MSUTVC.queryType = [NSString stringWithFormat:@"%li",(long)self.userTypeSelected];
         
+    }
+    else if ([segue.identifier isEqualToString:SEGUE_TO_ADD_NEW_USER])
+    {
+        AddNewUserTableViewController *ANUTVC = segue.destinationViewController;
+        ANUTVC.mainUserData = self.mainUserData;
     }
     
     // Get the new view controller using [segue destinationViewController].
@@ -368,5 +425,44 @@
 }
 
 
+ // Override to support conditional editing of the table view.
+ - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
+ // Return NO if you do not want the specified item to be editable.
+     if([self.mainUserData.accountType intValue] == utSuperUser)
+         return YES;
+     else
+         return NO;
+     
+ }
+
+
+
+ // Override to support editing the table view.
+ - (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (editingStyle == UITableViewCellEditingStyleDelete)
+    {
+        self.userIDSelected = [[self.userData objectAtIndex:indexPath.row]objectForKey:ID];
+        self.corpIDSelected = [[self.userData objectAtIndex:indexPath.row]objectForKey:CORP_ID];
+
+        UIAlertView *deleteConfrimAlert = [[UIAlertView alloc]initWithTitle:@"Remove User" message:[NSString stringWithFormat:@"You are about to remove %@ from the database. Are you sure?", [[self.userData objectAtIndex:indexPath.row] objectForKey:@"name"]] delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        deleteConfrimAlert.tag = zAlertDeleteUser;
+        [deleteConfrimAlert show];
+
+        
+    }
+ 
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if(alertView.tag == zAlertDeleteUser)
+    {
+        if(buttonIndex == 1)
+        {
+            [self deleteUserFromDatabase];
+        }
+    }
+}
 
 @end

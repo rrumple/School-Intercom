@@ -86,14 +86,7 @@
         [demoModeAlert show];
         return NO;
     }
-    else if([identifier isEqualToString:SEGUE_TO_ADD_SCHOOL_VIEW] && self.mainUserData.isAdmin)
-    {
-        UIAlertView *demoModeAlert = [[UIAlertView alloc]initWithTitle:@"Admin User" message:@"Schools can only be added or removed via the web portal @ www.myschoolintercom.com" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
-        [demoModeAlert show];
-        return NO;
-
-    }
-        
+            
     return YES;
 
 }
@@ -172,7 +165,7 @@
         [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
     }   
     else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+        // Create a new instance of the.0 class, insert it into the array, and add a new row to the table view
     }   
 }
 */

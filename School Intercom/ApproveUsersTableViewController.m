@@ -206,12 +206,21 @@
     {
         if(buttonIndex == 1)
         {
+            NSLog(@"%@", self.currentIndexPath);
             self.selectedUser = [[self.pendingUsersData objectAtIndex:self.currentIndexPath.section] objectAtIndex:self.currentIndexPath.row];
             NSMutableArray *tempArray = [[self.pendingUsersData objectAtIndex:self.currentIndexPath.section] mutableCopy];
             [tempArray removeObjectAtIndex:self.currentIndexPath.row];
             
             NSMutableArray *tempArray2 = [self.pendingUsersData mutableCopy];
-            [tempArray2 replaceObjectAtIndex:self.currentIndexPath.section withObject:tempArray];
+            if([tempArray count] == 0)
+            {
+                [tempArray2 removeObjectAtIndex:self.currentIndexPath.section];
+            }
+            else
+            {
+                
+                [tempArray2 replaceObjectAtIndex:self.currentIndexPath.section withObject:tempArray];
+            }
             
             self.pendingUsersData = tempArray2;
             self.approvalStatus = @"1";

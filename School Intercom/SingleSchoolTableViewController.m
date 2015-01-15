@@ -7,6 +7,8 @@
 //
 
 #import "SingleSchoolTableViewController.h"
+#import "AdminModel.h"
+#import "UsersSchoolsTableViewController.h"
 
 @interface SingleSchoolTableViewController ()
 @property (weak, nonatomic) IBOutlet UITableViewCell *cell1;
@@ -20,10 +22,18 @@
 @property (weak, nonatomic) IBOutlet UILabel *lastLoginDateLabel;
 @property (strong, nonatomic) IBOutlet UILabel *schoolNameLabel;
 @property (weak, nonatomic) IBOutlet UIImageView *schoolImage;
+@property (weak, nonatomic) IBOutlet UIButton *updateButton;
+@property (nonatomic, strong) AdminModel *adminData;
 
 @end
 
 @implementation SingleSchoolTableViewController
+
+- (AdminModel *)adminData
+{
+    if(!_adminData) _adminData = [[AdminModel alloc]init];
+    return _adminData;
+}
 
 - (NSDictionary *)schoolData
 {
@@ -77,9 +87,74 @@
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+- (void)updateUsersSchoolInDatabase
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("updateUserSchool", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.adminData updateSchoolForUser:[self.schoolData objectForKey:@"userSchoolsID"] isActive:[NSString stringWithFormat:@"%i", self.isActiveSwitch.isOn] andIsApproved:[NSString stringWithFormat:@"%i", self.isApprovedSwitch.isOn]];
+        
+        if (dataArray)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                    
+                    if([[tempDic objectForKey:@"error"] boolValue])
+                    {
+                        [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                        
+                    }
+                    else
+                    {
+                        for (id viewController in self.navigationController.viewControllers)
+                        {
+                            if([viewController isKindOfClass:[UsersSchoolsTableViewController class]])
+                            {
+                                UsersSchoolsTableViewController *USTVC = viewController;
+                                [USTVC getSchoolsForUserSelected];
+                                [self.navigationController popViewControllerAnimated:YES];
+                                break;
+                            }
+                            
+                        }
+                        
+                            
+                        
+                        
+                        
+                    }
+                });
+                
+                
+                
+                
+                
+            });
+            
+        }
+    });
+}
+
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)isActiveSwitchChanged:(UISwitch *)sender
+{
+    self.updateButton.hidden = false;
+}
+
+- (IBAction)isApprovedSwitchChanged:(UISwitch *)sender
+{
+    self.updateButton.hidden = false;
+}
+
+- (IBAction)updateButtonPressed
+{
+    self.updateButton.hidden = true;
+    [self updateUsersSchoolInDatabase];
 }
 
 #pragma mark - Table view data source

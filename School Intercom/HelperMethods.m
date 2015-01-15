@@ -176,7 +176,7 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
     return directoryContent;
 }
 
-+(NSArray *)arrayOfGradeLevels
++ (NSArray *)arrayOfGradeLevels
 {
     return @[@"K",
              @"1",
@@ -190,15 +190,29 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
              @"9",
              @"10",
              @"11",
-             @"12"
+             @"12",
+             @"SE"
              ];
 }
+
++ (NSArray *)arrayOfPrefixes
+{
+    return @[@"Ms.",
+             @"Miss",
+             @"Mrs.",
+             @"Mr.",
+             @"Dr."
+             ];
+}
+
 
 + (NSString *)convertGradeLevel:(NSString *)gradeLevel appendGrade:(BOOL)addGradeText
 {
     
     if([gradeLevel isEqualToString:@"K"])
         return @"Kindergarten";
+    else if([gradeLevel isEqualToString:@"SE"])
+        return @"Special Ed.";
     else
     {
         int gradeInt = [gradeLevel intValue];
@@ -247,7 +261,7 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
     char *machine = malloc(size);
     sysctlbyname("hw.machine", machine, &size, NULL, 0);
     NSString *platform = [NSString stringWithCString:machine encoding:NSUTF8StringEncoding];
-    
+    free(machine);
     
     if ([platform isEqualToString:@"iPhone1,1"])    return @"iPhone 1G";
     if ([platform isEqualToString:@"iPhone1,2"])    return @"iPhone 3G";

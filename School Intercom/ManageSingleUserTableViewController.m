@@ -11,6 +11,7 @@
 #import "SelectUsertypeTableViewController.h"
 #import "IntroModel.h"
 #import "UsersSchoolsTableViewController.h"
+#import "ManageUsersViewController.h"
 
 @interface ManageSingleUserTableViewController () <UITextFieldDelegate>
 @property (nonatomic, strong) NSArray *cellsToShow;
@@ -23,11 +24,13 @@
 @property (weak, nonatomic) IBOutlet UILabel *deviceModelLabel;
 @property (weak, nonatomic) IBOutlet UILabel *deviceVersionLabel;
 @property (weak, nonatomic) IBOutlet UIButton *resetPasswordButton;
+@property (weak, nonatomic) IBOutlet UILabel *numOfSchoolsLabel;
+@property (nonatomic) int numOfSchools;
 
 @property (nonatomic, strong) NSArray *userTypes;
 @property (nonatomic, strong) AdminModel *adminData;
 @property (nonatomic, strong) IntroModel *introData;
-
+@property (nonatomic, strong) NSDictionary *userData;
 
 @end
 
@@ -43,6 +46,31 @@
 {
     if(!_adminData) _adminData = [[AdminModel alloc]init];
     return _adminData;
+}
+
+- (void)setSchoolLabel
+{
+    NSString *schoolText;
+    if(self.numOfSchools == 1)
+        schoolText = @"School";
+    else
+        schoolText = @"Schools";
+    
+    
+    self.numOfSchoolsLabel.text = [NSString stringWithFormat:@"%i %@", self.numOfSchools, schoolText];
+
+}
+
+- (void)subtractOneFromSchoolLabel
+{
+    self.numOfSchools--;
+    [self setSchoolLabel];
+}
+
+- (void)addOneToSchoolLabel
+{
+    self.numOfSchools++;
+    [self setSchoolLabel];
 }
 
 - (void)recoverPasswordForEmail:(NSString *)email
@@ -82,6 +110,52 @@
     }
 }
 
+- (void)updateUserInDatabase
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("updateUser", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.adminData updateUserInDatabseWithFirstName:self.firstNameTextfield.text andLastName:self.lastNameTextfield.text andUserType:self.userTypeSelected andEmail:self.emailTextField.text withPrefix:@"" andGrade:@"" andSubject:@"" andUserID:self.userIDSelected];
+        
+        if (dataArray)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                    
+                    if([[tempDic objectForKey:@"error"] boolValue])
+                    {
+                        [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                        
+                    }
+                    else
+                    {
+                        for (id viewController in self.navigationController.viewControllers)
+                        {
+                            if([viewController isKindOfClass:[ManageUsersViewController class]])
+                            {
+                                ManageUsersViewController *MUVC = viewController;
+                                MUVC.needsReload = YES;
+                                [self.navigationController popViewControllerAnimated:YES];
+                                break;
+                            }
+                            
+                        }
+
+                        
+                    }
+                });
+                
+                
+                
+                
+                
+            });
+            
+        }
+    });
+
+}
 
 -(void)hideKeyboard
 {
@@ -128,7 +202,11 @@
                     else
                     {
                         
+                        self.numOfSchools = [[tempDic objectForKey:@"numOfSchools"] intValue];
+                        [self setSchoolLabel];
+                        
                         NSDictionary *userdic = [[tempDic objectForKey:@"data"]objectAtIndex:0];
+                        self.userData = userdic;
                         self.firstNameTextfield.text = [userdic objectForKey:USER_FIRST_NAME];
                         self.lastNameTextfield.text = [userdic objectForKey:USER_LAST_NAME];
                         self.emailTextField.text = [userdic objectForKey:USER_EMAIL];
@@ -206,6 +284,7 @@
 - (IBAction)saveChangesButtonPressed
 {
     self.saveChangesButton.hidden = true;
+    [self updateUserInDatabase];
 }
 #pragma mark - Table view data source
 
@@ -293,6 +372,7 @@
     {
         UsersSchoolsTableViewController *USTVC = segue.destinationViewController;
         USTVC.userIDSelected = self.userIDSelected;
+        USTVC.mainUserData = self.mainUserData;
     }
    
 

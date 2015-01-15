@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "UserData.h"
 
 @interface SingleSchoolTableViewController : UITableViewController
 
 @property (nonatomic, strong) NSDictionary *schoolData;
+@property (nonatomic ,strong) UserData *mainUserData;
 
-@end
+@end 

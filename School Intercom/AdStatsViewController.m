@@ -32,7 +32,10 @@
 @property (nonatomic) int chartType;
 @property (nonatomic) int barType;
 @property (nonatomic) NSUInteger index;
-
+@property (weak, nonatomic) IBOutlet UIStepper *timeFrameStepper;
+@property (weak, nonatomic) IBOutlet UILabel *timeframeLabel;
+@property (nonatomic, strong) NSArray *timeFrames;
+@property (nonatomic, strong) NSString *selectedTimeFrame;
 
 @end
 
@@ -71,7 +74,7 @@
     dispatch_queue_t createQueue = dispatch_queue_create("ads", NULL);
     dispatch_async(createQueue, ^{
         NSArray *adStatsDataArray;
-        adStatsDataArray = [self.adminData getAdStats:self.idToQuery ofType:self.queryType withSchoolID:[self.schoolSelected objectForKey:SCHOOL_ID]];
+        adStatsDataArray = [self.adminData getAdStats:self.idToQuery ofType:self.queryType withSchoolID:[self.schoolSelected objectForKey:SCHOOL_ID]withTimeframe:self.selectedTimeFrame];
         
         if (adStatsDataArray)
         {
@@ -227,6 +230,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    self.timeFrames = @[@"Today",
+                        @"1-Week",
+                        @"2-Weeks",
+                        @"1-Month",
+                        @"3-Months",
+                        @"6-Months",
+                        @"1-Year",
+                        @"All-Time"];
+    self.selectedTimeFrame = @"3650";
+    self.timeframeLabel.text = self.timeFrames[[self.timeFrames count]-1 ];
     self.chartType = 1;
     self.queryType = [NSString stringWithFormat:@"%i", quGetAllCorps];
     self.idToQuery = @"";
@@ -246,6 +259,32 @@
    // self.graphView.labels = @[@"Hanahan Elemntary", @"Hanahan Middle School", @"Hanahan High School", @"Hanahan Pre-School", @"Hanahan Prep", @"Goose Creek Primary"];
     //int clicks[] = {100,250,375};
     // Do any additional setup after loading the view.
+}
+- (IBAction)timeFrameStepperChanged:(UIStepper *)sender
+{
+    self.timeframeLabel.text = self.timeFrames[(int)sender.value];
+    
+    switch ((int)sender.value)
+    {
+        case 0: self.selectedTimeFrame = @"0";
+            break;
+        case 1: self.selectedTimeFrame = @"7";
+            break;
+        case 2: self.selectedTimeFrame = @"14";
+            break;
+        case 3: self.selectedTimeFrame = @"30";
+            break;
+        case 4: self.selectedTimeFrame = @"90";
+            break;
+        case 5: self.selectedTimeFrame = @"180";
+            break;
+        case 6: self.selectedTimeFrame = @"365";
+            break;
+        case 7: self.selectedTimeFrame = @"3650";
+            break;
+    }
+    
+    [self graphReloadButtonPressed];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -406,7 +445,10 @@
     self.idToQuery = [self.groupSelected objectForKey:ID];
     [self getAdStatsFromDatabase];
     self.emailGraphButton.hidden = false;
-    self.graphReloadButton.hidden = false;}
+    self.graphReloadButton.hidden = false;
+    self.timeframeLabel.hidden = false;
+    self.timeFrameStepper.hidden = false;
+}
 
 /*
 #pragma mark - Navigation

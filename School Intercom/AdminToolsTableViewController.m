@@ -36,32 +36,32 @@
     switch ([self.mainUserData.accountType intValue])
     {
         case utTeacher:
-            [self setAdminDatawithSections:2 andRows:1];
             self.cellsToShow = @[CELL_SEND_ALERT];
+            [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utSecretary:
-            [self setAdminDatawithSections:2 andRows:2];
-            self.cellsToShow = @[CELL_SEND_ALERT, CELL_USER_APPROVALS];
+            self.cellsToShow = @[CELL_SEND_ALERT, CELL_USER_APPROVALS];//, CELL_MANAGE_USERS];
+            [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utPrincipal:
-            [self setAdminDatawithSections:2 andRows:2];
             self.cellsToShow = @[CELL_SEND_ALERT, CELL_USER_APPROVALS];
+            [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utSuperintendent:
-            [self setAdminDatawithSections:2 andRows:1];
             self.cellsToShow = @[CELL_SEND_ALERT];
+            [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utSales:
-            [self setAdminDatawithSections:1 andRows:1];
             self.cellsToShow = @[CELL_EXIT];
+            [self setAdminDatawithSections:1 andRows:[self.cellsToShow count]];
             break;
         case utSuperUser:
-            [self setAdminDatawithSections:2 andRows:3];
-            self.cellsToShow = @[CELL_SEND_ALERT, CELL_AD_STATS, CELL_USER_APPROVALS];
+            self.cellsToShow = @[CELL_SEND_ALERT, CELL_AD_STATS, CELL_USER_APPROVALS];//, CELL_MANAGE_USERS];
+            [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utBetaTester:
-            [self setAdminDatawithSections:1 andRows:1];
             self.cellsToShow = @[CELL_EXIT];
+            [self setAdminDatawithSections:1 andRows:[self.cellsToShow count]];
 
             break;
     }

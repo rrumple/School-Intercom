@@ -39,6 +39,11 @@
 @property (weak, nonatomic) IBOutlet UIButton *addChildButton;
 @property (nonatomic) BOOL gradeTFready;
 @property (nonatomic) BOOL numberOfChildrenTFready;
+@property (weak, nonatomic) IBOutlet UIButton *finshedButton;
+@property (weak, nonatomic) IBOutlet UIButton *tryDemoSchoolButton;
+@property (weak, nonatomic) IBOutlet UILabel *addmySchoolLabel;
+@property (weak, nonatomic) IBOutlet UIButton *addMyschoolButton;
+@property (weak, nonatomic) IBOutlet UIButton *goBackButton;
 
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *addChildActivityView;
@@ -133,10 +138,10 @@
     
     if ([self.childFirstname.text length] > 0 && [self.childLastName.text length] > 0 && [self.childGradeLevel.text length] > 0)
     {
-        self.addChildButton.hidden = NO;
+        self.addChildButton.enabled = YES;
     }
     else
-        self.addChildButton.hidden = YES;
+        self.addChildButton.enabled = NO;
     
         
 }
@@ -501,6 +506,10 @@
 {
     self.userInputView.hidden = YES;
     self.childInputView.hidden = NO;
+    self.tryDemoSchoolButton.hidden = YES;
+    self.addmySchoolLabel.hidden = YES;
+    self.addMyschoolButton.hidden = YES;
+    self.goBackButton.hidden = YES;
     
     self.kidCounter = 1;
     self.headerLabel.text = [NSString stringWithFormat:@"Add Child # %i", self.kidCounter];
@@ -516,7 +525,8 @@
     self.registerData.childLastName = self.childLastName.text;
     self.registerData.childGradeLevel = self.teacherSelected;
     self.kidCounter++;
-    self.addChildButton.hidden = YES;
+    self.addChildButton.enabled = NO;
+    self.finshedButton.hidden = NO;
     [self addChildToDatabase];
 }
 
@@ -620,6 +630,18 @@
     [self getUserData];
    
 }
+- (IBAction)finshedButtonPressed:(UIButton *)sender
+{
+    if(self.addChildButton.enabled)
+    {
+        self.kidCounter = [self.numberOfChildrenTextField.text intValue];
+        [self addChildPressed];
+        
+    }
+    else
+        [self goBackButtonPressed];
+}
+
 - (IBAction)goBackButtonPressed
 {
     [self.navigationController popViewControllerAnimated:YES];

@@ -16,4 +16,8 @@
 @property (nonatomic, strong) NSString *queryType;
 @property (nonatomic, strong) NSString *userTypeSelected;
 @property (weak, nonatomic) IBOutlet UIButton *saveChangesButton;
+
+- (void)addOneToSchoolLabel;
+- (void)subtractOneFromSchoolLabel;
+
 @end

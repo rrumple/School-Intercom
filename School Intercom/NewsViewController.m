@@ -19,6 +19,7 @@
 @property (weak, nonatomic) IBOutlet UIView *overlay1;
 @property (weak, nonatomic) IBOutlet UIView *helpOverlay;
 
+
 @end
 
 @implementation NewsViewController
@@ -35,9 +36,25 @@
     return _adData;
 }
 
+-(void)setupNews
+{
+    if(self.newsData != (id)[NSNull null])
+    {
+        NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+    
+        for (NSDictionary *tempDic in self.newsData)
+        {
+            [tempArray addObject:@[tempDic]];
+        }
+    
+        self.newsData = tempArray;
+    }
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [self setupNews];
 	self.newsHeaderLabel.text = self.newsHeader;
     self.newsTableview.delegate = self;
     self.newsTableview.dataSource = self;
@@ -215,7 +232,7 @@
 - (void)loadNewsImageAtIndex:(NSIndexPath *)path forImage:(UIImageView *)imageView withActivityIndicator:(UIActivityIndicatorView *)spinner
 {
     
-    NSString *fileName = [[self.newsData objectAtIndex:path.row ] objectForKey:NEWS_IMAGE_NAME];
+    NSString *fileName = [[[self.newsData objectAtIndex:path.section ] objectAtIndex:path.row] objectForKey:NEWS_IMAGE_NAME];
     
     NSString *baseImageURL = [NEWS_IMAGE_URL stringByAppendingString:fileName];
     
@@ -229,7 +246,30 @@
         NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:baseImageURL]];
         dispatch_async(dispatch_get_main_queue(),^{
             UIImage *image = [UIImage imageWithData:data];
-            [imageView setImage:image];
+            
+            // Get your image somehow
+            
+            
+            // Begin a new image that will be the new image with the rounded corners
+            // (here with the size of an UIImageView)
+            UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, NO, [UIScreen mainScreen].scale);
+            
+            // Add a clip before drawing anything, in the shape of an rounded rect
+            [[UIBezierPath bezierPathWithRoundedRect:imageView.bounds
+                                        cornerRadius:10.0] addClip];
+            // Draw your image
+            [image drawInRect:imageView.bounds];
+            
+            // Get the image, here setting the UIImageView image
+            imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+            
+            // Lets forget about that we were drawing
+            UIGraphicsEndImageContext();
+
+            
+            
+            
+            
             [spinner stopAnimating];
             NSLog(@"%f, %f", image.size.width, image.size.height);
         });
@@ -249,13 +289,16 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    return 1;
+    if(self.newsData != (id)[NSNull null])
+        return [self.newsData count];
+    else
+        return 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if(self.newsData != (id)[NSNull null])
-        return [self.newsData count];
+        return [[self.newsData objectAtIndex:section ] count];
     else
         return 0;
 }
@@ -263,12 +306,12 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat height = 0.0;
-    NSDictionary *newsDic = [self.newsData objectAtIndex:indexPath.row];
+    NSDictionary *newsDic = [[self.newsData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
     NSString *imageName = [newsDic objectForKey:NEWS_IMAGE_NAME];
     
     if(imageName != (id)[NSNull null])
-        height = 115.0;
+        height = 105.0;
     else
         height = 68.0;
     
@@ -292,9 +335,15 @@
 }
  */
 
+-(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    cell.layer.cornerRadius = 10;
+    cell.layer.masksToBounds = YES;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *newsDic = [self.newsData objectAtIndex:indexPath.row];
+    NSDictionary *newsDic = [[self.newsData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
     
     
@@ -313,6 +362,7 @@
         
         UIImageView *imageView = (UIImageView *)[cell.contentView viewWithTag:1];
         UIActivityIndicatorView *spinner = (UIActivityIndicatorView *)[cell.contentView viewWithTag:4];
+        
         
         [self loadNewsImageAtIndex:indexPath forImage:imageView withActivityIndicator:spinner];
     }
@@ -347,6 +397,7 @@
     
     //cellImage.image = [UIImage imageNamed:@"redAlert.png"];
     
+
     
     return cell;
 }
@@ -401,7 +452,7 @@
         NSIndexPath *index = [self.newsTableview indexPathForSelectedRow];
         
         NewsDetailViewController *NDVC = segue.destinationViewController;
-        NDVC.newsDetailData = [self.newsData objectAtIndex:index.row];
+        NDVC.newsDetailData = [[self.newsData objectAtIndex:index.section] objectAtIndex:index.row];
        
     }
      
