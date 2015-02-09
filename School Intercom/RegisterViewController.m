@@ -7,7 +7,7 @@
 //
 
 #import "RegisterViewController.h"
-
+#import "Flurry.h"
 
 @interface RegisterViewController ()
 
@@ -92,6 +92,7 @@
 {
     [super viewDidLoad];
     
+    [Flurry logEvent:@"New_User_Screen_Accessed"];
     
     [self.stateTextField setDelegate:self];
     [self.cityTextField setDelegate:self];
@@ -442,6 +443,10 @@
                     [self.mainUserData addschoolDataToArray:[[tempDic objectForKey:SCHOOL_DATA] objectAtIndex:0]];
                     [self.mainUserData setActiveSchool:self.schoolIDSelected];
                     
+                    for(NSDictionary *teacherData in [tempDic objectForKey:@"teacherNames"])
+                    {
+                        [self.mainUserData addTeacherName:teacherData];
+                    }
                     //[self downloadImages];
                     //[self downloadLogo];
                     
@@ -526,7 +531,8 @@
     self.registerData.childGradeLevel = self.teacherSelected;
     self.kidCounter++;
     self.addChildButton.enabled = NO;
-    self.finshedButton.hidden = NO;
+    if([self.numberOfChildrenTextField.text intValue] > 1)
+        self.finshedButton.hidden = NO;
     [self addChildToDatabase];
 }
 
@@ -550,6 +556,10 @@
                 }
                 else
                 {
+                    for(NSDictionary *teacherData in [tempDic objectForKey:@"teacherNames"])
+                    {
+                        [self.mainUserData addTeacherName:teacherData];
+                    }
                     if(self.kidCounter <= [self.numberOfChildrenTextField.text intValue])
                     {
                         self.headerLabel.text = [NSString stringWithFormat:@"Add Child # %i", self.kidCounter];
@@ -587,7 +597,7 @@
 
 - (IBAction)privacyPolicyButtonPressed
 {
-     [self.navigationController popToRootViewControllerAnimated:YES];
+    
     
     [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"http://www.myschoolintercom.com/privacy.php"]];
     
@@ -596,11 +606,12 @@
 
 - (IBAction)tryDemoPressed
 {
+    [Flurry logEvent:@"Demo_School_Loaded"];
     if([self.delegate respondsToSelector:@selector(loginToDemoAccount)])
     {
         self.mainUserData.isAccountCreated = YES;
         self.mainUserData.isPendingVerification = NO;
-        self.mainUserData.isApproved = YES;
+        
         self.mainUserData.isDemoInUse = YES;
         [self.delegate loginToDemoAccount];
     }
@@ -610,6 +621,8 @@
 
 - (IBAction)createAccountButtonPressed
 {
+    [Flurry logEvent:@"Create_Account_Button_Pressed"];
+    
     [self.createButton setEnabled:false];
     self.registerData.userFirstName = self.firstNameTextField.text;
     self.registerData.userLastName = self.lastNameTextField.text;

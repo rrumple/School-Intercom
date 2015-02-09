@@ -135,6 +135,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [Flurry logEvent:@"UPDATE_KIDS_SCREEN_VIEWED"];
 	self.kidsTableView.delegate = self;
     self.kidsTableView.dataSource = self;
     

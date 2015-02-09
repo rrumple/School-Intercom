@@ -8,6 +8,7 @@
 
 #import "NewsViewController.h"
 
+
 @interface NewsViewController ()
 
 @property (weak, nonatomic) IBOutlet UITableView *newsTableview;
@@ -18,6 +19,7 @@
 @property (nonatomic, strong) AdModel *adModel;
 @property (weak, nonatomic) IBOutlet UIView *overlay1;
 @property (weak, nonatomic) IBOutlet UIView *helpOverlay;
+@property (nonatomic, strong) NSArray *postNewsData;
 
 
 @end
@@ -36,6 +38,14 @@
     return _adData;
 }
 
+-(void)setNewsData:(NSArray *)newsData
+{
+    _newsData = newsData;
+    [self setupNews];
+    
+    [self.newsTableview reloadData];
+}
+
 -(void)setupNews
 {
     if(self.newsData != (id)[NSNull null])
@@ -47,7 +57,7 @@
             [tempArray addObject:@[tempDic]];
         }
     
-        self.newsData = tempArray;
+        self.postNewsData = tempArray;
     }
 }
 
@@ -65,6 +75,7 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
     
     [self.newsHeaderLabel setFont:FONT_CHARCOAL_CY(17.0f)];
 
@@ -231,51 +242,84 @@
 }
 - (void)loadNewsImageAtIndex:(NSIndexPath *)path forImage:(UIImageView *)imageView withActivityIndicator:(UIActivityIndicatorView *)spinner
 {
+    NSString *fileName = [[[self.postNewsData objectAtIndex:path.section ] objectAtIndex:path.row] objectForKey:NEWS_IMAGE_NAME];
     
-    NSString *fileName = [[[self.newsData objectAtIndex:path.section ] objectAtIndex:path.row] objectForKey:NEWS_IMAGE_NAME];
+    NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
-    NSString *baseImageURL = [NEWS_IMAGE_URL stringByAppendingString:fileName];
+    NSString *pngFilePath = [NSString stringWithFormat:@"%@/%@",docDir,fileName];
     
-    NSLog(@"%@", baseImageURL);
+    if([[NSFileManager defaultManager] fileExistsAtPath:pngFilePath])
+    {
+        UIImage *image = [UIImage imageWithContentsOfFile:pngFilePath];
     
-    dispatch_queue_t downloadQueue = dispatch_queue_create("get Image", NULL);
-    dispatch_async(downloadQueue, ^{
+        UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, NO, [UIScreen mainScreen].scale);
+        
+        // Add a clip before drawing anything, in the shape of an rounded rect
+        [[UIBezierPath bezierPathWithRoundedRect:imageView.bounds
+                                    cornerRadius:10.0] addClip];
+        // Draw your image
+        [image drawInRect:imageView.bounds];
+        
+        // Get the image, here setting the UIImageView image
+        imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+        
+        // Lets forget about that we were drawing
+        UIGraphicsEndImageContext();
         
         
         
-        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:baseImageURL]];
-        dispatch_async(dispatch_get_main_queue(),^{
-            UIImage *image = [UIImage imageWithData:data];
+        
+        
+        [spinner stopAnimating];
+        
+    }
+    else
+    {
+    
+    
+        NSString *baseImageURL = [NEWS_IMAGE_URL stringByAppendingString:fileName];
+        
+        NSLog(@"%@", baseImageURL);
+        
+        dispatch_queue_t downloadQueue = dispatch_queue_create("get Image", NULL);
+        dispatch_async(downloadQueue, ^{
             
-            // Get your image somehow
             
             
-            // Begin a new image that will be the new image with the rounded corners
-            // (here with the size of an UIImageView)
-            UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, NO, [UIScreen mainScreen].scale);
-            
-            // Add a clip before drawing anything, in the shape of an rounded rect
-            [[UIBezierPath bezierPathWithRoundedRect:imageView.bounds
-                                        cornerRadius:10.0] addClip];
-            // Draw your image
-            [image drawInRect:imageView.bounds];
-            
-            // Get the image, here setting the UIImageView image
-            imageView.image = UIGraphicsGetImageFromCurrentImageContext();
-            
-            // Lets forget about that we were drawing
-            UIGraphicsEndImageContext();
+            NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:baseImageURL]];
+            dispatch_async(dispatch_get_main_queue(),^{
+                UIImage *image = [UIImage imageWithData:data];
+                
+                // Get your image somehow
+                
+                
+                // Begin a new image that will be the new image with the rounded corners
+                // (here with the size of an UIImageView)
+                UIGraphicsBeginImageContextWithOptions(imageView.bounds.size, NO, [UIScreen mainScreen].scale);
+                
+                // Add a clip before drawing anything, in the shape of an rounded rect
+                [[UIBezierPath bezierPathWithRoundedRect:imageView.bounds
+                                            cornerRadius:10.0] addClip];
+                // Draw your image
+                [image drawInRect:imageView.bounds];
+                
+                // Get the image, here setting the UIImageView image
+                imageView.image = UIGraphicsGetImageFromCurrentImageContext();
+                
+                // Lets forget about that we were drawing
+                UIGraphicsEndImageContext();
 
+                NSData *data1 = [NSData dataWithData:UIImagePNGRepresentation(image)];
+                [data1 writeToFile:pngFilePath atomically:YES];
+                
+                
+                [spinner stopAnimating];
+                NSLog(@"%f, %f", image.size.width, image.size.height);
+            });
             
             
-            
-            
-            [spinner stopAnimating];
-            NSLog(@"%f, %f", image.size.width, image.size.height);
         });
-        
-        
-    });
+    }
     
 }
 
@@ -289,16 +333,16 @@
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-    if(self.newsData != (id)[NSNull null])
-        return [self.newsData count];
+    if(self.postNewsData != (id)[NSNull null])
+        return [self.postNewsData count];
     else
         return 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if(self.newsData != (id)[NSNull null])
-        return [[self.newsData objectAtIndex:section ] count];
+    if(self.postNewsData != (id)[NSNull null])
+        return [[self.postNewsData objectAtIndex:section ] count];
     else
         return 0;
 }
@@ -306,7 +350,7 @@
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     CGFloat height = 0.0;
-    NSDictionary *newsDic = [[self.newsData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    NSDictionary *newsDic = [[self.postNewsData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
     NSString *imageName = [newsDic objectForKey:NEWS_IMAGE_NAME];
     
@@ -343,7 +387,7 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSDictionary *newsDic = [[self.newsData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
+    NSDictionary *newsDic = [[self.postNewsData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row];
     
     
     
@@ -381,6 +425,12 @@
     cellLabel.text = [newsDic objectForKey:NEWS_TITLE];
     
     UILabel *dateLabel = (UILabel *)[cell.contentView viewWithTag:3];
+    if([[newsDic objectForKey:TEACHER_ID]length] > 2)
+    {
+        UILabel *fromLabel = (UILabel *)[cell.contentView viewWithTag:5];
+        fromLabel.text = [[self.mainUserData getTeacherName:[newsDic objectForKey:TEACHER_ID]] stringByAppendingString:@"'s Class"];
+        fromLabel.hidden = false;
+    }
     
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc]init];
     [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
@@ -452,7 +502,7 @@
         NSIndexPath *index = [self.newsTableview indexPathForSelectedRow];
         
         NewsDetailViewController *NDVC = segue.destinationViewController;
-        NDVC.newsDetailData = [[self.newsData objectAtIndex:index.section] objectAtIndex:index.row];
+        NDVC.newsDetailData = [[self.postNewsData objectAtIndex:index.section] objectAtIndex:index.row];
        
     }
      

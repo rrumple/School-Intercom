@@ -11,6 +11,11 @@
 #import "ApproveUsersTableViewController.h"
 #import "LandscapeNavigationController.h"
 #import "ManageUsersViewController.h"
+#import "ManageCalendarsViewController.h"
+#import "ManageNewsViewController.h"
+#import "ParentListTableViewController.h"
+
+
 
 @interface AdminToolsTableViewController ()
 
@@ -36,15 +41,15 @@
     switch ([self.mainUserData.accountType intValue])
     {
         case utTeacher:
-            self.cellsToShow = @[CELL_SEND_ALERT];
+            self.cellsToShow = @[CELL_PARENT_LIST, CELL_SEND_ALERT, CELL_MANAGE_CALENDAR, CELL_MANAGE_NEWS];
             [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utSecretary:
-            self.cellsToShow = @[CELL_SEND_ALERT, CELL_USER_APPROVALS];//, CELL_MANAGE_USERS];
+            self.cellsToShow = @[CELL_SEND_ALERT, CELL_USER_APPROVALS, CELL_MANAGE_CALENDAR, CELL_MANAGE_NEWS];//, CELL_MANAGE_USERS];
             [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utPrincipal:
-            self.cellsToShow = @[CELL_SEND_ALERT, CELL_USER_APPROVALS];
+            self.cellsToShow = @[CELL_SEND_ALERT, CELL_USER_APPROVALS, CELL_MANAGE_CALENDAR, CELL_MANAGE_NEWS];
             [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utSuperintendent:
@@ -56,7 +61,7 @@
             [self setAdminDatawithSections:1 andRows:[self.cellsToShow count]];
             break;
         case utSuperUser:
-            self.cellsToShow = @[CELL_SEND_ALERT, CELL_AD_STATS, CELL_USER_APPROVALS];//, CELL_MANAGE_USERS];
+            self.cellsToShow = @[CELL_SEND_ALERT, CELL_AD_STATS, CELL_USER_APPROVALS, CELL_MANAGE_USERS];
             [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utBetaTester:
@@ -97,11 +102,13 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_USER_APPROVALS])
     {
+        [Flurry logEvent:@"User_Approvals_Accessed"];
         ApproveUsersTableViewController *AUTVC = segue.destinationViewController;
         AUTVC.mainUserData = self.mainUserData;
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_AD_STATS])
     {
+        [Flurry logEvent:@"AD_Data_Accessed"];
         LandscapeNavigationController *LSNC = segue.destinationViewController;
         LSNC.mainUserData = self.mainUserData;
     }
@@ -110,6 +117,25 @@
         ManageUsersViewController *MUVC = segue.destinationViewController;
         MUVC.mainUserData = self.mainUserData;
     }
+    else if([segue.identifier isEqualToString:SEGUE_TO_MANAGE_CALENDARS])
+    {
+        [Flurry logEvent:@"Manage_Calendars_Accessed"];
+        ManageCalendarsViewController *MCVC = segue.destinationViewController;
+        MCVC.mainUserData = self.mainUserData;
+    }
+    else if([segue.identifier isEqualToString:SEGUE_TO_MANAGE_NEWS])
+    {
+        [Flurry logEvent:@"Manage_News_Accessed"];
+        ManageNewsViewController *MNVC = segue.destinationViewController;
+        MNVC.mainUserData = self.mainUserData;
+    }
+    else if ([segue.identifier isEqualToString:SEGUE_TO_PARENT_LIST])
+    {
+        [Flurry logEvent:@"Parent_List_Accessed"];
+        ParentListTableViewController *PLTVC = segue.destinationViewController;
+        PLTVC.mainUserData = self.mainUserData;
+    }
+
 
 }
 

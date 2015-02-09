@@ -7,21 +7,25 @@
 //
 
 #import "ContactViewController.h"
+#import "MainNavigationController.h"
+#import "MainMenuViewController.h"
 
-@interface ContactViewController ()
+@interface ContactViewController ()<UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIGestureRecognizerDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *subjectTextField;
 @property (weak, nonatomic) IBOutlet UITextView *bodyTextView;
 @property (nonatomic, strong) ContactModel *contactData;
 @property (weak, nonatomic) IBOutlet UILabel *headerLabel;
-@property (weak, nonatomic) IBOutlet UILabel *adminNameLabel;
+@property (nonatomic, strong) NSMutableArray *toNames;
 @property (weak, nonatomic) IBOutlet UILabel *schoolNameLabel;
 @property (weak, nonatomic) IBOutlet UILabel *cityLabel;
 @property (weak, nonatomic) IBOutlet UILabel *stateLabel;
 @property (weak, nonatomic) IBOutlet UILabel *zipCodeLabel;
-@property (weak, nonatomic) IBOutlet UILabel *schoolEmailLabel;
 @property (weak, nonatomic) IBOutlet UILabel *phoneNumberLabel;
 @property (weak, nonatomic) IBOutlet UIView *overlay1;
 @property (weak, nonatomic) IBOutlet UIView *helpOverlay;
+@property (weak, nonatomic) IBOutlet UITextField *toTextfield;
+@property (nonatomic, strong) NSString *toUserID;
+
 @end
 
 @implementation ContactViewController
@@ -31,16 +35,74 @@
 //static const CGFloat PORTRAIT_KEYBOARD_HEIGHT = 216;
 //static const CGFloat LANDSCAPE_KEYBOARD_HEIGHT = 162;
 
+- (NSMutableArray *)toNames
+{
+    if(!_toNames) _toNames = [[NSMutableArray alloc]init];
+    return _toNames;
+}
+
 - (ContactModel *)contactData
 {
     if(!_contactData) _contactData = [[ContactModel alloc]init];
     return _contactData;
 }
 
+- (void)pickerViewTapped
+{
+    if(self.toTextfield.isFirstResponder)
+    {
+        
+        [self hideKeyboard];
+        
+    }
+    
+    
+}
+
+-(UIPickerView *)createPickerWithTag:(NSInteger)tag
+{
+    UIPickerView *pickerView = [[UIPickerView alloc]init];
+    pickerView.tag = tag;
+    pickerView.dataSource = self;
+    pickerView.delegate = self;
+    pickerView.showsSelectionIndicator = YES;
+    
+    
+    
+    
+    UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
+    //tapGR.cancelsTouchesInView = NO;
+    
+    [tapGR setNumberOfTapsRequired:1];
+    
+    [tapGR setDelegate:self];
+    [pickerView addGestureRecognizer:tapGR];
+    
+    return pickerView;
+}
+
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    self.toUserID = @"";
+    self.toNames = [self.mainUserData.teacherNames mutableCopy];
+    [self.toNames addObject:@{@"teacherName":@"Submit Bugs/Feedback",@"id":@"374825e5c3d74cca7e85cbc23e61bc90"}];
+    NSLog(@"%@", self.toNames);
+    NSMutableArray *itemsToRemove = [[NSMutableArray alloc]init];
+    for (NSDictionary *tempDic in self.toNames)
+    {
+        if([[tempDic objectForKey:ID]isEqualToString:self.mainUserData.userID] || ![[tempDic objectForKey:SCHOOL_ID]isEqualToString:self.mainUserData.schoolIDselected])
+            if(![[tempDic objectForKey:@"teacherName"]isEqualToString:@"Submit Bugs/Feedback"])
+                [itemsToRemove addObject:tempDic];
+    }
+    
+    [self.toNames removeObjectsInArray:itemsToRemove];
+    
+      NSLog(@"%@", self.toNames);
+        
+    
     [self setupTapGestures];
     
     [self.bodyTextView.layer setCornerRadius:15.0f];
@@ -56,8 +118,9 @@
     self.schoolNameLabel.text = [self.schoolData objectForKey:SCHOOL_NAME];
     self.cityLabel.text = [NSString stringWithFormat:@"%@, %@ %@", [self.schoolData objectForKey:SCHOOL_CITY], [self.schoolData objectForKey:SCHOOL_STATE], [self.schoolData objectForKey:SCHOOL_ZIP]];
 
-    self.schoolEmailLabel.text = [self.schoolData objectForKey:SCHOOL_EMAIL];
     self.phoneNumberLabel.text = [self.schoolData objectForKey:SCHOOL_PHONE];
+    
+    self.toTextfield.inputView = [self createPickerWithTag:zPickerName];
     
 }
 
@@ -119,6 +182,7 @@
     
     [self.subjectTextField resignFirstResponder];
     [self.bodyTextView resignFirstResponder];
+    [self.toTextfield resignFirstResponder];
 }
 
 - (void)setupTapGestures
@@ -149,6 +213,7 @@
 
 - (IBAction)clearButtonPressed
 {
+    
     self.subjectTextField.text = nil;
     self.bodyTextView.text = nil;
 }
@@ -158,7 +223,7 @@
     dispatch_queue_t createQueue = dispatch_queue_create("sendEmail", NULL);
     dispatch_async(createQueue, ^{
         NSArray *emailArray;
-        emailArray = [self.contactData sendEmailToSchoolID:[self.schoolData objectForKey:ID] withSubject:self.subjectTextField.text andMessage:self.bodyTextView.text fromUser:self.mainUserData.userID];
+        emailArray = [self.contactData sendEmailTo:self.toUserID withSchoolID:[self.schoolData objectForKey:ID] withSubject:self.subjectTextField.text andMessage:self.bodyTextView.text fromUser:self.mainUserData.userID];
         
         if (emailArray)
         {
@@ -255,4 +320,72 @@
     [self.view setFrame:viewFrame];
     [UIView commitAnimations];
 }
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    return [self.toNames count];
+    
+}
+
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    if(pickerView.tag == zPickerName)
+    {
+        
+        return [[self.toNames
+                 objectAtIndex:row] objectForKeyedSubscript:@"teacherName"];
+        
+    }
+    
+    return @"";
+}
+
+
+
+
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    if(pickerView.tag == zPickerName)
+    {
+        self.toTextfield.text =  [[self.toNames objectAtIndex:row]objectForKey:@"teacherName"];
+        self.toUserID = [[self.toNames objectAtIndex:row]objectForKey:ID];
+        
+    }
+    
+    
+    
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return TRUE;
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    [self.view endEditing:YES];
+}
+
+- (void)textFieldDidBeginEditing:(UITextField *)textField
+{
+    if(self.toTextfield.isFirstResponder)
+    {
+        if ([self.toTextfield.text isEqualToString:@""])
+        {
+            self.toTextfield.text =  [[self.toNames objectAtIndex:0]objectForKey:@"teacherName"];
+            self.toUserID = [[self.toNames objectAtIndex:0]objectForKey:ID];
+            
+          
+            
+        }
+    }
+    
+}
+
+
 @end

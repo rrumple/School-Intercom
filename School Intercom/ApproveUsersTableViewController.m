@@ -12,6 +12,7 @@
 @interface ApproveUsersTableViewController ()<UIAlertViewDelegate, UITextFieldDelegate>
 
 @property (nonatomic, strong) NSArray *pendingUsersData;
+@property (nonatomic, strong) NSArray *pendingUsersDataToShow;
 @property (nonatomic, strong) NSDictionary *selectedUser;
 @property (nonatomic, strong) NSIndexPath *currentIndexPath;
 @property (nonatomic, strong) NSString *approvalStatus;
@@ -19,6 +20,7 @@
 @property (nonatomic, strong) UISegmentedControl *selectedControl;
 @property (nonatomic, strong) UIAlertView *customMessageAlert;
 @property (nonatomic, strong) NSString *denyMessage;
+@property (nonatomic) BOOL showDeniedUsers;
 @end
 
 @implementation ApproveUsersTableViewController
@@ -29,6 +31,11 @@
     return _adminData;
 }
 
+- (NSArray *)pendingUsersDataToShow
+{
+    if (!_pendingUsersDataToShow) _pendingUsersDataToShow = [[NSArray alloc]init];
+    return _pendingUsersDataToShow;
+}
 
 
 - (void)getPendingNewUsersFromDatabase
@@ -43,10 +50,11 @@
         {
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                NSMutableArray *tempArray = [pendingUserData mutableCopy];
-                [tempArray insertObject:@[@""] atIndex:0];
                 
-                self.pendingUsersData = tempArray;
+                self.pendingUsersData = pendingUserData;
+                
+                [self setupUsersToShow];
+                
                 [self.tableView reloadData];
                 
             });
@@ -73,6 +81,9 @@
                 
                 self.denyMessage = @"";
                 self.selectedControl = nil;
+                
+                [self getPendingNewUsersFromDatabase];
+                
             });
             
         }
@@ -80,11 +91,47 @@
 
 }
 
+- (void)setupUsersToShow
+{
+    NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+    [tempArray insertObject:@[@""] atIndex:0];
+   
+    
+    for(NSArray *tempArray2 in self.pendingUsersData)
+    {
+        NSMutableArray *newArray = [[NSMutableArray alloc]init];
+        for(NSDictionary *tempDic in tempArray2)
+        {
+            if(self.showDeniedUsers)
+            {
+                [newArray addObject:tempDic];
+            }
+            else
+            {
+                if([tempDic objectForKey:DATE_DENIED] == (id)[NSNull null] )
+                    [newArray addObject:tempDic];
+
+            }
+        }
+        
+        if([newArray count] > 0)
+            [tempArray addObject:newArray];
+        
+        
+    }
+    
+    self.pendingUsersDataToShow = tempArray;
+    
+
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    
     self.denyMessage = @"";
     self.tableView.rowHeight = 44;
-    
+    self.showDeniedUsers = false;
     [self getPendingNewUsersFromDatabase];
     
     // Uncomment the following line to preserve selection between presentations.
@@ -105,7 +152,7 @@
 
 - (void)showDenyConfirmAlert
 {
-    UIAlertView *userDeniedAlert = [[UIAlertView alloc]initWithTitle:@"Deny User" message:[NSString stringWithFormat:@"Deny %@?", [[[self.pendingUsersData objectAtIndex:self.currentIndexPath.section]objectAtIndex:self.currentIndexPath.row]objectForKey:@"userName"]] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Use standard deny message", @"Create a custom deny message", nil];
+    UIAlertView *userDeniedAlert = [[UIAlertView alloc]initWithTitle:@"Deny User" message:[NSString stringWithFormat:@"Deny %@?", [[[self.pendingUsersDataToShow objectAtIndex:self.currentIndexPath.section]objectAtIndex:self.currentIndexPath.row]objectForKey:@"userName"]] delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Use standard deny message", @"Create a custom deny message", nil];
     userDeniedAlert.tag = zAlertUserDenied;
     [userDeniedAlert show];
 }
@@ -120,7 +167,7 @@
     
     if(sender.selectedSegmentIndex == 0)
     {
-        UIAlertView *userApprovedAlert = [[UIAlertView alloc]initWithTitle:@"Approve User" message:[NSString stringWithFormat:@"Approve %@?", [[[self.pendingUsersData objectAtIndex:self.currentIndexPath.section]objectAtIndex:self.currentIndexPath.row]objectForKey:@"userName"]] delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        UIAlertView *userApprovedAlert = [[UIAlertView alloc]initWithTitle:@"Approve User" message:[NSString stringWithFormat:@"Approve %@?", [[[self.pendingUsersDataToShow objectAtIndex:self.currentIndexPath.section]objectAtIndex:self.currentIndexPath.row]objectForKey:@"userName"]] delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
         userApprovedAlert.tag = zAlertUserApproved;
         [userApprovedAlert show];
     }
@@ -132,6 +179,29 @@
     self.selectedControl = sender;
     
     
+}
+
+- (void)reloadTableViewWithAnimation
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [UIView transitionWithView:self.tableView
+                          duration:0.4f
+                           options:UIViewAnimationOptionTransitionCrossDissolve
+                        animations:^(void) {
+                            [self.tableView reloadData];
+                        } completion:NULL];
+    });
+
+}
+
+- (IBAction)showDeniedUsersSwitchChanged:(UISwitch *)sender
+{
+    self.showDeniedUsers = sender.isOn;
+    [self setupUsersToShow];
+    [self reloadTableViewWithAnimation];
+    
+    
+   
 }
 #pragma mark - Table view data source
 
@@ -148,13 +218,13 @@
     if(section == 0)
         return @"";
     else
-        return [[[self.pendingUsersData objectAtIndex:section]objectAtIndex:0]objectForKey:SCHOOL_NAME];
+        return [[[self.pendingUsersDataToShow objectAtIndex:section]objectAtIndex:0]objectForKey:SCHOOL_NAME];
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
 
     // Return the number of sections.
-    return [self.pendingUsersData count];
+    return [self.pendingUsersDataToShow count];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
@@ -162,7 +232,7 @@
     if(section == 0)
         return 1;
     else
-        return [[self.pendingUsersData objectAtIndex:section]count];
+        return [[self.pendingUsersDataToShow objectAtIndex:section]count];
 }
 
 
@@ -180,15 +250,15 @@
         UILabel *kidLabel = (UILabel *)[cell viewWithTag:2];
         UISegmentedControl *approveDenyControl = (UISegmentedControl *)[cell viewWithTag:3];
         
-        if([[[self.pendingUsersData objectAtIndex:indexPath.section]objectAtIndex:indexPath.row]objectForKey:DATE_DENIED] != (id)[NSNull null])
+        if([[[self.pendingUsersDataToShow objectAtIndex:indexPath.section]objectAtIndex:indexPath.row]objectForKey:DATE_DENIED] != (id)[NSNull null])
             [approveDenyControl setSelectedSegmentIndex:1];
         else
             [approveDenyControl setSelectedSegmentIndex:UISegmentedControlNoSegment];
         
-        userLabel.text = [[[self.pendingUsersData objectAtIndex:indexPath.section] objectAtIndex:indexPath.row]objectForKey:@"userName"];
+        userLabel.text = [[[self.pendingUsersDataToShow objectAtIndex:indexPath.section] objectAtIndex:indexPath.row]objectForKey:@"userName"];
         
-        if([[[self.pendingUsersData objectAtIndex:indexPath.section ]objectAtIndex:indexPath.row]objectForKey:@"kidName"]!= (id)[NSNull null])
-            kidLabel.text =[[[self.pendingUsersData objectAtIndex:indexPath.section ]objectAtIndex:indexPath.row]objectForKey:@"kidName"];
+        if([[[self.pendingUsersDataToShow objectAtIndex:indexPath.section ]objectAtIndex:indexPath.row]objectForKey:@"kidName"]!= (id)[NSNull null])
+            kidLabel.text =[[[self.pendingUsersDataToShow objectAtIndex:indexPath.section ]objectAtIndex:indexPath.row]objectForKey:@"kidName"];
         else
             kidLabel.text = @"N/A";
 
@@ -200,6 +270,11 @@
     return cell;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 0.01f;
+}
+
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {
     if(alertView.tag == zAlertUserApproved)
@@ -207,11 +282,11 @@
         if(buttonIndex == 1)
         {
             NSLog(@"%@", self.currentIndexPath);
-            self.selectedUser = [[self.pendingUsersData objectAtIndex:self.currentIndexPath.section] objectAtIndex:self.currentIndexPath.row];
-            NSMutableArray *tempArray = [[self.pendingUsersData objectAtIndex:self.currentIndexPath.section] mutableCopy];
+            self.selectedUser = [[self.pendingUsersDataToShow objectAtIndex:self.currentIndexPath.section] objectAtIndex:self.currentIndexPath.row];
+            NSMutableArray *tempArray = [[self.pendingUsersDataToShow objectAtIndex:self.currentIndexPath.section] mutableCopy];
             [tempArray removeObjectAtIndex:self.currentIndexPath.row];
             
-            NSMutableArray *tempArray2 = [self.pendingUsersData mutableCopy];
+            NSMutableArray *tempArray2 = [self.pendingUsersDataToShow mutableCopy];
             if([tempArray count] == 0)
             {
                 [tempArray2 removeObjectAtIndex:self.currentIndexPath.section];
@@ -222,7 +297,7 @@
                 [tempArray2 replaceObjectAtIndex:self.currentIndexPath.section withObject:tempArray];
             }
             
-            self.pendingUsersData = tempArray2;
+            self.pendingUsersDataToShow = tempArray2;
             self.approvalStatus = @"1";
             [self.tableView reloadData];
             
@@ -239,9 +314,10 @@
         if(buttonIndex == 1)
         {
             self.approvalStatus = @"0";
-            self.selectedUser = [[self.pendingUsersData objectAtIndex:self.currentIndexPath.section] objectAtIndex:self.currentIndexPath.row];
+            self.selectedUser = [[self.pendingUsersDataToShow objectAtIndex:self.currentIndexPath.section] objectAtIndex:self.currentIndexPath.row];
 
             [self updateUserApprovalStatusInDatabase];
+            
         }
         else if(buttonIndex == 2)
         {
@@ -276,7 +352,7 @@
             }
             
             self.approvalStatus = @"0";
-            self.selectedUser = [[self.pendingUsersData objectAtIndex:self.currentIndexPath.section] objectAtIndex:self.currentIndexPath.row];
+            self.selectedUser = [[self.pendingUsersDataToShow objectAtIndex:self.currentIndexPath.section] objectAtIndex:self.currentIndexPath.row];
             
             [self updateUserApprovalStatusInDatabase];
 

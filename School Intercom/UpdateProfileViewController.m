@@ -76,6 +76,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    [Flurry logEvent:@"UPDATE_PROFILE_SCREEN_VIEWED"];
     self.firstNameTextfield.text = [self.mainUserData.userInfo objectForKey:USER_FIRST_NAME];
     self.lastNameTextfield.text = [self.mainUserData.userInfo objectForKey:USER_LAST_NAME];
     self.emailTextField.text = [self.mainUserData.userInfo objectForKey:USER_EMAIL];
@@ -95,7 +96,7 @@
     [self.activityIndicatorView.layer setShadowRadius:3.0];
     [self.activityIndicatorView.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
     
-    if(self.mainUserData.isAdmin)
+    if([self.mainUserData.accountType intValue] > 0)
         self.restorePurchasesButton.hidden = true;
 
 

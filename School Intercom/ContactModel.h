@@ -11,7 +11,6 @@
 
 @interface ContactModel : NSObject
 
-- (NSArray *)sendEmailToSchoolID:(NSString *)schoolID withSubject:(NSString *)subject andMessage:(NSString *)message fromUser:(NSString *)userID;
-
+- (NSArray *)sendEmailTo:(NSString *)toUserID withSchoolID:(NSString *)schoolID withSubject:(NSString *)subject andMessage:(NSString *)message fromUser:(NSString *)userID;
 
 @end

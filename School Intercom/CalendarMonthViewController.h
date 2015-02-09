@@ -56,5 +56,6 @@
 @protocol CalendarMonthViewControllerDelegate <NSObject>
 
 - (void)snapshotOfViewAsImage:(UIImage *)image;
+- (void)segueToFundraising;
 
 @end

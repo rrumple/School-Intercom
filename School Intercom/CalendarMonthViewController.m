@@ -31,6 +31,7 @@
 
 #import "CalendarMonthViewController.h"
 
+
 @interface CalendarMonthViewController ()
 @property (nonatomic, strong) NSArray *monthArray;
 @property (nonatomic, strong) NSArray *monthsUsed;
@@ -159,7 +160,7 @@
 - (NSArray *)getDateArrayFromString:(NSString *)date
 {
     NSArray *dateArray = [date componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"- :/"]];
-    NSLog(@"NEW DATE ARRAY: %@", dateArray);
+    //NSLog(@"NEW DATE ARRAY: %@", dateArray);
     return dateArray;
     
 }
@@ -249,7 +250,7 @@
                                                                   options:0];
                      
                      NSDateComponents *sixMonthsFromNowComponets = [[NSDateComponents alloc]init];
-                     sixMonthsFromNowComponets.month = 6;
+                     sixMonthsFromNowComponets.month = 12;
                      NSDate *sixMonthsFromNow = [calendar dateByAddingComponents:sixMonthsFromNowComponets
                                                                           toDate:[NSDate date]
                                                                          options:0];
@@ -636,6 +637,7 @@
 {
     [super viewWillAppear:animated];
     
+    
     [self getAdFromDatabase];
 }
 
@@ -743,6 +745,7 @@
         NSLog(@"%@", event.eventIdentifier);
         dispatch_async(dispatch_get_main_queue(), ^{
             
+             [Flurry logEvent:@"Event_Added_To_Users_Calendar"];
             
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Calendar" message:@"Event added successfully" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
@@ -784,12 +787,22 @@
 
 - (void)addEventToCalendar:(UIButton *)sender
 {
-    self.selectedEventData = [self.calendarData objectAtIndex:sender.tag];
+    if(self.mainUserData.hasPurchased)
+    {
+        self.selectedEventData = [self.calendarData objectAtIndex:sender.tag];
 
-    UIAlertView *confirmAddAlert = [[UIAlertView alloc]initWithTitle:@"Add Event" message:[NSString stringWithFormat:@"Add %@?", [self.selectedEventData objectForKey:CAL_TITLE]] delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
-    confirmAddAlert.tag = zAlertConfirmCalendarAdd;
+        UIAlertView *confirmAddAlert = [[UIAlertView alloc]initWithTitle:@"Add Event" message:[NSString stringWithFormat:@"Add %@?", [self.selectedEventData    objectForKey:CAL_TITLE]] delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        confirmAddAlert.tag = zAlertConfirmCalendarAdd;
     
-    [confirmAddAlert show];
+        [confirmAddAlert show];
+    }
+    else
+    {
+        UIAlertView *suggestPurchase = [[UIAlertView alloc]initWithTitle:@"Premium Content" message:@"Adding Calendar Events requires the one time purchase of the School Fundraiser Pack, for more details select Fundraising." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Fundraising", nil];
+        suggestPurchase.tag = zAlertSuggestPurchase;
+        
+        [suggestPurchase show];
+    }
 
 }
 
@@ -803,6 +816,19 @@
         if(buttonIndex == 1)
         {
             [self addEventToUserCalendar];
+        }
+    }
+    else if(alertView.tag == zAlertSuggestPurchase)
+    {
+        if(buttonIndex == 1)
+        {
+            if([self.delegate respondsToSelector:@selector(segueToFundraising)])
+            {
+                [self.navigationController popViewControllerAnimated:NO];
+                
+                [self.delegate segueToFundraising];
+            }
+
         }
     }
 }
@@ -891,7 +917,7 @@
     }
     else if (self.showDetailView && indexPath.row == 2)
         return 172.0;
-    return 44.0f;
+    return 54.0f;
 }
 
 - (NSArray *)ConvertHourUsingDateArray:(NSArray *)dateArray
@@ -932,12 +958,13 @@
             
             UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 20, 306, 30)];
             UILabel *dateLabel = [[UILabel alloc]initWithFrame:CGRectMake(15, 49, 306, 41)];
+            
             dateLabel.numberOfLines = 2;
             dateLabel.font = [UIFont systemFontOfSize:8.0];
             titleLabel.font = [UIFont systemFontOfSize:12.0];
-            titleLabel.numberOfLines = 2;
+                       titleLabel.numberOfLines = 2;
             
-            
+           
             titleLabel.text = [self.detailViewDic objectForKey:CAL_TITLE];;
             NSArray *startTimeArray = [self getDateArrayFromString:[self.detailViewDic objectForKey:CAL_START_DATE]];
             NSArray *endTimeArray = [self getDateArrayFromString:[self.detailViewDic objectForKey:CAL_END_DATE]];
@@ -966,6 +993,7 @@
             
             [cell addSubview:dateLabel];
             [cell addSubview:titleLabel];
+            
 
         }
         else if (indexPath.row == 1 || indexPath.row == 2)
@@ -1006,12 +1034,14 @@
         
         UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 1, 185, 40)];
         UILabel *dateLabel = [[UILabel alloc]initWithFrame:CGRectMake(238, 11, 62, 21)];
+        UILabel *createdByLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 38, 150, 15)];
         
         dateLabel.textAlignment = NSTextAlignmentRight;
         
-        dateLabel.font = [UIFont systemFontOfSize:10.0];
+        dateLabel.font = [UIFont systemFontOfSize:11.0];
         titleLabel.font = [UIFont systemFontOfSize:14.0];
         titleLabel.numberOfLines = 2;
+        createdByLabel.font = [UIFont systemFontOfSize:10.0];
         
         UIButton *addButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 7, 30, 30)];
 
@@ -1047,16 +1077,25 @@
             dateLabel.frame =  CGRectMake(238, 2, 62, 40);
             dateLabel.numberOfLines = 3;
             NSArray *dateArray2 = [self getDateArrayFromString:[calendarDic objectForKey:CAL_END_DATE]];
-            stringDate = [NSString stringWithFormat:@"%@/%@/%@\n    thru         %@/%@/%@", dateArray[1], dateArray[2], dateArray[0], dateArray2[1], dateArray2[2], dateArray2[0]];
+            stringDate = [NSString stringWithFormat:@"%@/%@/%@\n     thru\n%@/%@/%@", dateArray[1], dateArray[2], dateArray[0], dateArray2[1], dateArray2[2], dateArray2[0]];
 
         }
       
         dateLabel.text = stringDate;
-
+        
+        if([[calendarDic objectForKey:TEACHER_ID] length] > 3)
+        {
+            createdByLabel.text = [self.mainUserData getTeacherName:[calendarDic objectForKey:TEACHER_ID]];
+        }
+        else
+        {
+            createdByLabel.text = [self.mainUserData.schoolData objectForKey:SCHOOL_NAME];
+        }
         
        
         [cell addSubview:titleLabel];
         [cell addSubview:dateLabel];
+        [cell addSubview:createdByLabel];
         
         
         if([self isEventAlreadyInUsersCalendar:calendarDic])

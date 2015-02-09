@@ -24,6 +24,9 @@
 		940D6AA71847D2F20013EA7B /* UIView+AddOns.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6AA61847D2F20013EA7B /* UIView+AddOns.m */; };
 		940E81571A50633F00F12ADA /* ManageUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940E81561A50633F00F12ADA /* ManageUsersViewController.m */; };
 		9412DE80184ECED60046D297 /* HelperMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 9412DE7F184ECED60046D297 /* HelperMethods.m */; };
+		9415694E1A870529003E2853 /* FundraisingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9415694D1A870529003E2853 /* FundraisingViewController.m */; };
+		941569511A872AFE003E2853 /* FundraiserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 941569501A872AFE003E2853 /* FundraiserModel.m */; };
+		941569631A8802F5003E2853 /* libFlurry_6.0.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 941569621A8802F5003E2853 /* libFlurry_6.0.0.a */; };
 		9427379919874431002CEA3F /* UpdateKidViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9427379819874431002CEA3F /* UpdateKidViewController.m */; };
 		942DD8511870D21600FB8F71 /* UpdateProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DD8501870D21600FB8F71 /* UpdateProfileViewController.m */; };
 		942DD8551870D25800FB8F71 /* UpdateKidsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DD8541870D25800FB8F71 /* UpdateKidsViewController.m */; };
@@ -44,7 +47,14 @@
 		945D61831A20D12300FEFEA2 /* RequestSchoolViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 945D61821A20D12300FEFEA2 /* RequestSchoolViewController.m */; };
 		94642FBB1A591CF300BE290F /* AddNewUserTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94642FBA1A591CF300BE290F /* AddNewUserTableViewController.m */; };
 		94642FBE1A5926E000BE290F /* AllSchoolsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94642FBD1A5926E000BE290F /* AllSchoolsTableViewController.m */; };
+		946892FC1A820A980047C111 /* ParentListTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 946892FB1A820A980047C111 /* ParentListTableViewController.m */; };
+		946893021A8320BD0047C111 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 946893011A8320BD0047C111 /* SystemConfiguration.framework */; };
+		946893041A8320C50047C111 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 946893031A8320C50047C111 /* Security.framework */; };
+		947620331A7C836400C8DB35 /* ManageCalendarsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 947620321A7C836400C8DB35 /* ManageCalendarsViewController.m */; };
+		947620361A7C837800C8DB35 /* ManageCalendarTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 947620351A7C837800C8DB35 /* ManageCalendarTableViewController.m */; };
 		947AB4E2196A489C00C4AD80 /* LunchMenuViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 947AB4E1196A489C00C4AD80 /* LunchMenuViewController.m */; };
+		9486867F1A7EF20F004882EE /* ManageNewsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9486867E1A7EF20F004882EE /* ManageNewsViewController.m */; };
+		948686821A7EF510004882EE /* ManagePostTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 948686811A7EF510004882EE /* ManagePostTableViewController.m */; };
 		948E085118B082E800B3A854 /* AdModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 948E085018B082E800B3A854 /* AdModel.m */; };
 		94AB780B186A9A1E00F5A56F /* NSObject+TKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AB7808186A9A1E00F5A56F /* NSObject+TKCategory.m */; };
 		94AB780C186A9A1E00F5A56F /* NSString+TKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 94AB780A186A9A1E00F5A56F /* NSString+TKCategory.m */; };
@@ -170,6 +180,12 @@
 		940E81561A50633F00F12ADA /* ManageUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageUsersViewController.m; sourceTree = "<group>"; };
 		9412DE7E184ECED60046D297 /* HelperMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelperMethods.h; sourceTree = "<group>"; };
 		9412DE7F184ECED60046D297 /* HelperMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelperMethods.m; sourceTree = "<group>"; };
+		9415694C1A870529003E2853 /* FundraisingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FundraisingViewController.h; sourceTree = "<group>"; };
+		9415694D1A870529003E2853 /* FundraisingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FundraisingViewController.m; sourceTree = "<group>"; };
+		9415694F1A872AFE003E2853 /* FundraiserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FundraiserModel.h; sourceTree = "<group>"; };
+		941569501A872AFE003E2853 /* FundraiserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FundraiserModel.m; sourceTree = "<group>"; };
+		941569611A8802F5003E2853 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Flurry.h; path = "School Intercom/Flurry.h"; sourceTree = "<group>"; };
+		941569621A8802F5003E2853 /* libFlurry_6.0.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFlurry_6.0.0.a; path = "School Intercom/libFlurry_6.0.0.a"; sourceTree = "<group>"; };
 		9427379719874431002CEA3F /* UpdateKidViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateKidViewController.h; sourceTree = "<group>"; };
 		9427379819874431002CEA3F /* UpdateKidViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateKidViewController.m; sourceTree = "<group>"; };
 		942DD84F1870D21600FB8F71 /* UpdateProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateProfileViewController.h; sourceTree = "<group>"; };
@@ -206,8 +222,20 @@
 		94642FBA1A591CF300BE290F /* AddNewUserTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddNewUserTableViewController.m; sourceTree = "<group>"; };
 		94642FBC1A5926E000BE290F /* AllSchoolsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AllSchoolsTableViewController.h; sourceTree = "<group>"; };
 		94642FBD1A5926E000BE290F /* AllSchoolsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AllSchoolsTableViewController.m; sourceTree = "<group>"; };
+		946892FA1A820A980047C111 /* ParentListTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ParentListTableViewController.h; sourceTree = "<group>"; };
+		946892FB1A820A980047C111 /* ParentListTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ParentListTableViewController.m; sourceTree = "<group>"; };
+		946893011A8320BD0047C111 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		946893031A8320C50047C111 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		947620311A7C836400C8DB35 /* ManageCalendarsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageCalendarsViewController.h; sourceTree = "<group>"; };
+		947620321A7C836400C8DB35 /* ManageCalendarsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageCalendarsViewController.m; sourceTree = "<group>"; };
+		947620341A7C837800C8DB35 /* ManageCalendarTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageCalendarTableViewController.h; sourceTree = "<group>"; };
+		947620351A7C837800C8DB35 /* ManageCalendarTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageCalendarTableViewController.m; sourceTree = "<group>"; };
 		947AB4E0196A489C00C4AD80 /* LunchMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LunchMenuViewController.h; sourceTree = "<group>"; };
 		947AB4E1196A489C00C4AD80 /* LunchMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LunchMenuViewController.m; sourceTree = "<group>"; };
+		9486867D1A7EF20F004882EE /* ManageNewsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageNewsViewController.h; sourceTree = "<group>"; };
+		9486867E1A7EF20F004882EE /* ManageNewsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageNewsViewController.m; sourceTree = "<group>"; };
+		948686801A7EF510004882EE /* ManagePostTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManagePostTableViewController.h; sourceTree = "<group>"; };
+		948686811A7EF510004882EE /* ManagePostTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManagePostTableViewController.m; sourceTree = "<group>"; };
 		948E084F18B082E800B3A854 /* AdModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdModel.h; sourceTree = "<group>"; };
 		948E085018B082E800B3A854 /* AdModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdModel.m; sourceTree = "<group>"; };
 		94AB7807186A9A1E00F5A56F /* NSObject+TKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+TKCategory.h"; sourceTree = "<group>"; };
@@ -364,11 +392,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				946893041A8320C50047C111 /* Security.framework in Frameworks */,
+				946893021A8320BD0047C111 /* SystemConfiguration.framework in Frameworks */,
 				9402977A1A43F4B1007E0E89 /* MessageUI.framework in Frameworks */,
 				9447E51E192460CE0002C556 /* QuartzCore.framework in Frameworks */,
 				9447E51C1921BF3B0002C556 /* AVFoundation.framework in Frameworks */,
 				9447E51419152A9A0002C556 /* StoreKit.framework in Frameworks */,
 				94BD73F3183DA686009E1129 /* EventKit.framework in Frameworks */,
+				941569631A8802F5003E2853 /* libFlurry_6.0.0.a in Frameworks */,
 				94BD73C0183DA63D009E1129 /* CoreGraphics.framework in Frameworks */,
 				94BD73C2183DA63D009E1129 /* UIKit.framework in Frameworks */,
 				94BD73BE183DA63D009E1129 /* Foundation.framework in Frameworks */,
@@ -391,6 +422,10 @@
 		940296F81A32A670007E0E89 /* Admin views */ = {
 			isa = PBXGroup;
 			children = (
+				948686801A7EF510004882EE /* ManagePostTableViewController.h */,
+				948686811A7EF510004882EE /* ManagePostTableViewController.m */,
+				9486867D1A7EF20F004882EE /* ManageNewsViewController.h */,
+				9486867E1A7EF20F004882EE /* ManageNewsViewController.m */,
 				94642FBC1A5926E000BE290F /* AllSchoolsTableViewController.h */,
 				94642FBD1A5926E000BE290F /* AllSchoolsTableViewController.m */,
 				94642FB91A591CF300BE290F /* AddNewUserTableViewController.h */,
@@ -415,6 +450,12 @@
 				940296F61A32A668007E0E89 /* SendAlertViewController.m */,
 				940296F21A32A3C8007E0E89 /* AdminToolsTableViewController.h */,
 				940296F31A32A3C8007E0E89 /* AdminToolsTableViewController.m */,
+				946892FA1A820A980047C111 /* ParentListTableViewController.h */,
+				946892FB1A820A980047C111 /* ParentListTableViewController.m */,
+				947620311A7C836400C8DB35 /* ManageCalendarsViewController.h */,
+				947620321A7C836400C8DB35 /* ManageCalendarsViewController.m */,
+				947620341A7C837800C8DB35 /* ManageCalendarTableViewController.h */,
+				947620351A7C837800C8DB35 /* ManageCalendarTableViewController.m */,
 			);
 			name = "Admin views";
 			sourceTree = "<group>";
@@ -422,6 +463,8 @@
 		940D6A9B184797E70013EA7B /* Main Views */ = {
 			isa = PBXGroup;
 			children = (
+				9415694C1A870529003E2853 /* FundraisingViewController.h */,
+				9415694D1A870529003E2853 /* FundraisingViewController.m */,
 				947AB4E0196A489C00C4AD80 /* LunchMenuViewController.h */,
 				947AB4E1196A489C00C4AD80 /* LunchMenuViewController.m */,
 				94E33BF71869E0A900DB9A82 /* CalendarMonthViewController.h */,
@@ -471,6 +514,8 @@
 		94BD73B1183DA63C009E1129 = {
 			isa = PBXGroup;
 			children = (
+				941569611A8802F5003E2853 /* Flurry.h */,
+				941569621A8802F5003E2853 /* libFlurry_6.0.0.a */,
 				94BD73C3183DA63D009E1129 /* School Intercom */,
 				94BD73E2183DA63D009E1129 /* School IntercomTests */,
 				94BD73BC183DA63D009E1129 /* Frameworks */,
@@ -490,6 +535,8 @@
 		94BD73BC183DA63D009E1129 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				946893031A8320C50047C111 /* Security.framework */,
+				946893011A8320BD0047C111 /* SystemConfiguration.framework */,
 				940297791A43F4B1007E0E89 /* MessageUI.framework */,
 				9447E51D192460CE0002C556 /* QuartzCore.framework */,
 				9447E51B1921BF3B0002C556 /* AVFoundation.framework */,
@@ -570,6 +617,8 @@
 				94C8EC761847EF0A002EF4FE /* DatabaseRequest.h */,
 				94C8EC771847EF0A002EF4FE /* DatabaseRequest.m */,
 				94C8EC731847ED7E002EF4FE /* RegistrationModel.h */,
+				9415694F1A872AFE003E2853 /* FundraiserModel.h */,
+				941569501A872AFE003E2853 /* FundraiserModel.m */,
 				94C8EC741847ED7E002EF4FE /* RegistrationModel.m */,
 				943A0CF71876538C00D0910F /* ContactModel.h */,
 				943A0CF81876538C00D0910F /* ContactModel.m */,
@@ -835,6 +884,7 @@
 			files = (
 				94BD7400183DCF16009E1129 /* RegisterViewController.m in Sources */,
 				94C8B9B31875403B00D245E4 /* NewsDetailViewController.m in Sources */,
+				9486867F1A7EF20F004882EE /* ManageNewsViewController.m in Sources */,
 				943A0CFC1879C7C300D0910F /* UpdateProfileModel.m in Sources */,
 				94AB780B186A9A1E00F5A56F /* NSObject+TKCategory.m in Sources */,
 				94BD73CE183DA63D009E1129 /* AppDelegate.m in Sources */,
@@ -842,6 +892,7 @@
 				94AB780E186A9CC500F5A56F /* TKCalendarMonthView.m in Sources */,
 				94E33CB81869E3E700DB9A82 /* UIImageView+TKCategory.m in Sources */,
 				94E33C9B1869E3E700DB9A82 /* TKLoadingView.m in Sources */,
+				941569511A872AFE003E2853 /* FundraiserModel.m in Sources */,
 				94E33CAF1869E3E700DB9A82 /* UIAlertView+TKCategory.m in Sources */,
 				948E085118B082E800B3A854 /* AdModel.m in Sources */,
 				94E33C921869E3E700DB9A82 /* TKGradientView.m in Sources */,
@@ -866,10 +917,12 @@
 				94E33C8F1869E3E700DB9A82 /* TKEmptyView.m in Sources */,
 				940296F41A32A3C8007E0E89 /* AdminToolsTableViewController.m in Sources */,
 				94E33C7F1869E3E700DB9A82 /* NSArray+TKCategory.m in Sources */,
+				948686821A7EF510004882EE /* ManagePostTableViewController.m in Sources */,
 				94AB780C186A9A1E00F5A56F /* NSString+TKCategory.m in Sources */,
 				94E33CAA1869E3E700DB9A82 /* TKTextViewCell.m in Sources */,
 				94BDF7281870904600AAFFA4 /* SettingsTableViewController.m in Sources */,
 				94E33CA41869E3E700DB9A82 /* TKSlideToUnlockView.m in Sources */,
+				946892FC1A820A980047C111 /* ParentListTableViewController.m in Sources */,
 				942DD8581870D26C00FB8F71 /* AddSchoolViewController.m in Sources */,
 				942DD8551870D25800FB8F71 /* UpdateKidsViewController.m in Sources */,
 				94E33CB61869E3E700DB9A82 /* UIImage+TKCategory.m in Sources */,
@@ -878,6 +931,7 @@
 				940E81571A50633F00F12ADA /* ManageUsersViewController.m in Sources */,
 				940297381A3DB9B4007E0E89 /* ApproveUsersTableViewController.m in Sources */,
 				940D6AA71847D2F20013EA7B /* UIView+AddOns.m in Sources */,
+				9415694E1A870529003E2853 /* FundraisingViewController.m in Sources */,
 				94BD73CA183DA63D009E1129 /* main.m in Sources */,
 				947AB4E2196A489C00C4AD80 /* LunchMenuViewController.m in Sources */,
 				943A0CF91876538C00D0910F /* ContactModel.m in Sources */,
@@ -897,6 +951,7 @@
 				94C8EC781847EF0A002EF4FE /* DatabaseRequest.m in Sources */,
 				94E33CB41869E3E700DB9A82 /* UIFont+TKCategory.m in Sources */,
 				94E33C8B1869E3E700DB9A82 /* TKCalendarMonthTableViewController.m in Sources */,
+				947620361A7C837800C8DB35 /* ManageCalendarTableViewController.m in Sources */,
 				942DD8511870D21600FB8F71 /* UpdateProfileViewController.m in Sources */,
 				94C8EC751847ED7E002EF4FE /* RegistrationModel.m in Sources */,
 				94E33C971869E3E700DB9A82 /* TKLabelFieldCell.m in Sources */,
@@ -932,6 +987,7 @@
 				9402973B1A3E47FB007E0E89 /* AdStatsViewController.m in Sources */,
 				94E33CB31869E3E700DB9A82 /* UIDevice+TKCategory.m in Sources */,
 				94E33C981869E3E700DB9A82 /* TKLabelSwitchCell.m in Sources */,
+				947620331A7C836400C8DB35 /* ManageCalendarsViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1063,6 +1119,7 @@
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School Intercom/School Intercom-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/School Intercom";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1082,6 +1139,7 @@
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School Intercom/School Intercom-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/School Intercom";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;

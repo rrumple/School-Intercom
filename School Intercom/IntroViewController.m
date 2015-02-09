@@ -42,6 +42,9 @@
 @property (nonatomic,strong) UIColor *defaultBackgroundColor;
 @property (nonatomic) NSUInteger numberOfSchoolsRestored;
 @property (nonatomic, strong) NSMutableDictionary *restoredSchools;
+@property (weak, nonatomic) IBOutlet UILabel *versionLabel;
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomConstraint;
+@property (nonatomic) BOOL loginViaRestore;
 
 
 @property (weak, nonatomic) IBOutlet UIView *loadingIndicatorView;
@@ -147,6 +150,8 @@
         [self.micImageView setBackgroundColor:[self getColorFromHex:str]];
         UIImage *image = [UIImage imageWithContentsOfFile:pngFilePath];
         [self.schoolLogoImageView setImage:image];
+        
+        
         [self.schoolLogoImageView setHidden:NO];
         [self.micImageView setImage:[UIImage imageNamed:@"WelcomeScreen"]];
         self.isLoadImageComplete = true;
@@ -195,6 +200,7 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillResignActive) name:UIApplicationWillResignActiveNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(productPurchased:) name:IAPHelperProductPurchasedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(productPurchaseFailed) name:IAPHelperProductPurchaseFailedNotification object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restorePurchaseFailed) name:IAPHelperRestorePurchaseFailedNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(productRestored:) name:IAPHelperProductRestoredPurchaseNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete) name:IAPHelperProductRestoreCompleted object:nil];
       [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete:) name:IAPHelperProductRestoreCompletedWithNumber object:nil];
@@ -387,7 +393,7 @@
 - (void)showNoAccountAlert
 {
     
-    self.noAccountAlert = [[UIAlertView alloc]initWithTitle:@"Create an Intercom Account or Restore an Existing Account?" message:Nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"New User", @"Restore Purchases", @"Admin Login", nil];
+    self.noAccountAlert = [[UIAlertView alloc]initWithTitle:@"Create an Intercom Account or Restore/Login to an Existing Account." message:Nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"New User", @"Restore Purchases", @"Login", nil];
     self.noAccountAlert.tag = zAlertNoUser;
     
     [self.noAccountAlert show];
@@ -398,6 +404,14 @@
     
     self.noActiveSchoolsAlert = [[UIAlertView alloc]initWithTitle:@"No Active Schools" message:@"To gain access to this school you need to complete the In-App Purchase, please close the app and try again" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
     [self.noActiveSchoolsAlert show];
+}
+
+- (void)showRestorePurchasedFailedAlert
+{
+    
+    self.productPurchasedFailedAlert = [[UIAlertView alloc]initWithTitle:@"Restore Failed" message:@"Unable to restore purchase, Try again later" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+    
+    [self.productPurchasedFailedAlert show];
 }
 
 - (void)showProductPurchasedFailedAlert
@@ -437,6 +451,15 @@
     
     if (self.mainUserData.isAccountCreated && self.mainUserData.isApproved)
     {
+        //Take this line of code out once tutorials are complete
+        [self.mainUserData turnOffTutorial];
+        
+        self.switchSchoolsButton.hidden = YES;
+        [self loadData];
+        
+        self.timer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showHomeScreen) userInfo:nil repeats:NO];
+
+        /*
         if(self.mainUserData.hasPurchased)
         {
             self.switchSchoolsButton.hidden = YES;
@@ -453,16 +476,15 @@
                 approvedAlert.tag = zAlertApproved;
                 [approvedAlert show];
             }
-           
-            
-                
+        
         }
+         */
     }
     else if (!self.mainUserData.isAccountCreated)
     {
         [self showNoAccountAlert];
     }
-    else if (self.mainUserData.isAccountCreated)
+    else if (self.mainUserData.isAccountCreated && !self.mainUserData.isDemoInUse)
     {
         //check the database to see if the users Registered status has changed
         [self checkVerifyStatus];
@@ -518,10 +540,11 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
+    self.loginViaRestore = false;
     //hash tester
     NSLog(@"%@", [HelperMethods encryptText:@"tester"]);
     
+    self.versionLabel.text = [NSString stringWithFormat:@"V%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
     
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     
@@ -556,6 +579,17 @@
     [self.loadingIndicatorView.layer setShadowRadius:3.0];
     [self.loadingIndicatorView.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
     NSLog(@"SCHOOL DATA--- %@", self.mainUserData.schoolData);
+    
+    
+    
+    if(self.view.frame.size.height == 736 && self.view.frame.size.width == 414)
+    {
+        self.bottomConstraint.constant += 48;
+        
+        [self.view setNeedsUpdateConstraints];
+        
+    }
+
     
 }
 
@@ -636,6 +670,7 @@
                     
                     if (matchCount == [self.restoredSchools count])
                     {
+                        self.loginViaRestore = true;
                         [self loginExistingUser];
                     }
                 }
@@ -665,6 +700,17 @@
     }
 
 }
+
+- (void)restorePurchaseFailed
+{
+    self.isPurchaseInProgress = false;
+    self.loadingIndicatorView.hidden = true;
+    self.loadingActivityIndicatorLabel.text = @"Purchasing...";
+    
+    [self.loadingActivityIndicator stopAnimating];
+    [self showRestorePurchasedFailedAlert];
+}
+
 
 - (void)productPurchaseFailed
 {
@@ -716,6 +762,9 @@
 - (void)viewDidDisappear:(BOOL)animated
 {
     [super viewDidDisappear:animated];
+    
+    [self.introLabel setTextColor:[UIColor whiteColor]];
+    self.introLabel.text = @"School Intercom";
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     
@@ -799,11 +848,17 @@
     [userInfo setObject:[tempDic objectForKey:USER_FIRST_NAME] forKey:USER_FIRST_NAME];
     [userInfo setObject:[tempDic objectForKey:USER_LAST_NAME] forKey:USER_LAST_NAME];
     [userInfo setObject:[tempDic objectForKey:USER_EMAIL] forKey:USER_EMAIL];
+    [userInfo setObject:[tempDic objectForKey:@"prefix"] forKey:@"prefix"];
     self.mainUserData.accountType = [tempDic objectForKey:USER_ACCOUNT_TYPE];
     
     self.mainUserData.userInfo = userInfo;
+    
     self.mainUserData.userID = [tempDic objectForKey:USER_ID];
     
+    /*
+    if([self.mainUserData.accountType intValue] > 0)
+        [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];
+    */
     
     if([[tempDic objectForKey:NUMBER_OF_SCHOOLS] integerValue] > 0)
     {
@@ -814,6 +869,12 @@
             [self.mainUserData addschoolDataToArray:schoolData];
             
         }
+        
+       /* for(NSDictionary *teacherData in [tempDic objectForKey:@"teacherNames"])
+        {
+            [self.mainUserData addTeacherName:teacherData];
+        }
+        */
         
         [self.mainUserData addSchoolIDsFromArray:[tempDic objectForKey:@"schoolIDs"]];
         
@@ -894,10 +955,10 @@
         }
         else
         {
-            if(self.isInAppPurchaseEnabled)
-            {
+            
                 if(self.mainUserData.isDemoInUse)
                 {
+                    self.mainUserData.isApproved = YES;
                     [self setBackgroundImage];
                     
                     [self checkForValidUser];
@@ -924,7 +985,7 @@
                 }
                 //else if(self.mainUserData.hasPurchased)
                 //[self restorePurchases];
-            }
+            
             /*
              else
              {
@@ -945,12 +1006,12 @@
 - (void)loginExistingUser
 {
     
-    NSString *accountType = [NSString stringWithFormat:@"%i", self.mainUserData.isAdmin];
+    
     
     dispatch_queue_t createQueue = dispatch_queue_create("loginExistingUser", NULL);
     dispatch_async(createQueue, ^{
         NSArray *dataArray;
-        dataArray = [self.introData loginExistingUserWithEmail:[self.existingUserData objectForKey:USER_EMAIL] andPassword:[self.existingUserData objectForKey:USER_PASSWORD] andType:accountType];
+        dataArray = [self.introData loginExistingUserWithEmail:[self.existingUserData objectForKey:USER_EMAIL] andPassword:[self.existingUserData objectForKey:USER_PASSWORD] andIsRestoring:[NSString stringWithFormat:@"%i", self.loginViaRestore]];
         if ([dataArray count] == 1)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -964,29 +1025,7 @@
                 }
                 else
                 {
-                    if(self.mainUserData.isAdmin)
-                    {
-                        
-                        NSLog(@"%@", tempDic);
-                        
-                        NSString *authString = [HelperMethods encryptText:[NSString stringWithFormat:@"Qciema38dMGN2MdkPOWHDilUa"]];
-                        if ([[tempDic objectForKey:@"auth"] isEqualToString:authString])
-                        {
-                            [self finishLogin:tempDic];
-                        }
-                        else
-                        {
-                            self.mainUserData.isAdmin = false;
-                            UIAlertView *badAdminLogin = [[UIAlertView alloc]initWithTitle:@"Login Failed" message:@"This account does not have admin rights, please use Restore Purchases to gain accesss to School Intercom" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
-                            badAdminLogin.tag = zAlertRestoreFailed;
-                            [badAdminLogin show];
-                        }
-                    }
-                    else
-                    {
-                        [self finishLogin:tempDic];
-                    }
-                        
+                    [self finishLogin:tempDic];
                 }
             });
             
@@ -1040,7 +1079,7 @@
 
 - (void)showExistingAccountAlert
 {
-     self.existingAccountAlert = [[UIAlertView alloc]initWithTitle:@"Admin Login" message:@"Administrators enter your email address and password to login." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: @"Ok", @"Forgot Password", nil];
+     self.existingAccountAlert = [[UIAlertView alloc]initWithTitle:@"Login" message:@"Enter your email address and password to login." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles: @"Ok", @"Forgot Password", nil];
     [self.existingAccountAlert setAlertViewStyle:UIAlertViewStyleLoginAndPasswordInput];
     self.existingAccountAlert.tag = zAlertEnterEmail;
     UITextField *emailField = [self.existingAccountAlert textFieldAtIndex:0];
@@ -1170,7 +1209,7 @@
         {
             [self.existingUserData setValue:[[alertView textFieldAtIndex:0]text] forKey:USER_EMAIL];
             [self.existingUserData setValue:[HelperMethods encryptText:[[alertView textFieldAtIndex:1]text]] forKey:USER_PASSWORD];
-            self.mainUserData.isAdmin = true;
+            //self.mainUserData.isAdmin = true;
             [self loginExistingUser];
            
 

@@ -24,6 +24,8 @@
 @property (nonatomic, strong) NSDictionary *appData;
 @property (nonatomic, strong) NSDictionary *userInfo;
 @property (nonatomic, strong) NSString *accountType;
+@property (nonatomic, strong) NSArray *newsData;
+@property (nonatomic, strong) NSArray *teacherNames;
 
 
 
@@ -60,5 +62,11 @@
 - (void)turnOffTutorialForView:(int)viewID;
 
 - (void)turnOffTutorial;
+
+- (void)addTeacherName:(NSDictionary *)teacher;
+
+- (void)removeTeacher:(NSString *)teacherID;
+
+- (NSString *)getTeacherName:(NSString *)teacherID;
 
 @end

@@ -18,20 +18,19 @@
 #import "IntroModel.h"
 #import "LunchMenuViewController.h"
 #import "AdminToolsTableViewController.h"
-
-
-
-
-
+#import "FundraisingViewController.h"
 
 
 @protocol MainMenuControllerDelegate;
 
-@interface MainMenuViewController : UIViewController <HomeViewControllerDelegate, NewsViewControllerDelegate, CalendarMonthViewControllerDelegate, ContactViewControllerDelegate, SwitchViewControllerDelegate, SettingsTableViewControllerDelegate, LunchMenuViewControllerDelegate, AdminToolsTableViewControllerDelegate>
+@interface MainMenuViewController : UIViewController <HomeViewControllerDelegate, NewsViewControllerDelegate, CalendarMonthViewControllerDelegate, ContactViewControllerDelegate, SwitchViewControllerDelegate, SettingsTableViewControllerDelegate, LunchMenuViewControllerDelegate, AdminToolsTableViewControllerDelegate, FundraisingViewControllerDelegate, UIAlertViewDelegate>
 
 @property (nonatomic, weak) id<MainMenuControllerDelegate> delegate;
 @property (nonatomic, strong) UserData *mainUserData;
 @property (nonatomic) BOOL isFirstLoad;
+@property (nonatomic) BOOL alertReceived;
+@property (nonatomic) int viewToLoad;
+
 
 
 

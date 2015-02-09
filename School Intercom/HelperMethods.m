@@ -437,6 +437,136 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
 }
 
 
++ (NSString *)getMonthWithInt:(NSInteger)num shortName:(BOOL)shortName
+{
+    NSString *month;
+    
+    switch(num)
+    {
+        case 1:
+        {
+            if(shortName)
+                month = @"Jan";
+            else
+                month = @"January";
+            break;
+        }
+        case 2:
+        {
+            if(shortName)
+                month = @"Feb";
+            else
+                month = @"Febuary";
+            break;
+        }
+        case 3:
+        {
+            if(shortName)
+                month = @"Mar";
+            else
+                month = @"March";
+            break;
+        }
+        case 4:
+        {
+            if(shortName)
+                month = @"Apr";
+            else
+                month = @"April";
+            break;
+        }
+        case 5:
+        {
+            month = @"May";
+            break;
+        }
+        case 6:
+        {
+            month = @"June";
+            break;
+        }
+        case 7:
+        {
+            month = @"July";
+            break;
+        }
+        case 8:
+        {
+            if(shortName)
+                month = @"Aug";
+            else
+                month = @"August";
+            break;
+        }
+        case 9:
+        {
+            if(shortName)
+                month = @"Sept";
+            else
+                month = @"September";
+            break;
+        }
+        case 10:
+        {
+            if(shortName)
+                month = @"Oct";
+            else
+                month = @"October";
+            break;
+        }
+        case 11:
+        {
+            if(shortName)
+                month = @"Nov";
+            else
+                month = @"November";
+            break;
+        }
+        case 12:
+        {
+            if(shortName)
+                month = @"Dec";
+            else
+                month = @"December";
+            break;
+        }
+    }
+    
+    return month;
+}
+
++ (NSArray *)ConvertHourUsingDateArray:(NSArray *)dateArray
+{
+    NSMutableArray *newArray = [dateArray mutableCopy];
+    NSInteger hour = [dateArray[3] integerValue];
+    
+    if(hour > 12)
+    {
+        hour -=12;
+        if(hour == 12)
+            newArray[5] = @"am";
+        else
+            newArray[5] = @"pm";
+    }
+    else
+    {
+        if(hour == 12)
+            newArray[5] = @"pm";
+        else if(hour == 0)
+        {
+            hour = 12;
+            newArray[5] = @"am";
+        }
+        else if(hour < 12)
+            newArray[5] = @"am";
+    }
+    
+    newArray[3] = [NSString stringWithFormat:@"%li", (long)hour];
+    
+    return newArray;
+}
+
+
 
 
 @end

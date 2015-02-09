@@ -11,6 +11,7 @@
 
 NSString *const IAPHelperProductPurchasedNotification = @"IAPHelperProductPurchasedNotification";
 NSString *const IAPHelperProductPurchaseFailedNotification = @"IAPHelperProductPurchaseFailedNotification";
+NSString *const IAPHelperRestorePurchaseFailedNotification = @"IAPHelperRestorePurchaseFailedNotification";
 NSString *const IAPHelperProductRestoredPurchaseNotification = @"IAPHelperProductRestoredPurchaseNotification";
 NSString *const IAPHelperProductRestoreCompleted = @"IAPHelperProductRestoreCompleted";
 NSString *const IAPHelperProductRestoreCompletedWithNumber = @"IAPHelperProductRestoreCompletedWithNumber";
@@ -36,21 +37,7 @@ NSString *const IAPHelperProductRestoreCompletedWithNumber = @"IAPHelperProductR
     {
         _productIdentifiers = productIdentifiers;
         
-        _purchasedProductIdentifiers = [NSMutableSet set];
-        for(NSString * productIdentifier in _productIdentifiers)
-        {
-            BOOL productPurchased = [[NSUserDefaults standardUserDefaults] boolForKey:productIdentifier];
-            if(productPurchased)
-            {
-                [_purchasedProductIdentifiers addObject:productIdentifier];
-                NSLog(@"Previously purchased: %@", productIdentifier);
-            }
-            else
-            {
-                NSLog(@"Not Purchased: %@", productIdentifier);
-            }
-        }
-        
+        [self checkForPurchases];
         [[SKPaymentQueue defaultQueue]addTransactionObserver:self];
         self.numberOfRestoredTransactions = 0;
     }
@@ -58,6 +45,62 @@ NSString *const IAPHelperProductRestoreCompletedWithNumber = @"IAPHelperProductR
     return self;
 
 }
+
+- (void)checkForPurchases
+{
+    _purchasedProductIdentifiers = [NSMutableSet set];
+    for(NSString * productIdentifier in _productIdentifiers)
+    {
+        BOOL productPurchased = [[NSUserDefaults standardUserDefaults] boolForKey:productIdentifier];
+        if(productPurchased)
+        {
+            [_purchasedProductIdentifiers addObject:productIdentifier];
+            NSLog(@"Previously purchased: %@", productIdentifier);
+        }
+        else
+        {
+            NSLog(@"Not Purchased: %@", productIdentifier);
+        }
+    }
+
+}
+
+- (void)updateProductIdentifiersFromDatabase
+{
+    NSMutableSet *tempSet = [[NSMutableSet alloc] init];
+    DatabaseRequest *databaseRequest = [[DatabaseRequest alloc]init];
+    //dispatch_queue_t createQueue = dispatch_queue_create("getProductIDs", NULL);
+    //dispatch_async(createQueue, ^{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_PRODUCT_IDS withKeys:nil andData:nil];
+    NSArray *dataArray;
+    dataArray = [databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    if ([dataArray count] > 0)
+    {
+        if([dataArray isKindOfClass:[NSArray class]])
+        {
+            //dispatch_async(dispatch_get_main_queue(), ^{
+            
+            for(NSDictionary *tempDic in dataArray)
+            {
+                [tempSet addObject:[tempDic objectForKey:ID]];
+            }
+            
+            
+            NSLog(@"%@", tempSet);
+            // });
+            
+        }
+        
+    }
+    //});
+    
+    
+    _productIdentifiers = tempSet;
+    
+    [self checkForPurchases];
+}
+
 
 - (void)requestProductsWithCompletionHandler:(RequestProdecutsCompletionHandler)completionHandler
 {
@@ -94,7 +137,7 @@ NSString *const IAPHelperProductRestoreCompletedWithNumber = @"IAPHelperProductR
     _completionHandler = nil;
 }
 
-- (BOOL)productPurchased:(NSString *)productIdentifier
+- (BOOL)isProductPurchased:(NSString *)productIdentifier
 {
     return [_purchasedProductIdentifiers containsObject:productIdentifier];
 }
@@ -204,7 +247,7 @@ NSString *const IAPHelperProductRestoreCompletedWithNumber = @"IAPHelperProductR
 {
  
     NSLog(@"Transaction error: %@", error.localizedDescription);
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:IAPHelperRestorePurchaseFailedNotification object:nil userInfo:nil];
     
 
 }

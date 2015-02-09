@@ -8,6 +8,11 @@
 
 #import "AppDelegate.h"
 #import "SchoolIntercomIAPHelper.h"
+#import "HomeViewController.h"
+#import "NewsViewController.h"
+#import "MainMenuViewController.h"
+#import "MainNavigationController.h"
+#import "Flurry.h"
 
 NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
 
@@ -64,7 +69,49 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
 
         
         
+    }
+    else
+    {
+        
+        
+    
+        
+        UINavigationController *navController = (UINavigationController *)self.window.rootViewController;
+        
+        UIViewController *vc = navController.visibleViewController;
+        UINavigationController *nc = vc.navigationController;
+        [navController.visibleViewController.navigationController popToRootViewControllerAnimated:NO];
+        NSArray *viewControllers = nc.viewControllers;
+        MainMenuViewController *MMVC;
+        
+        for(id viewController in viewControllers)
+        {
+            if([viewController isKindOfClass:[MainMenuViewController class]])
+            {
+                MMVC = viewController;
+                break;
             }
+        }
+        
+        MMVC.alertReceived = YES;
+        
+        NSString *messageID = [[userInfo valueForKey:@"aps"]valueForKey:@"messageID"];
+        NSString *newStr = [messageID substringToIndex:3];
+        if([newStr isEqualToString:@"NS-"])
+        {
+            
+            MMVC.viewToLoad = mv_News;
+            
+        }
+        else
+        {
+            MMVC.viewToLoad = mv_Home;
+            
+            
+        }
+        
+       
+    }
 
     NSString *messageID = [[userInfo valueForKey:@"aps"]valueForKey:@"messageID"];
    // UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Alert" message:messageID delegate:self cancelButtonTitle:@"View" otherButtonTitles: nil];
@@ -91,7 +138,9 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    
+    [Flurry setBackgroundSessionEnabled:NO];
+    //[Flurry setDebugLogEnabled:YES];
+    [Flurry startSession:@"GFDSFZZRN6HZDCCQTMR9"];
         
     //NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     //[[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
@@ -226,7 +275,7 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
             });
         }
     
-    
+    [[SchoolIntercomIAPHelper sharedInstance] updateProductIdentifiersFromDatabase];
 
     
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.

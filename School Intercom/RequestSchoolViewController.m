@@ -38,6 +38,8 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    [Flurry logEvent:@"REQUEUST_SCHOOL_SCREEN_VIEWED"];
+    
     self.stateTF.inputView = [self createPickerWithTag:zPickerState];
 
     
@@ -244,7 +246,8 @@
                     
                     if(![[[emailArray objectAtIndex:0]objectForKey:@"error"] boolValue])
                     {
-                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message Sent" message:@"Message Sent Successfully" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        [Flurry logEvent:@"NEW_SCHOOL_REQUESTED"];
+                         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Message Sent" message:@"Message Sent Successfully" delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
                         alert.delegate = self;
                         alert.tag = zAlertEmailSent;
                         

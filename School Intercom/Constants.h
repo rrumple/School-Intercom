@@ -27,7 +27,8 @@ typedef enum
     zPickerFourthGroup,
     zPickerFifthGroup,
     zPickerGrade,
-    zPickerPrefix
+    zPickerPrefix,
+    zPickerName
 } PickerType;
 
 //LoginScreen Alertview
@@ -104,7 +105,10 @@ typedef enum
     zAlertEnterMessage,
     zAlertPasswordChangeSuccess,
     zAlertDeleteUser,
-    zAlertDeleteUserSchool
+    zAlertDeleteUserSchool,
+    zAlertAddEventSuccess,
+    zAlertAddNewsSuccess,
+    zAlertSuggestPurchase
 } AlertTypes;
 
 typedef enum
@@ -125,6 +129,7 @@ typedef enum
     mv_Calendar,
     mv_LunchMenu,
     mv_AdminTools,
+    mv_Fundraising,
     sv_UpdateKids,
     sv_UpdateKid,
     sv_UpdateProfile,
@@ -187,6 +192,7 @@ typedef enum
 #define CELL_AD_STATS @"adStatsCell"
 #define CELL_MANAGE_CALENDAR @"manageCalendarCell"
 #define CELL_MANAGE_NEWS @"manageNewsCell"
+#define CELL_PARENT_LIST @"parentListCell"
 
 #define CELL_FIRST_NAME @"firstNameCell"
 #define CELL_LAST_NAME @"lastNameCell"
@@ -201,7 +207,7 @@ typedef enum
 
 //php file defines
 
-#define PHP_LOGIN_USER @"login_user_test.php"
+#define PHP_LOGIN_USER @"login_user.php"
 
 
 #define PHP_GET_STATES @"get_states.php"
@@ -254,6 +260,19 @@ typedef enum
 #define PHP_ADMIN_ADD_USER_SCHOOL @"admin_add_user_school.php"
 #define PHP_ADMIN_DELETE_USER_SCHOOL @"admin_delete_user_school.php"
 #define PHP_ADMIN_UPDATE_USER_SCHOOL @"admin_update_user_school.php"
+#define PHP_GET_USER_CALENDAR_EVENTS @"get_user_calendar_events.php"
+#define PHP_ADD_EVENT @"add_event.php"
+#define PHP_UPDATE_EVENT @"update_event.php"
+#define PHP_DELETE_EVENT @"delete_event.php"
+#define PHP_GET_USER_NEWS_POSTS @"get_user_news_posts.php"
+#define PHP_ADD_NEWS_POST @"add_news.php"
+#define PHP_UPDATE_NEWS_POST @"update_news.php"
+#define PHP_DELETE_NEWS_POST @"delete_news.php"
+#define PHP_GET_PARENTS_OF_TEACHER @"get_parents.php"
+#define PHP_GET_FUNDRAISER_DATA @"get_fundraiser_data.php"
+#define PHP_UPDATE_TEACHER_NAMES @"update_teacher_names.php"
+
+
 
 //common fields
 #define MESSAGE_ID @"messageID"
@@ -387,6 +406,16 @@ typedef enum
 #define TEACHER_SUBJECT @"subject"
 #define TEACHER_NAME @"teacherName"
 
+//Fundraiser table
+#define FUNDRAISER_TITLE @"mainTitle"
+#define FUNDRAISER_DETAIL_TEXT @"detailText"
+#define FUNDRAISER_PRICE @"price"
+#define FUNDRAISER_BUY_BUTTON_TEXT @"buyButtonText"
+#define FUNDRAISER_BUY_BUTTON_LINK @"buyButtonLink"
+#define FUNDRAISER_MORE_INFO_LINK @"moreInfoLink"
+#define FUNDRAISER_IS_IN_APP_PURCHASE @"isInAppPurchase"
+
+
 //Segues
 #define SEGUE_TO_MAIN_MENU @"mainmenu"
 #define SEGUE_TO_HOME_VIEW  @"homeview"
@@ -413,6 +442,12 @@ typedef enum
 #define SEGUE_TO_SINGLE_SCHOOL @"singleSchoolSegue"
 #define SEGUE_TO_ADD_NEW_USER @"addUserSegue"
 #define SEGUE_TO_LIST_ALL_SCHOOLS @"allSchoolsSegue"
+#define SEGUE_TO_MANAGE_CALENDARS @"manageCalendarsSegue"
+#define SEGUE_TO_MANAGE_EVENT @"manageEventSegue"
+#define SEGUE_TO_MANAGE_NEWS @"manageNewsSegue"
+#define SEGUE_TO_MANAGE_POST @"managePostSegue"
+#define SEGUE_TO_PARENT_LIST @"parentListSegue"
+#define SEGUE_TO_FUNDRAISING @"segueToFundraising"
 
 //Dictionary keys
 #define DIC_CALENDAR_DATA @"calendarData"

@@ -7,6 +7,7 @@
 //
 
 #import "UpdateKidViewController.h"
+#import "IntroModel.h"
 
 
 @interface UpdateKidViewController () <UITableViewDataSource, UITableViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate,UIGestureRecognizerDelegate>
@@ -16,7 +17,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *lastNameTF;
 @property (weak, nonatomic) IBOutlet UITextField *schoolTF;
 @property (weak, nonatomic) IBOutlet UITextField *gradeTF;
-
+@property (nonatomic, strong) IntroModel *introData;
 @property (weak, nonatomic) IBOutlet UIButton *addUpdateButton;
 @property (weak, nonatomic) IBOutlet UILabel *header;
 @property (nonatomic) BOOL gradeTFready;
@@ -43,6 +44,12 @@
 @end
 
 @implementation UpdateKidViewController
+
+- (IntroModel *)introData
+{
+    if (!_introData) _introData = [[IntroModel alloc]init];
+    return _introData;
+}
 
 - (UpdateProfileModel *)updateProfileData
 {
@@ -176,6 +183,45 @@
     
 }
 
+- (void)updateTeacherNames
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("updateTeacherNames", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.introData updateTeacherNamesForUser:self.mainUserData.userID];
+        if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertExistingUserIncorrectPassword andDelegate:self];
+                    
+                    
+                }
+                else
+                {
+                    
+                    if([self.mainUserData.accountType intValue] > 0)
+                        [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];
+                    
+                    
+                    
+                    for(NSDictionary *teacherData in [tempDic objectForKey:@"teacherNames"])
+                    {
+                        [self.mainUserData addTeacherName:teacherData];
+                    }
+                    
+                    
+                }
+            });
+            
+        }
+    });
+    
+}
+
 
 - (void)deleteTeacherFromKidInDatabase
 {
@@ -195,6 +241,8 @@
                 }
                 else
                 {
+                    self.mainUserData.teacherNames = nil;
+                    [self updateTeacherNames];
                     [self getKidsTeachersFromDatabase];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"LOAD_DATA" object:nil userInfo:nil];
                     
@@ -224,6 +272,12 @@
                 }
                 else
                 {
+                    for(NSDictionary *teacherData in [tempDic objectForKey:@"teacherNames"])
+                    {
+                        [self.mainUserData addTeacherName:teacherData];
+                    }
+
+                    
                     [self getKidsTeachersFromDatabase];
                     self.gradeTF.text = @"";
                     self.gradeTF.hidden = true;

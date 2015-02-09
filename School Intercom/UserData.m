@@ -17,6 +17,7 @@
 @property (nonatomic, strong) NSArray *schoolIDs;
 @property (nonatomic, strong) NSArray *tutorials;
 
+
 @end
 
 
@@ -27,6 +28,8 @@
 @synthesize schoolIDselected = _schoolIDselected;
 @synthesize schoolDataArray = _schoolDataArray;
 @synthesize userInfo = _userInfo;
+@synthesize appData = _appData;
+@synthesize teacherNames = _teacherNames;
 
 
 
@@ -64,7 +67,7 @@
         self.isDemoInUse = [[[NSUserDefaults standardUserDefaults] objectForKey:IS_DEMO_IN_USE] boolValue];
         self.isAdmin = [[[NSUserDefaults standardUserDefaults]objectForKey:USER_IS_ADMIN] boolValue];
         self.accountType = [[NSUserDefaults standardUserDefaults] objectForKey:USER_ACCOUNT_TYPE];
-        
+        self.teacherNames = [[NSUserDefaults standardUserDefaults]objectForKey:@"teacherNames"];
         if(![[NSUserDefaults standardUserDefaults]objectForKey:@"tutorials"])
         {
             NSMutableArray *tempArray = [[NSMutableArray alloc]init];
@@ -87,6 +90,17 @@
     return self;
 }
 
+- (NSArray *)teacherNames
+{
+    if (!_teacherNames) _teacherNames = [[NSArray alloc]init];
+    return _teacherNames;
+}
+
+- (NSArray *)newsData
+{
+    if (!_newsData) _newsData = [[NSArray alloc]init];
+    return _newsData;
+}
 
 - (NSDictionary *)userInfo
 {
@@ -130,6 +144,18 @@
     return _schoolIDs;
 }
 
+- (void)setAppData:(NSDictionary *)appData
+{
+    _appData = appData;
+    [self sortNews];
+}
+
+- (void)setTeacherNames:(NSArray *)teacherNames
+{
+    _teacherNames = teacherNames;
+    [[NSUserDefaults standardUserDefaults]setValue:teacherNames forKey:@"teacherNames"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+}
 - (void)setTutorials:(NSArray *)tutorials
 {
     _tutorials = tutorials;
@@ -418,6 +444,7 @@
     self.schoolIDs = @[];
     self.isAdmin = NO;
     self.accountType = @"";
+    self.teacherNames = @[];
     
     [self resetTutorials];
 }
@@ -508,6 +535,87 @@
     
     self.tutorials = tempArray;
 }
+
+- (void)sortNews
+{
+    NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+    
+    
+    if([self.appData objectForKey:@"newsData"] != (id)[NSNull null])
+    {
+        [tempArray addObjectsFromArray:[self.appData objectForKey:@"newsData"]];
+        
+    }/*
+      if([self.mainUserData.appData objectForKey:@"corpCalData"] != (id)[NSNull null])
+      {
+      [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:@"corpCalData"]];
+      
+      }*/
+    if([self.appData objectForKey:@"teacherNewsData"] != (id)[NSNull null])
+    {
+        [tempArray addObjectsFromArray:[self.appData objectForKey:@"teacherNewsData"]];
+    }
+    
+    
+    if(tempArray != (id)[NSNull null])
+    {
+        self.newsData = tempArray;
+        
+        NSSortDescriptor *descriptor = [[NSSortDescriptor alloc] initWithKey:@"newsDate"  ascending:NO];
+        self.newsData = [self.newsData sortedArrayUsingDescriptors:[NSArray arrayWithObjects:descriptor,nil]];
+    }
+    
+}
+
+- (void)addTeacherName:(NSDictionary *)teacher
+{
+    BOOL match = false;
+    
+    for(NSDictionary *name in self.teacherNames)
+    {
+        if([[name objectForKey:ID] isEqualToString:[teacher objectForKey:ID]])
+        {
+            match = true;
+        }
+    }
+    
+    if(!match)
+    {
+        NSMutableArray *tempArray = [self.teacherNames mutableCopy];
+        [tempArray addObject:teacher];
+    
+        self.teacherNames = tempArray;
+    }
+    
+}
+
+- (void)removeTeacher:(NSString *)teacherID
+{
+    NSMutableArray *tempArray = [self.teacherNames mutableCopy];
+    
+    for(int i = 0; i < [self.teacherNames count]; i++)
+    {
+        if([[tempArray[i] objectForKey:ID] isEqualToString:teacherID])
+        {
+           [tempArray removeObjectAtIndex:i];
+            break;
+        }
+    }
+    
+    self.teacherNames = tempArray;
+}
+
+- (NSString *)getTeacherName:(NSString *)teacherID
+{
+    for(NSDictionary *tempDic in self.teacherNames)
+    {
+        if([[tempDic objectForKey:ID]isEqualToString:teacherID])
+            return [tempDic objectForKey:TEACHER_NAME];
+    }
+    
+    return @"";
+}
+
 
 
 @end

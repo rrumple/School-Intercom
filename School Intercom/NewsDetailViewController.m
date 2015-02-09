@@ -7,6 +7,7 @@
 //
 
 #import "NewsDetailViewController.h"
+#import "Flurry.h"
 
 @interface NewsDetailViewController ()
 @property (weak, nonatomic) IBOutlet UITextView *newsTextView;
@@ -28,16 +29,18 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    [Flurry logEvent:@"News_Article_Read"];
 	self.newsTitleLabel.text = [self.newsDetailData objectForKey:NEWS_TITLE];
     NSString *text = [@"<br />" stringByAppendingString:[self.newsDetailData objectForKey:NEWS_TEXT]];
 
     
     NSError *err = nil;
-    self.newsTextView.attributedText = [[NSAttributedString alloc]initWithData:[text dataUsingEncoding:NSUTF8StringEncoding] options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType} documentAttributes:nil error:&err];
+    self.newsTextView.attributedText = [[NSAttributedString alloc]initWithData:[text dataUsingEncoding:NSUnicodeStringEncoding] options:@{ NSDocumentTypeDocumentAttribute: NSHTMLTextDocumentType} documentAttributes:nil error:&err];
     if(err)
         NSLog(@"Unable to parse label text: %@", err);
     
-    [self.newsTextView.layer setCornerRadius:15.0f];
+    [self.newsTextView.layer setCornerRadius:13.0f];
     [self.newsTextView.layer setBorderColor:[UIColor lightGrayColor].CGColor];
     [self.newsTextView.layer setBorderWidth:1.5f];
     [self.newsTextView.layer setShadowColor:[UIColor blackColor].CGColor];

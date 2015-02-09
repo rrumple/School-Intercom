@@ -45,9 +45,9 @@
 
 }
 
-- (NSArray *)insertAlert:(NSString *)generalID withMessage:(NSString *)message ofType:(NSString *)alertType fromSchool:(NSString *)schoolID
+- (NSArray *)insertAlert:(NSString *)generalID withMessage:(NSString *)message ofType:(NSString *)alertType fromSchool:(NSString *)schoolID fromUser:(NSString *)fromUserID;
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_INSERT_ALERT withKeys:@[ID, ALERT_TEXT, ALERT_TYPE, SCHOOL_ID] andData:@[generalID, message, alertType, schoolID]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_INSERT_ALERT withKeys:@[ID, ALERT_TEXT, ALERT_TYPE, SCHOOL_ID, @"fromUserID"] andData:@[generalID, message, alertType, schoolID, fromUserID]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
@@ -211,5 +211,108 @@
     
 }
 
+- (NSArray *)getCalendarEventsForUser:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_USER_CALENDAR_EVENTS withKeys:@[USER_ID] andData:@[userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+
+- (NSArray *)addEventForUser:(NSString *)userID withCalendarTitle:(NSString *)calTitle andLocation:(NSString *)calLoc andStartDate:(NSString *)startDate andEndDate:(NSString *)endDate andIsAllDay:(NSString *)isAllDay andMoreInfo:(NSString *)moreInfo
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_EVENT withKeys:@[USER_ID, CAL_TITLE, CAL_LOCATION, CAL_START_DATE, CAL_END_DATE, CAL_IS_ALL_DAY, CAL_MORE_INFO] andData:@[userID, calTitle, calLoc, startDate, endDate, isAllDay, moreInfo]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)updateEvent:(NSString *)eventID withCalendarTitle:(NSString *)calTitle andLocation:(NSString *)calLoc andStartDate:(NSString *)startDate andEndDate:(NSString *)endDate andIsAllDay:(NSString *)isAllDay andMoreInfo:(NSString *)moreInfo
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_EVENT withKeys:@[@"eventID", CAL_TITLE, CAL_LOCATION, CAL_START_DATE, CAL_END_DATE, CAL_IS_ALL_DAY, CAL_MORE_INFO] andData:@[eventID, calTitle, calLoc, startDate, endDate, isAllDay, moreInfo]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+
+- (NSArray *)deleteEvent:(NSString *)eventID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_DELETE_EVENT withKeys:@[@"eventID"] andData:@[eventID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+
+- (NSArray *)getNewsPostsforUser:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_USER_NEWS_POSTS withKeys:@[USER_ID] andData:@[userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+
+- (NSArray *)addNewsForUser:(NSString *)userID withNewsTitle:(NSString *)newsTitle andText:(NSString *)newsText andNewsImageName:(NSString *)newsImageName andNewsDate:(NSString *)newsDate sendAlert:(NSString *)sendAlert
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_NEWS_POST withKeys:@[USER_ID, NEWS_TITLE, NEWS_TEXT, NEWS_IMAGE_NAME, NEWS_DATE, @"sendAlert"] andData:@[userID, newsTitle, newsText, newsImageName, newsDate, sendAlert]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)updateNews:(NSString *)newsID withNewsTitle:(NSString *)newsTitle andText:(NSString *)newsText andNewsImageName:(NSString *)newsImageName andNewsDate:(NSString *)newsDate
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_NEWS_POST withKeys:@[@"newsID", NEWS_TITLE, NEWS_TEXT, NEWS_IMAGE_NAME, NEWS_DATE] andData:@[newsID, newsTitle, newsText, newsImageName, newsDate]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+
+- (NSArray *)deleteNews:(NSString *)newsID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_DELETE_NEWS_POST withKeys:@[@"newsID"] andData:@[newsID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)getParentsOfTeacher:(NSString *)teacherID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_PARENTS_OF_TEACHER withKeys:@[TEACHER_ID] andData:@[teacherID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
 
 @end

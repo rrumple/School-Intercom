@@ -24,5 +24,6 @@ UIKIT_EXTERN NSString * const HelperMethodsImageDownloadCompleted;
 + (void)CreateAndDisplayOverHeadAlertInView:(UIView *)view withMessage:(NSString *)message andSchoolID:(NSString *)schoolID;
 + (NSArray *)getDateArrayFromString:(NSString *)date;
 + (NSArray *)getDictonaryOfUserTypes;
-
++ (NSString *)getMonthWithInt:(NSInteger)num shortName:(BOOL)shortName;
++ (NSArray *)ConvertHourUsingDateArray:(NSArray *)dateArray;
 @end

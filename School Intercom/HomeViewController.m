@@ -10,6 +10,7 @@
 @import AVFoundation;
 #import "UIColor+TKCategory.h"
 
+
 @interface HomeViewController ()
 @property (weak, nonatomic) IBOutlet UILabel *schoolNameLabel;
 @property (weak, nonatomic) IBOutlet UITableView *alertTableView;
@@ -239,6 +240,8 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
+    
+    
     [super viewWillAppear:animated];
     
     [self.schoolNameLabel setFont:FONT_CHARCOAL_CY(17.0f)];
@@ -422,25 +425,32 @@
         
         dateLabel.text = [NSString stringWithFormat:@"%@/%@/%@", tempDate[1], tempDate[2], tempDate[0]];
         
-        if([[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromLabel"] length] > 1)
+        /*if([[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromLabel"] length] > 1)
            fromLabel.text =[NSString stringWithFormat:@"From: %@", [[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromLabel"]];
         else
             fromLabel.text = @"";
-        
+        */
         
         if([[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromSchoolID"] length] > 1)
         {
 
             switch([[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"alertType"] intValue])
             {
-                case 1: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getSchoolNameFromID:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromSchoolID"]]];
+                case 1: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getTeacherName:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromUserID"]]];
                     break;
                 case 3: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getSchoolNameFromID:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromSchoolID"]]];
+                    break;
+                case 4: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getTeacherName:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromUserID"]]];
+                    break;
+                default:
+                    fromLabel.text = @"";
                     break;
                     
                     
             }
         }
+        else
+            fromLabel.text = @"";
 
         
         [backdrop setBackgroundColor:[UIColor clearColor]];

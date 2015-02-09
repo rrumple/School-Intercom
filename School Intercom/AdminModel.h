@@ -15,7 +15,7 @@
 
 - (NSArray *)getSecondaryAlertGroupsFromDatabase:(NSString *)generalID andQueryType:(NSString *)queryType;
 
-- (NSArray *)insertAlert:(NSString *)generalID withMessage:(NSString *)message ofType:(NSString *)alertType fromSchool:(NSString *)schoolID;
+- (NSArray *)insertAlert:(NSString *)generalID withMessage:(NSString *)message ofType:(NSString *)alertType fromSchool:(NSString *)schoolID fromUser:(NSString *)fromUserID;
 
 - (NSArray *)getAdStats:(NSString *)generalID ofType:(NSString *)queryType withSchoolID:(NSString *)schoolID withTimeframe:(NSString *)timeframe;
 
@@ -44,5 +44,23 @@
 - (NSArray *)deleteSchoolFromUser:(NSString *)userID withSchoolID:(NSString *)schoolID;
 
 - (NSArray *)updateSchoolForUser:(NSString *)userSchoolID isActive:(NSString *)isActive andIsApproved:(NSString *)usApproved;
+
+- (NSArray *)getCalendarEventsForUser:(NSString *)userID;
+
+- (NSArray *)addEventForUser:(NSString *)userID withCalendarTitle:(NSString *)calTitle andLocation:(NSString *)calLoc andStartDate:(NSString *)startDate andEndDate:(NSString *)endDate andIsAllDay:(NSString *)isAllDay andMoreInfo:(NSString *)moreInfo;
+
+- (NSArray *)updateEvent:(NSString *)eventID withCalendarTitle:(NSString *)calTitle andLocation:(NSString *)calLoc andStartDate:(NSString *)startDate andEndDate:(NSString *)endDate andIsAllDay:(NSString *)isAllDay andMoreInfo:(NSString *)moreInfo;
+
+- (NSArray *)deleteEvent:(NSString *)eventID;
+
+- (NSArray *)getNewsPostsforUser:(NSString *)userID;
+
+- (NSArray *)addNewsForUser:(NSString *)userID withNewsTitle:(NSString *)newsTitle andText:(NSString *)newsText andNewsImageName:(NSString *)newsImageName andNewsDate:(NSString *)newsDate sendAlert:(NSString *)sendAlert;
+
+- (NSArray *)updateNews:(NSString *)newsID withNewsTitle:(NSString *)newsTitle andText:(NSString *)newsText andNewsImageName:(NSString *)newsImageName andNewsDate:(NSString *)newsDate;
+
+- (NSArray *)deleteNews:(NSString *)newsID;
+
+- (NSArray *)getParentsOfTeacher:(NSString *)teacherID;
 
 @end

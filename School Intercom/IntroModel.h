@@ -13,9 +13,11 @@
 
 - (NSArray *)queryDatabaseForSchoolsDataForUser:(NSString *)userID andSchoolID:(NSString *)schoolID;
 - (NSArray *)getUserInfofromTransactionID:(NSString *)transactionID;
-- (NSArray *)loginExistingUserWithEmail:(NSString *)email andPassword:(NSString *)password andType:(NSString *)accountType;
+- (NSArray *)loginExistingUserWithEmail:(NSString *)email andPassword:(NSString *)password andIsRestoring:(NSString *)isRestoring;
 - (NSArray *)restorePurchaseForUser:(NSString *)userID andSchool:(NSString *)schoolID;
 - (NSArray *)resetPasswordForEmail:(NSString *)email;
 - (NSArray *)checkAccountStatusofUserID:(NSString *)userID ofSchool:(NSString *)schoolID;
 - (NSArray *)updateHasPurchasedinUserSchoolTable:(NSString *)userID ofSchool:(NSString *)schoolID hasPurchasedBOOL:(NSString *)hasPurchased withTransactionID:(NSString *)transactionID;
+- (NSArray *)updateTeacherNamesForUser:(NSString *)userID;
+
 @end

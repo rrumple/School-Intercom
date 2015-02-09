@@ -42,9 +42,9 @@
 }
 
 
-- (NSArray *)loginExistingUserWithEmail:(NSString *)email andPassword:(NSString *)password andType:(NSString *)accountType
+- (NSArray *)loginExistingUserWithEmail:(NSString *)email andPassword:(NSString *)password andIsRestoring:(NSString *)isRestoring
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_LOGIN_USER withKeys:@[USER_EMAIL, USER_PASSWORD, USER_ACCOUNT_TYPE] andData:@[email, password, accountType]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_LOGIN_USER withKeys:@[USER_EMAIL, USER_PASSWORD, @"isRestoring"] andData:@[email, password, isRestoring]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
@@ -90,5 +90,15 @@
     return dataArray;
 
 }
+
+- (NSArray *)updateTeacherNamesForUser:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_TEACHER_NAMES withKeys:@[USER_ID] andData:@[userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+}
+
 
 @end

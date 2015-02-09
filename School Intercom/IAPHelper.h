@@ -10,6 +10,7 @@
 #import <StoreKit/StoreKit.h>
 UIKIT_EXTERN NSString * const IAPHelperProductPurchasedNotification;
 UIKIT_EXTERN NSString * const IAPHelperProductPurchaseFailedNotification;
+UIKIT_EXTERN NSString * const IAPHelperRestorePurchaseFailedNotification;
 UIKIT_EXTERN NSString * const IAPHelperProductRestoredPurchaseNotification;
 UIKIT_EXTERN NSString * const IAPHelperProductRestoreCompleted;
 UIKIT_EXTERN NSString * const IAPHelperProductRestoreCompletedWithNumber;
@@ -23,8 +24,9 @@ typedef void (^RequestProdecutsCompletionHandler)(BOOL success, NSArray * produc
 - (id)initWithProductIdentifiers:(NSSet *)productIdentifiers;
 - (void)requestProductsWithCompletionHandler:(RequestProdecutsCompletionHandler)completionHandler;
 - (void)buyProduct:(SKProduct *)product;
-- (BOOL)productPurchased:(NSString *)productIdentifier;
+- (BOOL)isProductPurchased:(NSString *)productIdentifier;
 - (void)restoreCompletedTransactions;
+- (void)updateProductIdentifiersFromDatabase;
 
 
 @end

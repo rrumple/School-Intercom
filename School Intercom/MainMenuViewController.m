@@ -9,6 +9,7 @@
 #import "MainMenuViewController.h"
 #import <QuartzCore/QuartzCore.h>
 
+
 @interface MainMenuViewController ()
 @property (weak, nonatomic) IBOutlet UIImageView *screenShotView;
 @property (nonatomic) BOOL reloadData;
@@ -21,7 +22,6 @@
 @property (nonatomic) BOOL signOut;
 @property (weak, nonatomic) IBOutlet UIButton *updateAppButton;
 @property (weak, nonatomic) IBOutlet UILabel *switchSchoolBadge;
-@property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 @property (nonatomic, strong) NSArray *calendarData;
 @property (weak, nonatomic) IBOutlet UIButton *adminToolsButton;
 @end
@@ -55,10 +55,52 @@
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
 }
 
+- (void)updateTeacherNames
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("updateTeacherNames", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.introData updateTeacherNamesForUser:self.mainUserData.userID];
+        if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertExistingUserIncorrectPassword andDelegate:self];
+                    
+                    
+                }
+                else
+                {
+                    
+                     if([self.mainUserData.accountType intValue] > 0)
+                     [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];
+                     
+                    
+                    
+                         for(NSDictionary *teacherData in [tempDic objectForKey:@"teacherNames"])
+                         {
+                         [self.mainUserData addTeacherName:teacherData];
+                         }
+                     
 
+                }
+            });
+            
+        }
+    });
+
+}
 
 - (void)viewDidLoad
 {
+    
+    if([self.mainUserData.teacherNames count] == 0)
+    {
+        [self updateTeacherNames];
+    }
 
     [super viewDidLoad];
     
@@ -109,6 +151,9 @@
             break;
         case mv_AdminTools:
             [self performSegueWithIdentifier:SEGUE_TO_ADMIN_TOOLS sender:self];
+            break;
+        case mv_Fundraising:
+            [self performSegueWithIdentifier:SEGUE_TO_FUNDRAISING sender:self];
             break;
             
     }
@@ -184,16 +229,23 @@
                     
                     
                     HomeViewController *HVC;
+                    NewsViewController *NVC;
                     
                     for(UIViewController *vc in self.navigationController.childViewControllers)
                     {
                         if([vc isKindOfClass:[HomeViewController class]])
                         {
                             HVC = (HomeViewController *)vc;
+                            HVC.mainUserData = self.mainUserData;
+                        }
+                        else if([vc isKindOfClass:[NewsViewController class]])
+                        {
+                            NVC = (NewsViewController *)vc;
+                            NVC.newsData = self.mainUserData.newsData;
                         }
                     }
                     
-                    HVC.mainUserData = self.mainUserData;
+                   
                     
                     
                 }
@@ -205,6 +257,7 @@
 }
 
 
+
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
@@ -213,9 +266,8 @@
     
     self.headerFont = self.rootFont.font;
     
-    if(self.mainUserData.isAdmin)
+    if([self.mainUserData.accountType intValue] > 0)
     {
-        self.logOutButton.hidden = false;
         self.adminToolsButton.hidden = false;
         
     }
@@ -287,11 +339,27 @@
 
         [self loadData];
     }
-    
-    if(self.isFirstLoad)
+
+    if(!self.alertReceived)
     {
-        [self performSegueWithIdentifier:SEGUE_TO_HOME_VIEW sender:self];
+        if(self.isFirstLoad)
+        {
+            [self performSegueWithIdentifier:SEGUE_TO_HOME_VIEW sender:self];
+            self.isFirstLoad = NO;
+        }
+    }
+    else
+    {
+        self.alertReceived = false;
+        
         self.isFirstLoad = NO;
+        
+        if(self.viewToLoad == mv_Home)
+            [self performSegueWithIdentifier:SEGUE_TO_HOME_VIEW sender:self];
+        else
+            [self performSegueWithIdentifier:SEGUE_TO_NEWS_VIEW sender:self];
+        self.viewToLoad = 999;
+        
     }
    
 }
@@ -326,7 +394,14 @@
 - (void)snapshotOfViewAsImage:(UIImage *)image
 {
     self.screenShotView.image = image;
+    self.alertReceived = NO;
+    self.viewToLoad = 999;
     
+}
+
+- (void)segueToFundraising
+{
+    [self performSegueWithIdentifier:SEGUE_TO_FUNDRAISING sender:self];
 }
 
 - (IBAction)logOutButtonPressed
@@ -372,10 +447,22 @@
 
 - (IBAction)lunchButtonPressed:(UIButton *)sender
 {
+    if(self.mainUserData.hasPurchased)
+        [self performSegueWithIdentifier:SEGUE_TO_LUNCH_MENU_VIEW sender:self];
+    else
+    {
+        UIAlertView *suggestPurchase = [[UIAlertView alloc]initWithTitle:@"Premium Content" message:@"Viewing the Lunch Menu requires the one time purchase of the School Fundraiser Pack, for more details select Fundraising." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Fundraising", nil];
+        suggestPurchase.tag = zAlertSuggestPurchase;
+        
+        [suggestPurchase show];
+        
+    }
+
     
-    [self performSegueWithIdentifier:SEGUE_TO_LUNCH_MENU_VIEW sender:self];
+   
 
 }
+
 
 - (void)sortCalendar
 {
@@ -413,6 +500,7 @@
 
 - (IBAction)calendarPressed
 {
+     [Flurry logEvent:@"CALENDAR_VIEWED"];
     [self sortCalendar];
     self.lastViewSelected = mv_Calendar;
     CalendarMonthViewController *vc = [[CalendarMonthViewController alloc] initWithSunday:YES];
@@ -425,10 +513,12 @@
     [self.navigationController pushViewController:vc animated:YES];
 }
 
+
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if([segue.identifier isEqualToString:SEGUE_TO_HOME_VIEW])
     {
+        [Flurry logEvent:@"ALERT_SCREEN_VIEWED"];
         self.lastViewSelected = mv_Home;
         HomeViewController *HVC = segue.destinationViewController;
         HVC.delegate = self;
@@ -441,10 +531,11 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_NEWS_VIEW])
     {
+        [Flurry logEvent:@"NEWS_SCREEN_VIEWED"];
         self.lastViewSelected = mv_News;
         NewsViewController *VC = segue.destinationViewController;
         VC.userID = self.mainUserData.userID;
-        VC.newsData = [self.mainUserData.appData objectForKey:@"newsData"];
+        VC.newsData = self.mainUserData.newsData;
         VC.newsHeader = [self.mainUserData.schoolData objectForKey:SCHOOL_NEWS_HEADER];
         VC.schoolID = [self.mainUserData.schoolData objectForKey:ID];
         VC.mainUserData = self.mainUserData;
@@ -453,6 +544,7 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_CONTACT_VIEW])
     {
+         [Flurry logEvent:@"CONTACT_SCREEN_VIEWED"];
         self.lastViewSelected = mv_Contact;
         ContactViewController *VC = segue.destinationViewController;
         VC.delegate = self;
@@ -468,6 +560,7 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_SETTINGS_VIEW])
     {
+         [Flurry logEvent:@"SETTINGS_SCREEN_VIEWED"];
         self.lastViewSelected = mv_Settings;
         SettingsTableViewController *STVC = segue.destinationViewController;
         STVC.delegate = self;
@@ -475,6 +568,7 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_LUNCH_MENU_VIEW])
     {
+         [Flurry logEvent:@"LUNCH_MENU_VIEWED"];
         self.lastViewSelected = mv_LunchMenu;
         LunchMenuViewController *LMVC = segue.destinationViewController;
         LMVC.delegate = self;
@@ -482,11 +576,30 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_ADMIN_TOOLS])
     {
+         [Flurry logEvent:@"ADMIN_TOOLS_VIEWED"];
         self.lastViewSelected = mv_AdminTools;
         AdminToolsTableViewController *ATTVC = segue.destinationViewController;
         ATTVC.delegate = self;
         ATTVC.mainUserData = self.mainUserData;
     }
+    else if([segue.identifier isEqualToString:SEGUE_TO_FUNDRAISING])
+    {
+         [Flurry logEvent:@"FUNDRAISING_SCREEN_VIEWED"];
+        self.lastViewSelected = mv_Fundraising;
+        FundraisingViewController *FVC = segue.destinationViewController;
+        FVC.delegate = self;
+        FVC.mainUserData = self.mainUserData;
+    }
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == zAlertSuggestPurchase)
+    {
+        if(buttonIndex == 1)
+            [self performSegueWithIdentifier:SEGUE_TO_FUNDRAISING sender:self];
+    }
+    
 }
 
 @end

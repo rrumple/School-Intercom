@@ -8,6 +8,7 @@
 
 #import "SendAlertViewController.h"
 
+
 @interface SendAlertViewController () <UITextFieldDelegate, UITextViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UIGestureRecognizerDelegate, UIAlertViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITextField *groupTextField;
@@ -224,12 +225,13 @@
     
 }
 
+
 - (void)sendAlertOfType:(NSString *)alertType
 {
     dispatch_queue_t createQueue = dispatch_queue_create("insertAlert", NULL);
     dispatch_async(createQueue, ^{
         NSArray *dataArray;
-        dataArray = [self.adminData insertAlert:self.alertIDToInsert withMessage:self.messageTextview.text ofType:alertType fromSchool:self.mainUserData.schoolIDselected];
+        dataArray = [self.adminData insertAlert:self.alertIDToInsert withMessage:self.messageTextview.text ofType:alertType fromSchool:self.mainUserData.schoolIDselected fromUser:self.mainUserData.userID];
         
         if (dataArray)
         {
@@ -244,6 +246,7 @@
                     }
                     else
                     {
+                        [Flurry logEvent:@"Alert Sent"];
                         UIAlertView *alertSent = [[UIAlertView alloc]initWithTitle:@"Alert Sent" message:@"The alert will arrive shortly." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
                         [alertSent show];
                         

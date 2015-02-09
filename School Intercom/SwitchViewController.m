@@ -154,7 +154,7 @@
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    if(self.mainUserData.isAdmin)
+    if([self.mainUserData.accountType intValue] > 0)
         return NO;
     else
         return YES;
