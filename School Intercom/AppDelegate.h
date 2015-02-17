@@ -10,7 +10,7 @@
 #import "RegistrationModel.h"
 UIKIT_EXTERN NSString * const ADLoadDataNotification;
 
-@interface AppDelegate : UIResponder <UIApplicationDelegate>
+@interface AppDelegate : UIResponder <UIApplicationDelegate, UIAlertViewDelegate>
 
 @property (strong, nonatomic) UIWindow *window;
 

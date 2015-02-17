@@ -45,6 +45,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *versionLabel;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomConstraint;
 @property (nonatomic) BOOL loginViaRestore;
+@property (nonatomic) BOOL bypassToCreateAccount;
 
 
 @property (weak, nonatomic) IBOutlet UIView *loadingIndicatorView;
@@ -212,41 +213,51 @@
     
     [self.existingUserData setObject:@"helpMeRonda" forKey:USER_PASSWORD];
     
-    if(self.mainUserData.isAccountCreated)
+    if(self.bypassToCreateAccount)
     {
-        [self setBackgroundImage];
+        self.bypassToCreateAccount = false;
+        [self performSegueWithIdentifier:SEGUE_TO_REGISTER_VIEW sender:self];
     }
     else
     {
-        [self.schoolLogoImageView setHidden:YES];
-        [self.micImageView setBackgroundColor:self.defaultBackgroundColor];
-        [self.micImageView setImage:[UIImage imageNamed:@"BlankWelcomeScreen"]];
-    }
+        
     
-    
-    if([self.mainUserData getNumberOfSchools] > 1)
-        self.switchSchoolsButton.hidden = NO;
-    
-    if (self.isInAppPurchaseEnabled)
-    {
-        /*if(!self.warningViewed)
+        if(self.mainUserData.isAccountCreated)
         {
-            self.inAppPurchaseWarningAlert =  [[UIAlertView alloc] initWithTitle:@"WARNING PLEASE READ!!" message:@"The In-App purchase feature is enabled, for this to work correctly during testing you must use the sandbox account that was created for you. \n-Exit this app               \n-Goto Settings->iTunes & App Store \n-Signout of your real account\nDO NOT SIGN IN WITH THE TEST ACCOUNT!       \nCome back to this app and when you make an In-App purchase enter your sandbox details in the following format\nUSERNAME = lastname + firstname@msi.com\n ex... RumpleRandy@msi.com\n\n PASSWORD = Testapp123" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
-        
-            self.inAppPurchaseWarningAlert.tag = zAlertInAppPurchaseEnabledAlert;
-            //[self.inAppPurchaseWarningAlert show];
+            [self setBackgroundImage];
         }
-        else*/
-            [self checkForValidUser];
-    }
-    /*
-    else
-    {
-        self.mainUserData.hasPurchased = true;
-        //[self updateHasPurchasedInDatabase];
-        [self checkForValidUser];
+        else
+        {
+            [self.schoolLogoImageView setHidden:YES];
+            [self.micImageView setBackgroundColor:self.defaultBackgroundColor];
+            [self.micImageView setImage:[UIImage imageNamed:@"BlankWelcomeScreen"]];
+        }
         
-    }*/
+        
+        if([self.mainUserData getNumberOfSchools] > 1)
+            self.switchSchoolsButton.hidden = NO;
+        
+        if (self.isInAppPurchaseEnabled)
+        {
+            /*if(!self.warningViewed)
+            {
+                self.inAppPurchaseWarningAlert =  [[UIAlertView alloc] initWithTitle:@"WARNING PLEASE READ!!" message:@"The In-App purchase feature is enabled, for this to work correctly during testing you must use the sandbox account that was created for you. \n-Exit this app               \n-Goto Settings->iTunes & App Store \n-Signout of your real account\nDO NOT SIGN IN WITH THE TEST ACCOUNT!       \nCome back to this app and when you make an In-App purchase enter your sandbox details in the following format\nUSERNAME = lastname + firstname@msi.com\n ex... RumpleRandy@msi.com\n\n PASSWORD = Testapp123" delegate:self cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
+            
+                self.inAppPurchaseWarningAlert.tag = zAlertInAppPurchaseEnabledAlert;
+                //[self.inAppPurchaseWarningAlert show];
+            }
+            else*/
+                [self checkForValidUser];
+        }
+        /*
+        else
+        {
+            self.mainUserData.hasPurchased = true;
+            //[self updateHasPurchasedInDatabase];
+            [self checkForValidUser];
+            
+        }*/
+    }
     
    
 
@@ -541,6 +552,7 @@
 {
     [super viewDidLoad];
     self.loginViaRestore = false;
+    self.bypassToCreateAccount = false;
     //hash tester
     NSLog(@"%@", [HelperMethods encryptText:@"tester"]);
     
@@ -741,6 +753,11 @@
      */
 }
 
+- (void)createAccountOnNextLoad
+{
+    self.bypassToCreateAccount = true;
+}
+
 - (void)productPurchased:(NSNotification *)notification
 {
     
@@ -767,7 +784,7 @@
     self.introLabel.text = @"School Intercom";
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createAccountOnNextLoad) name:@"LogOutNotification" object:nil];
         
 }
 

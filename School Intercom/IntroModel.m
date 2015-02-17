@@ -100,5 +100,16 @@
     return dataArray;
 }
 
+- (NSArray *)logOutUserInDatabase:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_LOG_OUT_USER withKeys:@[USER_ID] andData:@[userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+}
+
+
+
 
 @end

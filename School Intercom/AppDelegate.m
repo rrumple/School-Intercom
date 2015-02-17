@@ -57,15 +57,31 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
     
     if(state == UIApplicationStateActive)
     {
+        NSString *messageID = [[userInfo valueForKey:@"aps"]valueForKey:@"messageID"];
+        NSString *newStr = [messageID substringToIndex:3];
+        if([newStr isEqualToString:@"PP-"])
+        {
+            
+            UIAlertView *pushPinChangeAlert = [[UIAlertView alloc]initWithTitle:@"Account Alert!" message:@"Your account was logged into on another device, you will no longer receive push notifications on this device. To receive alerts on more than one device please create one account per device" delegate:self cancelButtonTitle:@"Ignore" otherButtonTitles:@"Create Account", nil];
+            pushPinChangeAlert.tag = zAlertPushPinChange;
+            [pushPinChangeAlert show];
+            
+        }
+        else
+        {
+            UINavigationController *navigationController = (UINavigationController*)_window.rootViewController;
+            
+            NSString *message = [[userInfo valueForKey:@"aps"]valueForKey:@"alert"];
+            NSString *schoolID = [[userInfo valueForKey:@"aps"]valueForKey:@"schoolID"];
+            
+            [HelperMethods CreateAndDisplayOverHeadAlertInView: (UIView *)navigationController.visibleViewController.view withMessage:message andSchoolID:schoolID];
+            NSLog(@"%@", navigationController.viewControllers);
+            
+            
+        }
+
         
         
-        UINavigationController *navigationController = (UINavigationController*)_window.rootViewController;
-        
-         NSString *message = [[userInfo valueForKey:@"aps"]valueForKey:@"alert"];
-        NSString *schoolID = [[userInfo valueForKey:@"aps"]valueForKey:@"schoolID"];
-        
-        [HelperMethods CreateAndDisplayOverHeadAlertInView: (UIView *)navigationController.visibleViewController.view withMessage:message andSchoolID:schoolID];
-        NSLog(@"%@", navigationController.viewControllers);
 
         
         
@@ -108,6 +124,14 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
             MMVC.viewToLoad = mv_Home;
             
             
+        }
+        
+        if([newStr isEqualToString:@"PP-"])
+        {
+            UIAlertView *pushPinChangeAlert = [[UIAlertView alloc]initWithTitle:@"Account Alert!" message:@"Your account was logged into on another device, you will no longer receive push notifications on this device. To receive alerts on more than one device please create one account per device" delegate:self cancelButtonTitle:@"Ignore" otherButtonTitles:@"Create Account", nil];
+            pushPinChangeAlert.tag = zAlertPushPinChange;
+            [pushPinChangeAlert show];
+
         }
         
        
@@ -284,6 +308,16 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
 - (void)applicationWillTerminate:(UIApplication *)application
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
+}
+
+-(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (alertView.tag == zAlertPushPinChange)
+    {
+        if(buttonIndex == 1)
+        {
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"LogOutNotification" object:nil userInfo:nil];        }
+    }
 }
 
 @end

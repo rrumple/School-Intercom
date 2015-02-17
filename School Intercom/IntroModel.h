@@ -19,5 +19,6 @@
 - (NSArray *)checkAccountStatusofUserID:(NSString *)userID ofSchool:(NSString *)schoolID;
 - (NSArray *)updateHasPurchasedinUserSchoolTable:(NSString *)userID ofSchool:(NSString *)schoolID hasPurchasedBOOL:(NSString *)hasPurchased withTransactionID:(NSString *)transactionID;
 - (NSArray *)updateTeacherNamesForUser:(NSString *)userID;
+- (NSArray *)logOutUserInDatabase:(NSString *)userID;
 
 @end

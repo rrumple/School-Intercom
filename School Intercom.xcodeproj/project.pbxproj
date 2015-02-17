@@ -26,14 +26,17 @@
 		9412DE80184ECED60046D297 /* HelperMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 9412DE7F184ECED60046D297 /* HelperMethods.m */; };
 		9415694E1A870529003E2853 /* FundraisingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9415694D1A870529003E2853 /* FundraisingViewController.m */; };
 		941569511A872AFE003E2853 /* FundraiserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 941569501A872AFE003E2853 /* FundraiserModel.m */; };
-		941569631A8802F5003E2853 /* libFlurry_6.0.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 941569621A8802F5003E2853 /* libFlurry_6.0.0.a */; };
 		9427379919874431002CEA3F /* UpdateKidViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9427379819874431002CEA3F /* UpdateKidViewController.m */; };
+		942CC9611A93D149002C45DF /* libFlurry_6.0.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 942CC9601A93D148002C45DF /* libFlurry_6.0.0.a */; };
 		942DD8511870D21600FB8F71 /* UpdateProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DD8501870D21600FB8F71 /* UpdateProfileViewController.m */; };
 		942DD8551870D25800FB8F71 /* UpdateKidsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DD8541870D25800FB8F71 /* UpdateKidsViewController.m */; };
 		942DD8581870D26C00FB8F71 /* AddSchoolViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DD8571870D26C00FB8F71 /* AddSchoolViewController.m */; };
 		943A0CF91876538C00D0910F /* ContactModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 943A0CF81876538C00D0910F /* ContactModel.m */; };
 		943A0CFC1879C7C300D0910F /* UpdateProfileModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 943A0CFB1879C7C300D0910F /* UpdateProfileModel.m */; };
 		943DC65318B9263100DE0989 /* charcoal_cy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 943DC65218B9263100DE0989 /* charcoal_cy.ttf */; };
+		94441B501A8FE16300124C74 /* FirstNavViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94441B4F1A8FE16300124C74 /* FirstNavViewController.m */; };
+		94441B551A8FE5AC00124C74 /* SchoolStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94441B541A8FE5AC00124C74 /* SchoolStatsViewController.m */; };
+		94441B581A8FE5BD00124C74 /* ManageSchoolsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94441B571A8FE5BD00124C74 /* ManageSchoolsTableViewController.m */; };
 		94451F591866EA1100136ED2 /* IntroModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 94451F581866EA1100136ED2 /* IntroModel.m */; };
 		9447E51419152A9A0002C556 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9447E51319152A9A0002C556 /* StoreKit.framework */; };
 		9447E51719152AE40002C556 /* IAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9447E51619152AE40002C556 /* IAPHelper.m */; };
@@ -184,10 +187,10 @@
 		9415694D1A870529003E2853 /* FundraisingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FundraisingViewController.m; sourceTree = "<group>"; };
 		9415694F1A872AFE003E2853 /* FundraiserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FundraiserModel.h; sourceTree = "<group>"; };
 		941569501A872AFE003E2853 /* FundraiserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FundraiserModel.m; sourceTree = "<group>"; };
-		941569611A8802F5003E2853 /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Flurry.h; path = "School Intercom/Flurry.h"; sourceTree = "<group>"; };
-		941569621A8802F5003E2853 /* libFlurry_6.0.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFlurry_6.0.0.a; path = "School Intercom/libFlurry_6.0.0.a"; sourceTree = "<group>"; };
 		9427379719874431002CEA3F /* UpdateKidViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateKidViewController.h; sourceTree = "<group>"; };
 		9427379819874431002CEA3F /* UpdateKidViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateKidViewController.m; sourceTree = "<group>"; };
+		942CC95F1A93D148002C45DF /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Flurry.h; path = Flurry/Flurry.h; sourceTree = "<group>"; };
+		942CC9601A93D148002C45DF /* libFlurry_6.0.0.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libFlurry_6.0.0.a; path = Flurry/libFlurry_6.0.0.a; sourceTree = "<group>"; };
 		942DD84F1870D21600FB8F71 /* UpdateProfileViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateProfileViewController.h; sourceTree = "<group>"; };
 		942DD8501870D21600FB8F71 /* UpdateProfileViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateProfileViewController.m; sourceTree = "<group>"; };
 		942DD8531870D25800FB8F71 /* UpdateKidsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateKidsViewController.h; sourceTree = "<group>"; };
@@ -199,6 +202,12 @@
 		943A0CFA1879C7C300D0910F /* UpdateProfileModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateProfileModel.h; sourceTree = "<group>"; };
 		943A0CFB1879C7C300D0910F /* UpdateProfileModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateProfileModel.m; sourceTree = "<group>"; };
 		943DC65218B9263100DE0989 /* charcoal_cy.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = charcoal_cy.ttf; sourceTree = "<group>"; };
+		94441B4E1A8FE16300124C74 /* FirstNavViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirstNavViewController.h; sourceTree = "<group>"; };
+		94441B4F1A8FE16300124C74 /* FirstNavViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirstNavViewController.m; sourceTree = "<group>"; };
+		94441B531A8FE5AC00124C74 /* SchoolStatsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SchoolStatsViewController.h; sourceTree = "<group>"; };
+		94441B541A8FE5AC00124C74 /* SchoolStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SchoolStatsViewController.m; sourceTree = "<group>"; };
+		94441B561A8FE5BD00124C74 /* ManageSchoolsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageSchoolsTableViewController.h; sourceTree = "<group>"; };
+		94441B571A8FE5BD00124C74 /* ManageSchoolsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageSchoolsTableViewController.m; sourceTree = "<group>"; };
 		94451F571866EA1100136ED2 /* IntroModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntroModel.h; sourceTree = "<group>"; };
 		94451F581866EA1100136ED2 /* IntroModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntroModel.m; sourceTree = "<group>"; };
 		9447E51319152A9A0002C556 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -399,7 +408,7 @@
 				9447E51C1921BF3B0002C556 /* AVFoundation.framework in Frameworks */,
 				9447E51419152A9A0002C556 /* StoreKit.framework in Frameworks */,
 				94BD73F3183DA686009E1129 /* EventKit.framework in Frameworks */,
-				941569631A8802F5003E2853 /* libFlurry_6.0.0.a in Frameworks */,
+				942CC9611A93D149002C45DF /* libFlurry_6.0.0.a in Frameworks */,
 				94BD73C0183DA63D009E1129 /* CoreGraphics.framework in Frameworks */,
 				94BD73C2183DA63D009E1129 /* UIKit.framework in Frameworks */,
 				94BD73BE183DA63D009E1129 /* Foundation.framework in Frameworks */,
@@ -422,40 +431,10 @@
 		940296F81A32A670007E0E89 /* Admin views */ = {
 			isa = PBXGroup;
 			children = (
-				948686801A7EF510004882EE /* ManagePostTableViewController.h */,
-				948686811A7EF510004882EE /* ManagePostTableViewController.m */,
-				9486867D1A7EF20F004882EE /* ManageNewsViewController.h */,
-				9486867E1A7EF20F004882EE /* ManageNewsViewController.m */,
-				94642FBC1A5926E000BE290F /* AllSchoolsTableViewController.h */,
-				94642FBD1A5926E000BE290F /* AllSchoolsTableViewController.m */,
-				94642FB91A591CF300BE290F /* AddNewUserTableViewController.h */,
-				94642FBA1A591CF300BE290F /* AddNewUserTableViewController.m */,
-				94502C7E1A5273FF00F1E775 /* SingleSchoolTableViewController.h */,
-				94502C7F1A5273FF00F1E775 /* SingleSchoolTableViewController.m */,
-				94502C7B1A525CDA00F1E775 /* UsersSchoolsTableViewController.h */,
-				94502C7C1A525CDA00F1E775 /* UsersSchoolsTableViewController.m */,
-				94502C781A52506D00F1E775 /* SelectUsertypeTableViewController.h */,
-				94502C791A52506D00F1E775 /* SelectUsertypeTableViewController.m */,
-				94502C751A51B80400F1E775 /* ManageSingleUserTableViewController.h */,
-				94502C761A51B80400F1E775 /* ManageSingleUserTableViewController.m */,
-				940E81551A50633F00F12ADA /* ManageUsersViewController.h */,
-				940E81561A50633F00F12ADA /* ManageUsersViewController.m */,
-				940297731A3FE6FF007E0E89 /* LandscapeNavigationController.h */,
-				940297741A3FE6FF007E0E89 /* LandscapeNavigationController.m */,
-				940297391A3E47FB007E0E89 /* AdStatsViewController.h */,
-				9402973A1A3E47FB007E0E89 /* AdStatsViewController.m */,
-				940297361A3DB9B4007E0E89 /* ApproveUsersTableViewController.h */,
-				940297371A3DB9B4007E0E89 /* ApproveUsersTableViewController.m */,
-				940296F51A32A668007E0E89 /* SendAlertViewController.h */,
-				940296F61A32A668007E0E89 /* SendAlertViewController.m */,
+				94441B521A8FE52800124C74 /* App Admin Views */,
+				94441B511A8FE4DA00124C74 /* Teacher/Principal/Secretary Views */,
 				940296F21A32A3C8007E0E89 /* AdminToolsTableViewController.h */,
 				940296F31A32A3C8007E0E89 /* AdminToolsTableViewController.m */,
-				946892FA1A820A980047C111 /* ParentListTableViewController.h */,
-				946892FB1A820A980047C111 /* ParentListTableViewController.m */,
-				947620311A7C836400C8DB35 /* ManageCalendarsViewController.h */,
-				947620321A7C836400C8DB35 /* ManageCalendarsViewController.m */,
-				947620341A7C837800C8DB35 /* ManageCalendarTableViewController.h */,
-				947620351A7C837800C8DB35 /* ManageCalendarTableViewController.m */,
 			);
 			name = "Admin views";
 			sourceTree = "<group>";
@@ -511,11 +490,61 @@
 			name = iPad;
 			sourceTree = "<group>";
 		};
+		94441B511A8FE4DA00124C74 /* Teacher/Principal/Secretary Views */ = {
+			isa = PBXGroup;
+			children = (
+				940297361A3DB9B4007E0E89 /* ApproveUsersTableViewController.h */,
+				940297371A3DB9B4007E0E89 /* ApproveUsersTableViewController.m */,
+				940296F51A32A668007E0E89 /* SendAlertViewController.h */,
+				940296F61A32A668007E0E89 /* SendAlertViewController.m */,
+				946892FA1A820A980047C111 /* ParentListTableViewController.h */,
+				946892FB1A820A980047C111 /* ParentListTableViewController.m */,
+				947620311A7C836400C8DB35 /* ManageCalendarsViewController.h */,
+				947620321A7C836400C8DB35 /* ManageCalendarsViewController.m */,
+				947620341A7C837800C8DB35 /* ManageCalendarTableViewController.h */,
+				947620351A7C837800C8DB35 /* ManageCalendarTableViewController.m */,
+				948686801A7EF510004882EE /* ManagePostTableViewController.h */,
+				948686811A7EF510004882EE /* ManagePostTableViewController.m */,
+				9486867D1A7EF20F004882EE /* ManageNewsViewController.h */,
+				9486867E1A7EF20F004882EE /* ManageNewsViewController.m */,
+			);
+			name = "Teacher/Principal/Secretary Views";
+			sourceTree = "<group>";
+		};
+		94441B521A8FE52800124C74 /* App Admin Views */ = {
+			isa = PBXGroup;
+			children = (
+				94642FBC1A5926E000BE290F /* AllSchoolsTableViewController.h */,
+				94642FBD1A5926E000BE290F /* AllSchoolsTableViewController.m */,
+				94502C7B1A525CDA00F1E775 /* UsersSchoolsTableViewController.h */,
+				94502C7C1A525CDA00F1E775 /* UsersSchoolsTableViewController.m */,
+				94642FB91A591CF300BE290F /* AddNewUserTableViewController.h */,
+				94642FBA1A591CF300BE290F /* AddNewUserTableViewController.m */,
+				94502C7E1A5273FF00F1E775 /* SingleSchoolTableViewController.h */,
+				94502C7F1A5273FF00F1E775 /* SingleSchoolTableViewController.m */,
+				940297731A3FE6FF007E0E89 /* LandscapeNavigationController.h */,
+				940297741A3FE6FF007E0E89 /* LandscapeNavigationController.m */,
+				940297391A3E47FB007E0E89 /* AdStatsViewController.h */,
+				9402973A1A3E47FB007E0E89 /* AdStatsViewController.m */,
+				94502C781A52506D00F1E775 /* SelectUsertypeTableViewController.h */,
+				94502C791A52506D00F1E775 /* SelectUsertypeTableViewController.m */,
+				94502C751A51B80400F1E775 /* ManageSingleUserTableViewController.h */,
+				94502C761A51B80400F1E775 /* ManageSingleUserTableViewController.m */,
+				940E81551A50633F00F12ADA /* ManageUsersViewController.h */,
+				940E81561A50633F00F12ADA /* ManageUsersViewController.m */,
+				94441B531A8FE5AC00124C74 /* SchoolStatsViewController.h */,
+				94441B541A8FE5AC00124C74 /* SchoolStatsViewController.m */,
+				94441B561A8FE5BD00124C74 /* ManageSchoolsTableViewController.h */,
+				94441B571A8FE5BD00124C74 /* ManageSchoolsTableViewController.m */,
+			);
+			name = "App Admin Views";
+			sourceTree = "<group>";
+		};
 		94BD73B1183DA63C009E1129 = {
 			isa = PBXGroup;
 			children = (
-				941569611A8802F5003E2853 /* Flurry.h */,
-				941569621A8802F5003E2853 /* libFlurry_6.0.0.a */,
+				942CC95F1A93D148002C45DF /* Flurry.h */,
+				942CC9601A93D148002C45DF /* libFlurry_6.0.0.a */,
 				94BD73C3183DA63D009E1129 /* School Intercom */,
 				94BD73E2183DA63D009E1129 /* School IntercomTests */,
 				94BD73BC183DA63D009E1129 /* Frameworks */,
@@ -581,9 +610,9 @@
 				943DC65218B9263100DE0989 /* charcoal_cy.ttf */,
 				94BD73CC183DA63D009E1129 /* AppDelegate.h */,
 				94BD73CD183DA63D009E1129 /* AppDelegate.m */,
+				94BD73C9183DA63D009E1129 /* main.m */,
 				94BD73C5183DA63D009E1129 /* School Intercom-Info.plist */,
 				94BD73C6183DA63D009E1129 /* InfoPlist.strings */,
-				94BD73C9183DA63D009E1129 /* main.m */,
 				94BD73CB183DA63D009E1129 /* School Intercom-Prefix.pch */,
 			);
 			name = "Supporting Files";
@@ -637,6 +666,8 @@
 		94BD7401183DCF1F009E1129 /* Intro/Reg */ = {
 			isa = PBXGroup;
 			children = (
+				94441B4E1A8FE16300124C74 /* FirstNavViewController.h */,
+				94441B4F1A8FE16300124C74 /* FirstNavViewController.m */,
 				94BD73FE183DCF16009E1129 /* RegisterViewController.h */,
 				94BD73FF183DCF16009E1129 /* RegisterViewController.m */,
 				94BD73F4183DA722009E1129 /* IntroViewController.h */,
@@ -888,6 +919,7 @@
 				943A0CFC1879C7C300D0910F /* UpdateProfileModel.m in Sources */,
 				94AB780B186A9A1E00F5A56F /* NSObject+TKCategory.m in Sources */,
 				94BD73CE183DA63D009E1129 /* AppDelegate.m in Sources */,
+				94441B501A8FE16300124C74 /* FirstNavViewController.m in Sources */,
 				94E33CBB1869E3E700DB9A82 /* UITextField+TKCategory.m in Sources */,
 				94AB780E186A9CC500F5A56F /* TKCalendarMonthView.m in Sources */,
 				94E33CB81869E3E700DB9A82 /* UIImageView+TKCategory.m in Sources */,
@@ -905,6 +937,7 @@
 				94E33CB21869E3E700DB9A82 /* UIColor+TKCategory.m in Sources */,
 				940296F71A32A668007E0E89 /* SendAlertViewController.m in Sources */,
 				94BD73F6183DA722009E1129 /* IntroViewController.m in Sources */,
+				94441B551A8FE5AC00124C74 /* SchoolStatsViewController.m in Sources */,
 				940297781A3FEC84007E0E89 /* GraphView.m in Sources */,
 				94E33CA91869E3E700DB9A82 /* TKTextView.m in Sources */,
 				9447E51A19152F390002C556 /* SchoolIntercomIAPHelper.m in Sources */,
@@ -918,6 +951,7 @@
 				940296F41A32A3C8007E0E89 /* AdminToolsTableViewController.m in Sources */,
 				94E33C7F1869E3E700DB9A82 /* NSArray+TKCategory.m in Sources */,
 				948686821A7EF510004882EE /* ManagePostTableViewController.m in Sources */,
+				94441B581A8FE5BD00124C74 /* ManageSchoolsTableViewController.m in Sources */,
 				94AB780C186A9A1E00F5A56F /* NSString+TKCategory.m in Sources */,
 				94E33CAA1869E3E700DB9A82 /* TKTextViewCell.m in Sources */,
 				94BDF7281870904600AAFFA4 /* SettingsTableViewController.m in Sources */,
@@ -1119,7 +1153,10 @@
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School Intercom/School Intercom-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/School Intercom";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1139,7 +1176,10 @@
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School Intercom/School Intercom-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
-				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/School Intercom";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Flurry",
+				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;

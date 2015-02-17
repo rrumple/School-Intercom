@@ -278,7 +278,7 @@
         if([[tempDic objectForKey:ID] isEqualToString:productIdentifier])
         {
             [articleParams setValue:[tempDic objectForKey:FUNDRAISER_TITLE] forKey:FUNDRAISER_TITLE];
-            [articleParams setValue:self.mainUserData.schoolIDselected forKey:SCHOOL_ID];
+            [articleParams setValue:[self.mainUserData getSchoolNameFromID:self.mainUserData.schoolIDselected] forKey:SCHOOL_NAME];
         }
             
     }
@@ -346,7 +346,7 @@
        
             [articleParams setValue:[[self.fundraiserData objectAtIndex:self.currentIndexPath.section] objectForKey:FUNDRAISER_TITLE] forKey:FUNDRAISER_TITLE];
          [articleParams setValue:[[self.fundraiserData objectAtIndex:self.currentIndexPath.section] objectForKey:FUNDRAISER_BUY_BUTTON_LINK] forKey:FUNDRAISER_BUY_BUTTON_LINK];
-            [articleParams setValue:self.mainUserData.schoolIDselected forKey:SCHOOL_ID];
+            [articleParams setValue:[self.mainUserData getSchoolNameFromID:self.mainUserData.schoolIDselected] forKey:SCHOOL_NAME];
         
         
         [Flurry logEvent:@"FUNDRAISING_LINK_CLICKED" withParameters:articleParams];

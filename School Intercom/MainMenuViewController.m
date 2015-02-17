@@ -24,6 +24,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *switchSchoolBadge;
 @property (nonatomic, strong) NSArray *calendarData;
 @property (weak, nonatomic) IBOutlet UIButton *adminToolsButton;
+@property (weak, nonatomic) IBOutlet UIButton *fundraisingButton;
+@property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 @end
 
 @implementation MainMenuViewController
@@ -39,6 +41,7 @@
     NSLog(@"APP WENT IN BACKGROUND");
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logOutButtonPressed) name:@"LogOutNotification" object:nil];
 
     //[self.navigationController popToRootViewControllerAnimated:NO];
     //self.reloadData = true;
@@ -108,6 +111,8 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:ADLoadDataNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(logOutButtonPressed) name:@"LogOutNotification" object:nil];
     
     UISwipeGestureRecognizer *swipe = [[UISwipeGestureRecognizer alloc]initWithTarget:self action:@selector(loadPreviousView)];
     
@@ -282,6 +287,8 @@
     {
         [self.switchSchoolButton setTitle:@"Exit Demo" forState:UIControlStateNormal];
         [self.switchSchoolButton setHidden:false];
+        self.fundraisingButton.hidden = true;
+        self.logOutButton.hidden = true;
     }
     else if([self.mainUserData getNumberOfSchools] > 1)
     {
@@ -406,6 +413,27 @@
 
 - (IBAction)logOutButtonPressed
 {
+    dispatch_queue_t createQueue = dispatch_queue_create("logoutuser", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.introData logOutUserInDatabase:self.mainUserData.userID];
+        if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertExistingUserIncorrectPassword andDelegate:self];
+                    
+                    
+                }
+            });
+            
+        }
+    });
+
+    
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
@@ -597,7 +625,10 @@
     if (alertView.tag == zAlertSuggestPurchase)
     {
         if(buttonIndex == 1)
+        {
+            [Flurry logEvent:@"SEGUE_TO_FUNDRAISING_VIA_LUNCH_MENU"];
             [self performSegueWithIdentifier:SEGUE_TO_FUNDRAISING sender:self];
+        }
     }
     
 }

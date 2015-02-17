@@ -824,6 +824,7 @@
         {
             if([self.delegate respondsToSelector:@selector(segueToFundraising)])
             {
+                [Flurry logEvent:@"SEGUE_TO_FUNDRAISING_VIA_CALENDAR"];
                 [self.navigationController popViewControllerAnimated:NO];
                 
                 [self.delegate segueToFundraising];

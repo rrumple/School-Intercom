@@ -359,8 +359,10 @@
     
         if([[[self.alertData objectAtIndex:indexPath.row ]objectForKey:ALERT_TEXT ] length] <= 70)
             return 60.0f;
+        else if([[[self.alertData objectAtIndex:indexPath.row ]objectForKey:ALERT_TEXT ] length] <= 140)
+            return 90.0f;
         else
-            return 85.0f;
+            return 120.0f;
     }
     else
         return 44.0f;

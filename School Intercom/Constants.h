@@ -108,7 +108,8 @@ typedef enum
     zAlertDeleteUserSchool,
     zAlertAddEventSuccess,
     zAlertAddNewsSuccess,
-    zAlertSuggestPurchase
+    zAlertSuggestPurchase,
+    zAlertPushPinChange
 } AlertTypes;
 
 typedef enum
@@ -204,6 +205,7 @@ typedef enum
 #define CELL_CREATED_ON @"createdOnCell"
 #define CELL_DEVICE_MODEL @"deviceModelCell"
 #define CELL_DEVICE_VERSION @"deviceVersionCell"
+#define CELL_MANAGE_SCHOOLS @"manageSchoolsCell"
 
 //php file defines
 
@@ -271,6 +273,7 @@ typedef enum
 #define PHP_GET_PARENTS_OF_TEACHER @"get_parents.php"
 #define PHP_GET_FUNDRAISER_DATA @"get_fundraiser_data.php"
 #define PHP_UPDATE_TEACHER_NAMES @"update_teacher_names.php"
+#define PHP_LOG_OUT_USER @"log_out_user.php"
 
 
 
@@ -448,6 +451,8 @@ typedef enum
 #define SEGUE_TO_MANAGE_POST @"managePostSegue"
 #define SEGUE_TO_PARENT_LIST @"parentListSegue"
 #define SEGUE_TO_FUNDRAISING @"segueToFundraising"
+#define SEGUE_TO_MANAGE_SCHOOLS @"manageSchoolsSegue"
+#define SEGUE_TO_SCHOOL_STATS @"schoolStatsSegue"
 
 //Dictionary keys
 #define DIC_CALENDAR_DATA @"calendarData"
