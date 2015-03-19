@@ -7,13 +7,14 @@
 //
 
 #import "AdminToolsTableViewController.h"
-#import "SendAlertViewController.h"
+#import "ManageAlertsViewController.h"
 #import "ApproveUsersTableViewController.h"
 #import "LandscapeNavigationController.h"
 #import "ManageUsersViewController.h"
 #import "ManageCalendarsViewController.h"
 #import "ManageNewsViewController.h"
 #import "ParentListTableViewController.h"
+#import "AllSchoolsTableViewController.h"
 
 
 
@@ -61,7 +62,7 @@
             [self setAdminDatawithSections:1 andRows:[self.cellsToShow count]];
             break;
         case utSuperUser:
-            self.cellsToShow = @[CELL_SEND_ALERT, CELL_AD_STATS, CELL_USER_APPROVALS, CELL_MANAGE_USERS];
+            self.cellsToShow = @[CELL_SEND_ALERT, CELL_AD_STATS, CELL_USER_APPROVALS, CELL_MANAGE_USERS, CELL_MANAGE_SCHOOLS];
             [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utBetaTester:
@@ -95,10 +96,10 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
-    if([segue.identifier isEqualToString:SEGUE_TO_SEND_ALERTS_VIEW])
+    if([segue.identifier isEqualToString:SEGUE_TO_MANAGE_ALERTS])
     {
-        SendAlertViewController *SAVC = segue.destinationViewController;
-        SAVC.mainUserData = self.mainUserData;
+        ManageAlertsViewController *MAVC = segue.destinationViewController;
+        MAVC.mainUserData = self.mainUserData;
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_USER_APPROVALS])
     {
@@ -134,6 +135,14 @@
         [Flurry logEvent:@"Parent_List_Accessed"];
         ParentListTableViewController *PLTVC = segue.destinationViewController;
         PLTVC.mainUserData = self.mainUserData;
+    }
+    else if ([segue.identifier isEqualToString:SEGUE_TO_MANAGE_SCHOOLS])
+    {
+        [Flurry logEvent:@"Manage_Schools_Accessed"];
+        AllSchoolsTableViewController *ASTVC = segue.destinationViewController;
+        ASTVC.mainUserData = self.mainUserData;
+        ASTVC.isCorporationSearch = false;
+        ASTVC.isManagingSchools = true;
     }
 
 

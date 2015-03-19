@@ -289,7 +289,7 @@
 
 - (IBAction)addUpdateButtonClicked:(UIButton *)sender
 {
-    if([self.eventTitleTextField.text length] > 0 && self.startDateUnaltered && self.endDateUnaltered && [[self.dateFormatter dateFromString:self.endDateUnaltered]timeIntervalSinceDate:[self.dateFormatter dateFromString:self.startDateUnaltered]] >
+    if([[HelperMethods prepStringForValidation:self.eventTitleTextField.text] length] > 0 && self.startDateUnaltered && self.endDateUnaltered && [[self.dateFormatter dateFromString:self.endDateUnaltered]timeIntervalSinceDate:[self.dateFormatter dateFromString:self.startDateUnaltered]] >
        0.0)
     {
         if([sender.titleLabel.text isEqualToString:@"Add"])

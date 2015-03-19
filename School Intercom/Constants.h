@@ -36,7 +36,8 @@ typedef enum
 {
     zAlertButtonNew = 0,
     zAlertButtonExisting,
-    zAlertButtonAdminLogin
+    zAlertButtonAdminLogin,
+    zAlertButtonTryDemo
 } AlertButtons;
 
 #define zAlertEnterEmailOK 1
@@ -68,7 +69,8 @@ typedef enum
     utSuperintendent,
     utSales,
     utSuperUser,
-    utBetaTester
+    utBetaTester,
+    utGrandparent
 }userTypes;
 
 typedef enum
@@ -109,7 +111,9 @@ typedef enum
     zAlertAddEventSuccess,
     zAlertAddNewsSuccess,
     zAlertSuggestPurchase,
-    zAlertPushPinChange
+    zAlertPushPinChange,
+    zAlertAddGrandparentSuccess,
+    zAlertConfirmRemoveGrandparent
 } AlertTypes;
 
 typedef enum
@@ -207,6 +211,13 @@ typedef enum
 #define CELL_DEVICE_VERSION @"deviceVersionCell"
 #define CELL_MANAGE_SCHOOLS @"manageSchoolsCell"
 
+#define CELL_UPDATE_PROFILE @"updateProfileCell"
+#define CELL_UPDATE_KIDS @"updateKidsCell"
+#define CELL_ADD_SCHOOL @"addSchoolCell"
+#define CELL_ADD_GRANDPARENT @"addGrandparentCell"
+#define CELL_RESET_TUTORIAL @"resetTutorialCell"
+#define CELL_EMPTY @"emptyCell"
+
 //php file defines
 
 #define PHP_LOGIN_USER @"login_user.php"
@@ -218,7 +229,7 @@ typedef enum
 #define PHP_ADD_USER @"add_user.php"
 #define PHP_ADD_KID @"add_kid.php"
 #define PHP_CHECK_STATUS @"verify_check.php"
-#define PHP_LOAD_DATA @"load_data.php"
+#define PHP_LOAD_DATA @"load_data_test.php"
 #define PHP_LOAD_LOCAL_AD @"load_local_ad.php"
 #define PHP_ADD_SCHOOL @"add_school.php"
 #define PHP_SEND_EMAIL @"send_email.php"
@@ -253,7 +264,7 @@ typedef enum
 #define PHP_GET_NEW_PENDING_USERS @"get_new_pending_users.php"
 #define PHP_GET_USERS @"get_users.php"
 #define PHP_GET_SINGLE_USER @"get_single_user.php"
-#define PHP_GET_USERS_SCHOOLS @"get_users_schools.php"
+#define PHP_GET_USERS_SCHOOLS @"get_users_schools_1-2-2.php"
 #define PHP_GET_ALL_SCHOOLS @"get_all_schools.php"
 #define PHP_GET_ALL_CORPS @"get_all_corps.php"
 #define PHP_ADMIN_ADD_USER @"admin_add_user.php"
@@ -274,7 +285,13 @@ typedef enum
 #define PHP_GET_FUNDRAISER_DATA @"get_fundraiser_data.php"
 #define PHP_UPDATE_TEACHER_NAMES @"update_teacher_names.php"
 #define PHP_LOG_OUT_USER @"log_out_user.php"
-
+#define PHP_GET_SCHOOL_STATS @"get_school_stats.php"
+#define PHP_GET_ALERTS_SUBMITTED_BY_USER @"get_alerts_for_user.php"
+#define PHP_DELETE_ALERT @"delete_alert.php"
+#define PHP_UPDATE_ALERT @"update_alert.php"
+#define PHP_ADD_GRANDPARENT @"add_grandparent.php"
+#define PHP_GET_GRANDPARENTS @"get_grandparents.php"
+#define PHP_DELETE_SYSTEM_MESSAGE @"delete_system_message.php"
 
 
 //common fields
@@ -453,6 +470,9 @@ typedef enum
 #define SEGUE_TO_FUNDRAISING @"segueToFundraising"
 #define SEGUE_TO_MANAGE_SCHOOLS @"manageSchoolsSegue"
 #define SEGUE_TO_SCHOOL_STATS @"schoolStatsSegue"
+#define SEGUE_TO_MANAGE_ALERTS @"manageAlertsSegue"
+#define SEGUE_TO_EDIT_ALERT @"editAlertSegue"
+#define SEGUE_TO_ADD_GRANDPARENT @"addGrandParentSegue"
 
 //Dictionary keys
 #define DIC_CALENDAR_DATA @"calendarData"

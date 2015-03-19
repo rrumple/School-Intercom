@@ -149,6 +149,11 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
     
 }
 
++ (NSString *)prepStringForValidation:(NSString *)input
+{
+    return [input stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+}
+
 + (BOOL)isEmailValid:(NSString *)email
 {
     NSString *emailRegEx = @"[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,4}";
@@ -430,7 +435,7 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
 
 + (NSArray *)getDictonaryOfUserTypes
 {
-    return @[@"Users", @"Teacher", @"Secretary", @"Principal", @"Superintendent", @"Sales", @"Super User", @"Beta Tester"
+    return @[@"Users", @"Teacher", @"Secretary", @"Principal", @"Superintendent", @"Sales", @"Super User", @"Beta Tester", @"Grandparent"
              
              
              ];

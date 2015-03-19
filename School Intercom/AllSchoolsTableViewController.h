@@ -14,5 +14,6 @@
 @property (nonatomic, strong)UserData *mainUserData;
 @property (nonatomic, strong)NSArray *existingSchools;
 @property (nonatomic) BOOL isCorporationSearch;
+@property (nonatomic) BOOL isManagingSchools;
 
 @end

@@ -96,7 +96,7 @@
     [self.activityIndicatorView.layer setShadowRadius:3.0];
     [self.activityIndicatorView.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
     
-    if([self.mainUserData.accountType intValue] > 0)
+    if([self.mainUserData.accountType intValue] > 0 && [self.mainUserData.accountType intValue] < 8)
         self.restorePurchasesButton.hidden = true;
 
 

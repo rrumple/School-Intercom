@@ -9,6 +9,9 @@
 #import "SettingsTableViewController.h"
 
 @interface SettingsTableViewController ()
+@property (nonatomic ,strong) NSArray *cellsToShow;
+@property (nonatomic) NSInteger sectionCount;
+@property (nonatomic) NSInteger rowCount;
 
 @end
 
@@ -23,12 +26,37 @@
     return self;
 }
 
-
+- (void)setProfileDatawithSections:(NSInteger)sectionCount andRows:(NSInteger)rowCount
+{
+    self.sectionCount = sectionCount;
+    self.rowCount = rowCount;
+}
 
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    switch ([self.mainUserData.accountType intValue])
+    {
+        case utParent:
+        case utTeacher:
+        case utSecretary:
+        case utPrincipal:
+        case utSuperintendent:
+        case utSales:
+        case utSuperUser:
+        case utBetaTester:
+            self.cellsToShow = @[CELL_UPDATE_PROFILE, CELL_UPDATE_KIDS, CELL_ADD_SCHOOL, CELL_ADD_GRANDPARENT];
+            [self setProfileDatawithSections:2 andRows:[self.cellsToShow count]];
+            break;
+        case utGrandparent:
+            self.cellsToShow = @[CELL_UPDATE_PROFILE];
+            [self setProfileDatawithSections:2 andRows:[self.cellsToShow count]];
+            break;
+            
+    }
+
     UIView *menuBar = [[UIView alloc]initWithFrame:CGRectMake(0, 0, 320, 58)];
     UIButton *menuButton = [[UIButton alloc]initWithFrame:CGRectMake(10, 10, 40, 40)];
     
@@ -108,6 +136,11 @@
         AddSchoolViewController *ASVC = segue.destinationViewController;
         ASVC.mainUserData = self.mainUserData;
     }
+    else if ([segue.identifier isEqualToString:SEGUE_TO_ADD_GRANDPARENT])
+    {
+        AddGrandparentViewController *AGVC = segue.destinationViewController;
+        AGVC.mainUserData = self.mainUserData;
+    }
 }
 
 - (IBAction)resetTutorialPressed
@@ -121,32 +154,47 @@
 
 
 #pragma mark - Table view data source
-/*
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 0)
+        return 1.0f;
+    else
+        return 44.0f;
+}
  
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 0;
+    return self.sectionCount;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
-    // Return the number of rows in the section.
-    return 0;
+
+    if (section == 0)
+        return 1;
+    else
+        return self.rowCount;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+    NSString *identifier;
+    if(indexPath.section == 0)
+       identifier = CELL_EMPTY;
+    else
+        identifier = [self.cellsToShow objectAtIndex:indexPath.row];
+
     
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
     // Configure the cell...
     
     return cell;
+
 }
-*/
+
 /*
 // Override to support conditional editing of the table view.
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

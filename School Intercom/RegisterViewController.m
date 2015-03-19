@@ -125,19 +125,17 @@
 
 - (void)checkToSeeIfAButtonShouldBeUnhidden
 {
-    if([self.firstNameTextField.text length] > 0 && [self.lastNameTextField.text length] > 0 && [self.emailAddressTextField.text length] > 0 && [self.passwordTextField.text length] > 0 && self.numberOfChildrenTFready)
+    if([[HelperMethods prepStringForValidation:self.firstNameTextField.text] length] > 0 && [[HelperMethods prepStringForValidation:self.lastNameTextField.text] length] > 0 && [self.emailAddressTextField.text length] > 0 && [self.passwordTextField.text length] > 0 && self.numberOfChildrenTFready && [HelperMethods isEmailValid:self.emailAddressTextField.text])
     {
-        self.createButton.hidden = NO;
-        if(!self.createButton.hidden)
-           [self.createButton setEnabled:true];
+       [self.createButton setEnabled:true];
     }
     else
     {
-        self.createButton.hidden = YES;
+        
         self.createButton.enabled = NO;
     }
     
-    if ([self.childFirstname.text length] > 0 && [self.childLastName.text length] > 0 && [self.childGradeLevel.text length] > 0)
+    if ([[HelperMethods prepStringForValidation:self.childFirstname.text] length] > 0 && [[HelperMethods prepStringForValidation:self.childLastName.text] length] > 0 && [self.childGradeLevel.text length] > 0)
     {
         self.addChildButton.enabled = YES;
     }
@@ -782,6 +780,7 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
+    
     if(self.schoolTextField.isFirstResponder)
     {
         if([self.registerData.schoolArray count] > 0)
@@ -839,9 +838,13 @@
     }
 }
 
+- (IBAction)texfieldChanged
+{
+    [self checkToSeeIfAButtonShouldBeUnhidden];
+}
+
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
-    
     if(textField.tag == 4)
     {
         
@@ -921,6 +924,7 @@
     
     [self checkToSeeIfAButtonShouldBeUnhidden];
 }
+
 
 -(void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
 {

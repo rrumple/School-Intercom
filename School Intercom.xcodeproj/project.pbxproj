@@ -36,7 +36,6 @@
 		943DC65318B9263100DE0989 /* charcoal_cy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 943DC65218B9263100DE0989 /* charcoal_cy.ttf */; };
 		94441B501A8FE16300124C74 /* FirstNavViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94441B4F1A8FE16300124C74 /* FirstNavViewController.m */; };
 		94441B551A8FE5AC00124C74 /* SchoolStatsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94441B541A8FE5AC00124C74 /* SchoolStatsViewController.m */; };
-		94441B581A8FE5BD00124C74 /* ManageSchoolsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94441B571A8FE5BD00124C74 /* ManageSchoolsTableViewController.m */; };
 		94451F591866EA1100136ED2 /* IntroModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 94451F581866EA1100136ED2 /* IntroModel.m */; };
 		9447E51419152A9A0002C556 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9447E51319152A9A0002C556 /* StoreKit.framework */; };
 		9447E51719152AE40002C556 /* IAPHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = 9447E51619152AE40002C556 /* IAPHelper.m */; };
@@ -137,6 +136,8 @@
 		94E33CBC1869E3E700DB9A82 /* UIView+TKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 94E33C7C1869E3E700DB9A82 /* UIView+TKCategory.m */; };
 		94E33CBD1869E3E700DB9A82 /* UIViewController+TKCategory.m in Sources */ = {isa = PBXBuildFile; fileRef = 94E33C7E1869E3E700DB9A82 /* UIViewController+TKCategory.m */; };
 		94E33CBF186A068B00DB9A82 /* TapkuLibrary.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 94E33CBE186A068B00DB9A82 /* TapkuLibrary.bundle */; };
+		94EB65F31A96E041004D1226 /* ManageAlertsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94EB65F21A96E041004D1226 /* ManageAlertsViewController.m */; };
+		94EB65F61A984C3D004D1226 /* AddGrandparentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 94EB65F51A984C3D004D1226 /* AddGrandparentViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -206,8 +207,6 @@
 		94441B4F1A8FE16300124C74 /* FirstNavViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirstNavViewController.m; sourceTree = "<group>"; };
 		94441B531A8FE5AC00124C74 /* SchoolStatsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SchoolStatsViewController.h; sourceTree = "<group>"; };
 		94441B541A8FE5AC00124C74 /* SchoolStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SchoolStatsViewController.m; sourceTree = "<group>"; };
-		94441B561A8FE5BD00124C74 /* ManageSchoolsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageSchoolsTableViewController.h; sourceTree = "<group>"; };
-		94441B571A8FE5BD00124C74 /* ManageSchoolsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageSchoolsTableViewController.m; sourceTree = "<group>"; };
 		94451F571866EA1100136ED2 /* IntroModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntroModel.h; sourceTree = "<group>"; };
 		94451F581866EA1100136ED2 /* IntroModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntroModel.m; sourceTree = "<group>"; };
 		9447E51319152A9A0002C556 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -394,6 +393,10 @@
 		94E33C7D1869E3E700DB9A82 /* UIViewController+TKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+TKCategory.h"; sourceTree = "<group>"; };
 		94E33C7E1869E3E700DB9A82 /* UIViewController+TKCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+TKCategory.m"; sourceTree = "<group>"; };
 		94E33CBE186A068B00DB9A82 /* TapkuLibrary.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = TapkuLibrary.bundle; sourceTree = "<group>"; };
+		94EB65F11A96E041004D1226 /* ManageAlertsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ManageAlertsViewController.h; sourceTree = "<group>"; };
+		94EB65F21A96E041004D1226 /* ManageAlertsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageAlertsViewController.m; sourceTree = "<group>"; };
+		94EB65F41A984C3D004D1226 /* AddGrandparentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddGrandparentViewController.h; sourceTree = "<group>"; };
+		94EB65F51A984C3D004D1226 /* AddGrandparentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddGrandparentViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -431,6 +434,8 @@
 		940296F81A32A670007E0E89 /* Admin views */ = {
 			isa = PBXGroup;
 			children = (
+				94EB65F11A96E041004D1226 /* ManageAlertsViewController.h */,
+				94EB65F21A96E041004D1226 /* ManageAlertsViewController.m */,
 				94441B521A8FE52800124C74 /* App Admin Views */,
 				94441B511A8FE4DA00124C74 /* Teacher/Principal/Secretary Views */,
 				940296F21A32A3C8007E0E89 /* AdminToolsTableViewController.h */,
@@ -467,6 +472,8 @@
 		942DD8521870D21C00FB8F71 /* Sub Views */ = {
 			isa = PBXGroup;
 			children = (
+				94EB65F41A984C3D004D1226 /* AddGrandparentViewController.h */,
+				94EB65F51A984C3D004D1226 /* AddGrandparentViewController.m */,
 				945D61811A20D12300FEFEA2 /* RequestSchoolViewController.h */,
 				945D61821A20D12300FEFEA2 /* RequestSchoolViewController.m */,
 				9427379719874431002CEA3F /* UpdateKidViewController.h */,
@@ -534,8 +541,6 @@
 				940E81561A50633F00F12ADA /* ManageUsersViewController.m */,
 				94441B531A8FE5AC00124C74 /* SchoolStatsViewController.h */,
 				94441B541A8FE5AC00124C74 /* SchoolStatsViewController.m */,
-				94441B561A8FE5BD00124C74 /* ManageSchoolsTableViewController.h */,
-				94441B571A8FE5BD00124C74 /* ManageSchoolsTableViewController.m */,
 			);
 			name = "App Admin Views";
 			sourceTree = "<group>";
@@ -942,6 +947,7 @@
 				94E33CA91869E3E700DB9A82 /* TKTextView.m in Sources */,
 				9447E51A19152F390002C556 /* SchoolIntercomIAPHelper.m in Sources */,
 				94E33C811869E3E700DB9A82 /* NSDate+TKCategory.m in Sources */,
+				94EB65F61A984C3D004D1226 /* AddGrandparentViewController.m in Sources */,
 				94E33C9E1869E3E700DB9A82 /* TKProgressBarView.m in Sources */,
 				94E33CA61869E3E700DB9A82 /* TKTableViewCell.m in Sources */,
 				94E33C911869E3E700DB9A82 /* TKGlowButton.m in Sources */,
@@ -951,7 +957,6 @@
 				940296F41A32A3C8007E0E89 /* AdminToolsTableViewController.m in Sources */,
 				94E33C7F1869E3E700DB9A82 /* NSArray+TKCategory.m in Sources */,
 				948686821A7EF510004882EE /* ManagePostTableViewController.m in Sources */,
-				94441B581A8FE5BD00124C74 /* ManageSchoolsTableViewController.m in Sources */,
 				94AB780C186A9A1E00F5A56F /* NSString+TKCategory.m in Sources */,
 				94E33CAA1869E3E700DB9A82 /* TKTextViewCell.m in Sources */,
 				94BDF7281870904600AAFFA4 /* SettingsTableViewController.m in Sources */,
@@ -967,6 +972,7 @@
 				940D6AA71847D2F20013EA7B /* UIView+AddOns.m in Sources */,
 				9415694E1A870529003E2853 /* FundraisingViewController.m in Sources */,
 				94BD73CA183DA63D009E1129 /* main.m in Sources */,
+				94EB65F31A96E041004D1226 /* ManageAlertsViewController.m in Sources */,
 				947AB4E2196A489C00C4AD80 /* LunchMenuViewController.m in Sources */,
 				943A0CF91876538C00D0910F /* ContactModel.m in Sources */,
 				94E33C9A1869E3E700DB9A82 /* TKLabelTextViewCell.m in Sources */,

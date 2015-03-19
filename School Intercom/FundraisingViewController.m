@@ -77,7 +77,10 @@
                 }
                 else
                 {
-                    NSMutableArray *tempArray = [[NSMutableArray alloc]initWithObjects:@{}, nil];
+                    NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+                    
+                    if(!self.mainUserData.isDemoInUse)
+                        [tempArray addObject:@{}];
                     
                     [tempArray addObjectsFromArray:[tempDic objectForKey:@"fundraiserData"]];
                     
@@ -327,7 +330,7 @@
     
     if([[[self.fundraiserData objectAtIndex:self.currentIndexPath.section] objectForKey:FUNDRAISER_IS_IN_APP_PURCHASE] boolValue])
     {
-        if([self.mainUserData.accountType intValue] == 0)
+        if([self.mainUserData.accountType intValue] == utParent || [self.mainUserData.accountType intValue] == utGrandparent)
         {
             self.currentBuyButtonSelected = sender;
             self.productSelectedForPurchase = [self.fundraiserData objectAtIndex:self.currentIndexPath.section];
@@ -374,7 +377,7 @@
 }
 - (IBAction)restorePurchasesButtonPressed
 {
-    if([self.mainUserData.accountType intValue] == 0)
+    if([self.mainUserData.accountType intValue] == utParent || [self.mainUserData.accountType intValue] == utGrandparent)
     {
         [self.loadingIndicatorView setHidden:false];
         [self.loadingIndicatorBackgroundView setHidden:false];
@@ -429,7 +432,7 @@
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    if(indexPath.section == 0)
+    if(indexPath.section == 0 && !self.mainUserData.isDemoInUse)
         return 44.0;
     else
     {
@@ -464,14 +467,14 @@
 
     UITableViewCell *cell;
     
-    if(indexPath.section == 0)
+    if(indexPath.section == 0 && !self.mainUserData.isDemoInUse)
         cell = [tableView dequeueReusableCellWithIdentifier:cellIdentifier2 forIndexPath:indexPath];
     else
     {
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-    
-   
-    
+        
+        
+        
         UILabel *mainTitle = (UILabel *)[cell.contentView viewWithTag:2];
         UIButton *buyButton = (UIButton *)[cell.contentView viewWithTag:3];
         UILabel *detailText = (UILabel *)[cell.contentView viewWithTag:4];
@@ -487,7 +490,7 @@
         {
             if([[fundraiserDic objectForKey:FUNDRAISER_IS_IN_APP_PURCHASE] boolValue])
             {
-                if([self.mainUserData.accountType intValue] > 0)
+                if([self.mainUserData.accountType intValue] > 0 && [self.mainUserData.accountType intValue] < 8)
                 {
                     [buyButton setEnabled:NO];
                 }
@@ -500,10 +503,10 @@
             {
                 [buyButton setTitle:[fundraiserDic objectForKey:FUNDRAISER_BUY_BUTTON_TEXT] forState:UIControlStateNormal];
             }
-
-        }
             
-            detailText.text = [fundraiserDic objectForKey:FUNDRAISER_DETAIL_TEXT];
+        }
+        
+        detailText.text = [fundraiserDic objectForKey:FUNDRAISER_DETAIL_TEXT];
         if([fundraiserDic objectForKey:FUNDRAISER_MORE_INFO_LINK] != (id)[NSNull null])
         {
             [moreInfoButton addTarget:self action:@selector(moreInfoButtonPressed:) forControlEvents:UIControlEventTouchDown];
@@ -514,29 +517,32 @@
             [moreInfoButton setHidden:true];
         }
         
-            
-            NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-            
         
+        NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
+        
+        
+        
+        NSString *pngFilePath = [NSString stringWithFormat:@"%@/%@",docDir, [self.mainUserData.schoolData objectForKey:SCHOOL_IMAGE_NAME]];
+        
+        if([[NSFileManager defaultManager] fileExistsAtPath:pngFilePath])
+        {
             
-            NSString *pngFilePath = [NSString stringWithFormat:@"%@/%@",docDir, [self.mainUserData.schoolData objectForKey:SCHOOL_IMAGE_NAME]];
+            UIImage *image = [UIImage imageWithContentsOfFile:pngFilePath];
             
-            if([[NSFileManager defaultManager] fileExistsAtPath:pngFilePath])
-            {
-                
-                UIImage *image = [UIImage imageWithContentsOfFile:pngFilePath];
-                
-                
-                UIImageView *imageView = (UIImageView *)[cell.contentView viewWithTag:1];
-                
-                
-                imageView.image = image;
-                
-            }
-
+            
+            UIImageView *imageView = (UIImageView *)[cell.contentView viewWithTag:1];
+            
+            
+            imageView.image = image;
+            
+        }
     }
+
+        
+
+        
     
-  
+   
     
     
     

@@ -224,7 +224,7 @@
 
 - (IBAction)addUpdateButtonPressed:(UIButton *)sender
 {
-    if([self.postTitleTextField.text length] > 0 && self.dateUnaltered && [self.newsTextView.text length] > 0)
+    if([[HelperMethods prepStringForValidation:self.postTitleTextField.text] length] > 0 && self.dateUnaltered && [[HelperMethods prepStringForValidation:self.newsTextView.text] length] > 0)
     {
         
         if(self.postImage.image)

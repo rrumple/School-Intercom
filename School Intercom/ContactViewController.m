@@ -25,6 +25,7 @@
 @property (weak, nonatomic) IBOutlet UIView *helpOverlay;
 @property (weak, nonatomic) IBOutlet UITextField *toTextfield;
 @property (nonatomic, strong) NSString *toUserID;
+@property (weak, nonatomic) IBOutlet UIButton *phoneButton;
 
 @end
 
@@ -87,21 +88,26 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     self.toUserID = @"";
-    self.toNames = [self.mainUserData.teacherNames mutableCopy];
-    [self.toNames addObject:@{@"teacherName":@"Submit Bugs/Feedback",@"id":@"374825e5c3d74cca7e85cbc23e61bc90"}];
-    NSLog(@"%@", self.toNames);
-    NSMutableArray *itemsToRemove = [[NSMutableArray alloc]init];
-    for (NSDictionary *tempDic in self.toNames)
+    if([self.mainUserData.accountType intValue] != 8)
     {
-        if([[tempDic objectForKey:ID]isEqualToString:self.mainUserData.userID] || ![[tempDic objectForKey:SCHOOL_ID]isEqualToString:self.mainUserData.schoolIDselected])
-            if(![[tempDic objectForKey:@"teacherName"]isEqualToString:@"Submit Bugs/Feedback"])
-                [itemsToRemove addObject:tempDic];
-    }
-    
-    [self.toNames removeObjectsInArray:itemsToRemove];
-    
-      NSLog(@"%@", self.toNames);
+        self.toNames = [self.mainUserData.teacherNames mutableCopy];
+        [self.toNames addObject:@{@"teacherName":@"Submit Bugs/Feedback",@"id":@"374825e5c3d74cca7e85cbc23e61bc90"}];
+        NSLog(@"%@", self.toNames);
+        NSMutableArray *itemsToRemove = [[NSMutableArray alloc]init];
+        for (NSDictionary *tempDic in self.toNames)
+        {
+            if([[tempDic objectForKey:ID]isEqualToString:self.mainUserData.userID] || ![[tempDic objectForKey:SCHOOL_ID]isEqualToString:self.mainUserData.schoolIDselected])
+                if(![[tempDic objectForKey:@"teacherName"]isEqualToString:@"Submit Bugs/Feedback"])
+                    [itemsToRemove addObject:tempDic];
+        }
         
+        [self.toNames removeObjectsInArray:itemsToRemove];
+        
+          NSLog(@"%@", self.toNames);
+    }
+    else
+        [self.toNames addObject:@{@"teacherName":@"Submit Bugs/Feedback",@"id":@"374825e5c3d74cca7e85cbc23e61bc90"}];
+    
     
     [self setupTapGestures];
     
@@ -117,8 +123,15 @@
     
     self.schoolNameLabel.text = [self.schoolData objectForKey:SCHOOL_NAME];
     self.cityLabel.text = [NSString stringWithFormat:@"%@, %@ %@", [self.schoolData objectForKey:SCHOOL_CITY], [self.schoolData objectForKey:SCHOOL_STATE], [self.schoolData objectForKey:SCHOOL_ZIP]];
+    
+    UIFont *font = [UIFont fontWithName:@"Helvetica Neue" size:11.0];
+    
 
-    self.phoneNumberLabel.text = [self.schoolData objectForKey:SCHOOL_PHONE];
+    NSDictionary *underlineAttribute = @{NSUnderlineStyleAttributeName: @(NSUnderlineStyleSingle), NSFontAttributeName:font, NSForegroundColorAttributeName:[UIColor whiteColor] };
+   
+    [self.phoneButton setAttributedTitle:[[NSAttributedString alloc] initWithString:[self.schoolData objectForKey:SCHOOL_PHONE]
+                                                                         attributes:underlineAttribute] forState:UIControlStateNormal];
+    
     
     self.toTextfield.inputView = [self createPickerWithTag:zPickerName];
     
@@ -254,6 +267,21 @@
         }
     });
 
+}
+- (IBAction)phoneButtonPressed:(UIButton *)sender
+{
+    NSString *phone = sender.titleLabel.text;
+    
+    if([phone length] >=14)
+    {
+        NSString *editPhone = [NSString stringWithFormat:@"tel:%@%@%@-%@%@%@-%@%@%@%@",
+                           [phone substringWithRange:NSMakeRange(1, 1)], [phone substringWithRange:NSMakeRange(2, 1)], [phone substringWithRange:NSMakeRange(3, 1)],
+                           [phone substringWithRange:NSMakeRange(6, 1)],[phone substringWithRange:NSMakeRange(7, 1)],[phone substringWithRange:NSMakeRange(8, 1)],
+                           [phone substringWithRange:NSMakeRange(10, 1)],[phone substringWithRange:NSMakeRange(11, 1)],[phone substringWithRange:NSMakeRange(12, 1)],[phone substringWithRange:NSMakeRange(13, 1)] ];
+    
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:editPhone]];
+    }
+    
 }
 
 - (IBAction)sendButtonPressed

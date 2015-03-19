@@ -240,6 +240,7 @@
         AllSchoolsTableViewController *ASTVC = segue.destinationViewController;
         ASTVC.mainUserData = self.mainUserData;
         ASTVC.existingSchools = tempArray;
+        ASTVC.isManagingSchools = false;
     }
 
 }
@@ -319,9 +320,16 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
+    if(indexPath.section == 0 && indexPath.row == 0)
+    {
+        [self.navigationController popViewControllerAnimated:YES];
+    }
+    else
+    {
+
         self.schoolSelected = [self.schoolData objectAtIndex:indexPath.row];
         [self performSegueWithIdentifier:SEGUE_TO_SINGLE_SCHOOL sender:self];
-        
+    }
     
     
     

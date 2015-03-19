@@ -30,6 +30,7 @@
 @property (nonatomic, strong) NSDictionary *thirdGroupSelected;
 @property (nonatomic, strong) NSDictionary *fourthGroupSelected;
 @property (nonatomic, strong) NSDictionary *fifthGroupSelected;
+@property (weak, nonatomic) IBOutlet UILabel *headerLabel;
 
 @property (nonatomic, strong) NSTimer *timer;
 @property (weak, nonatomic) IBOutlet UILabel *characterCountLabel;
@@ -39,6 +40,7 @@
 @property (nonatomic, strong) NSString *idToSendToDatabase;
 @property (weak, nonatomic) IBOutlet UIButton *sendAlertButton;
 @property (nonatomic, strong) NSString *alertIDToInsert;
+@property (weak, nonatomic) IBOutlet UILabel *groupHeaderLabel;
 
 @end
 
@@ -64,17 +66,52 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.alertGroupsData = alertGroupsArray;
  
+                    [self setupGroupPicker];
+                    self.destinationPicker = [NSString stringWithFormat:@"%i", zPickerSecondGroup];
+                    UIPickerView *tempPicker = (UIPickerView *)self.groupTextField.inputView;
+                    [tempPicker reloadAllComponents];
+                    [tempPicker selectRow:0 inComponent:0 animated:NO];
                
-                [self setupGroupPicker];
-                self.destinationPicker = [NSString stringWithFormat:@"%i", zPickerSecondGroup];
-                UIPickerView *tempPicker = (UIPickerView *)self.groupTextField.inputView;
-                [tempPicker reloadAllComponents];
-                [tempPicker selectRow:0 inComponent:0 animated:NO];
             });
             
         }
     });
    
+}
+
+- (void)updateAlertInDatabase
+{
+
+        dispatch_queue_t createQueue = dispatch_queue_create("updateAlert", NULL);
+        dispatch_async(createQueue, ^{
+            NSArray *databaseData;
+            databaseData = [self.adminData updateAlert:[self.alertToEdit objectForKey:ID] withText:self.messageTextview.text userMakingChange:self.mainUserData.userID];
+            
+            if (databaseData)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSDictionary *tempDic = [databaseData objectAtIndex:0];
+                    
+                    if([[tempDic objectForKey:@"error"] boolValue])
+                    {
+                        [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertNotifyOnly andDelegate:nil];
+                        
+                    }
+                    else
+                    {
+
+                        UIAlertView *success = [[UIAlertView alloc]initWithTitle:@"Update Alert" message:@"Alert was updated successfully." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                        success.tag = zAlertAddEventSuccess;
+                        [success show];
+                        [[NSNotificationCenter defaultCenter] postNotificationName:@"LOAD_DATA" object:nil userInfo:nil];
+                    }
+                });
+                
+            }
+        });
+        
+    
+
 }
 
 
@@ -108,13 +145,59 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    self.groupTextField.inputView = [self createPickerWithTag:zPickerGroup];
-    self.secondGroupTextField.inputView = [self createPickerWithTag:zPickerSecondGroup];
-    self.thirdGroupTextField.inputView = [self createPickerWithTag:zPickerThirdGroup];
-    self.fourthGroupTextField.inputView = [self createPickerWithTag:zPickerFourthGroup];
-    self.fifthGroupTextField.inputView = [self createPickerWithTag:zPickerFifthGroup];
     
-    [self getAlertGroupsFromDatabase];
+    
+    if(self.isEditing)
+    {
+        self.headerLabel.text = @"Update Alert";
+        self.groupHeaderLabel.text = @"Message was sent to:";
+        [self.groupTextField setEnabled:false];
+        
+        [self.sendAlertButton setTitle:@"Update" forState:UIControlStateNormal];
+        self.messageTextview.text = [self.alertToEdit objectForKey:ALERT_TEXT];
+        self.sendAlertButton.hidden = false;
+        
+        NSString *text;
+        
+        switch([[self.alertToEdit objectForKey:ALERT_TYPE] intValue])
+        {
+            case 1:
+            case 6: text = [NSString stringWithFormat:@"User: %@", [self.alertToEdit objectForKey:@"userName"]];
+                break;
+            case 2: text = @"Entire Corporation";
+                break;
+            case 3: text = @"Entire School";
+                break;
+            case 4: text = @"Entire Class";
+                break;
+            case 5: text = @"All School Intercom Users";
+                break;
+            case 7: text = @"News Alert to Entire Corporatioin";
+                break;
+            case 8: text = @"News Alert to Entire School";
+                break;
+            case 9: text = @"News Alert to Entire Class";
+                break;
+            
+                
+        }
+        
+        self.groupTextField.text = text;
+        [self updateCharacterCount:self.messageTextview.text];
+    }
+    else
+    {
+         [self getAlertGroupsFromDatabase];
+        self.groupTextField.inputView = [self createPickerWithTag:zPickerGroup];
+        self.secondGroupTextField.inputView = [self createPickerWithTag:zPickerSecondGroup];
+        self.thirdGroupTextField.inputView = [self createPickerWithTag:zPickerThirdGroup];
+        self.fourthGroupTextField.inputView = [self createPickerWithTag:zPickerFourthGroup];
+        self.fifthGroupTextField.inputView = [self createPickerWithTag:zPickerFifthGroup];
+        
+       
+
+    }
+    
     
     
     [self setupTapGestures];
@@ -673,6 +756,10 @@
     self.fourthGroupTextField.text = @"";
     self.fifthGroupTextField.text = @"";
     self.destinationPicker = [NSString stringWithFormat:@"%i",zPickerSecondGroup];
+
+    UIPickerView * tempPicker = (UIPickerView *)self.groupTextField.inputView;
+    [tempPicker selectRow:0 inComponent:0 animated:NO];
+
     
 }
 
@@ -758,15 +845,22 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (IBAction)sendAlertButtonPressed
+- (IBAction)sendAlertButtonPressed:(UIButton *)sender
 {
-    
-    UIAlertView *sendAlertConfirmation = [[UIAlertView alloc]initWithTitle:@"Send Alert" message:@"Are you sure you want to send this alert?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
-    sendAlertConfirmation.tag = zAlertConfirmSendAlert;
-    
-    [sendAlertConfirmation show];
-    
+    if([sender.titleLabel.text isEqualToString:@"Update"])
+    {
+        [self updateAlertInDatabase];
+    }
+    else
+    {
+        UIAlertView *sendAlertConfirmation = [[UIAlertView alloc]initWithTitle:@"Send Alert" message:@"Are you sure you want to send this alert?" delegate:self cancelButtonTitle:@"No" otherButtonTitles:@"Yes", nil];
+        sendAlertConfirmation.tag = zAlertConfirmSendAlert;
+        
+        [sendAlertConfirmation show];
+    }
 }
+
+
 
 - (IBAction)backButtonPressed
 {
@@ -1050,54 +1144,39 @@
     [self checkToSeeIfAButtonShouldBeUnhidden];
 }
 
+- (BOOL)updateCharacterCount:(NSString *)text
+{
+    NSInteger characterCount = 140 - ([self.messageTextview.text length]+[text length]) ;
+    
+    self.characterCountLabel.text = [NSString stringWithFormat:@"%ld Characters Left", (long)characterCount ];
+    
+    
+    if (characterCount == 0)
+    {
+        return false;
+    }
+    else
+    {
+        
+        return true;
+    }
+
+}
+
 - (BOOL)textView:(UITextView *)textView shouldChangeTextInRange:(NSRange)range replacementText:(NSString *)text
 {
+    BOOL shouldChange = true;
+    
     if (textView.tag == 10)
     {
-        
-        NSInteger characterCount = 140 - ([textView.text length]+[text length]) ;
-        
-        self.characterCountLabel.text = [NSString stringWithFormat:@"%ld Characters Left", (long)characterCount ];
-        
-        
-        if (characterCount == 0)
-        {
-            return false;
-        }
-        else
-        {
-            
-            return true;
-        }
+        shouldChange = [self updateCharacterCount:text];
     }
     
-    return true;
+    return shouldChange;
 
 }
 
-- (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
-{
-    if (textField.tag == 10)
-    {
-        
-        NSInteger characterCount = 140 - ([textField.text length]+[string length]) ;
-        
-        self.characterCountLabel.text = [NSString stringWithFormat:@"%ld Characters Left", (long)characterCount ];
 
-        
-        if (characterCount == 0)
-        {
-            return false;
-        }
-        else
-        {
-            
-            return true;
-        }
-    }
-    
-    return true;
-}
 - (IBAction)testAlertButtonPressed:(id)sender
 {
     NSDictionary *testNotification = [NSJSONSerialization JSONObjectWithData:[@"{'aps':{'alert':'Test Alert','sound':'default'}}" dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
@@ -1136,6 +1215,10 @@
 
         }
     }
+    else if(alertView.tag == zAlertAddEventSuccess)
+        [self.navigationController popViewControllerAnimated:YES];
+    
+
 }
 
 @end

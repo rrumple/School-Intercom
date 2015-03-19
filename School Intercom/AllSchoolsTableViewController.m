@@ -10,12 +10,16 @@
 #import "AdminModel.h"
 #import "AddNewUserTableViewController.h"
 #import "UsersSchoolsTableViewController.h"
+#import "SchoolStatsViewController.h"
 
 @interface AllSchoolsTableViewController ()
 
-@property (nonatomic, strong)NSArray *schools;
-@property (nonatomic, strong)AdminModel *adminData;
-@property (nonatomic, strong)NSString *idToQuery;
+@property (nonatomic, strong) NSArray *schools;
+@property (nonatomic, strong) AdminModel *adminData;
+@property (nonatomic, strong) NSString *idToQuery;
+@property (nonatomic, strong) NSString *schoolIDSelected;
+@property (nonatomic, strong) NSString *schoolNameSelected;
+
 @end
 
 @implementation AllSchoolsTableViewController
@@ -107,6 +111,11 @@
                     }
                     
                     NSMutableArray *tempArray2 = [[NSMutableArray alloc]init];
+                    if(self.isManagingSchools)
+                    {
+                        [tempArray2 addObject:@[@{@"name":@"",@"schoolName":CELL_EXIT}]];
+                    }
+
                     for(NSArray * array in tempArray)
                     {
                         if ([array count] >= 1)
@@ -118,7 +127,8 @@
                     if([tempArray2 count] == 0)
                     {
                         [tempArray2 addObject:@[@{@"name":@"", @"schoolName":@"No Schools To Display"}]];
-                        [tempArray2 addObject:@[@{@"name":@"",@"schoolName":CELL_EXIT}]];
+                        if(!self.isManagingSchools)
+                            [tempArray2 addObject:@[@{@"name":@"",@"schoolName":CELL_EXIT}]];
                          
                     }
                     
@@ -147,6 +157,7 @@
     [super viewDidLoad];
     
     
+    
     if(self.isCorporationSearch)
         [self queryCorporationsFromDatabase];
     else
@@ -162,6 +173,18 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+    if([segue.identifier isEqualToString:SEGUE_TO_SCHOOL_STATS])
+    {
+        SchoolStatsViewController *SSVC = segue.destinationViewController;
+        SSVC.mainUserData = self.mainUserData;
+        SSVC.schoolIDSelected = self.schoolIDSelected;
+        SSVC.schoolNameSelected = self.schoolNameSelected;
+    }
 }
 
 #pragma mark - Table view data source
@@ -213,29 +236,49 @@
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
-    for (id viewController in self.navigationController.viewControllers)
+  
+    
+    if(self.isManagingSchools)
     {
-        if([viewController isKindOfClass:[AddNewUserTableViewController class]])
+        if(indexPath.section == 0 && indexPath.row == 0)
         {
-            AddNewUserTableViewController *ANUTVC = viewController;
-            
-            if(self.isCorporationSearch)
-                ANUTVC.corpSelected = [[self.schools objectAtIndex:indexPath.section]objectAtIndex:indexPath.row];
-            else
-                ANUTVC.schoolSelected = [[self.schools objectAtIndex:indexPath.section]objectAtIndex:indexPath.row];
             [self.navigationController popViewControllerAnimated:YES];
-            break;
         }
-        else if([viewController isKindOfClass:[UsersSchoolsTableViewController class]])
+        else
         {
-            UsersSchoolsTableViewController *USTVC = viewController;
-            USTVC.schoolSelected = [[self.schools objectAtIndex:indexPath.section]objectAtIndex:indexPath.row];
-            [self.navigationController popViewControllerAnimated:YES];
-            break;
+            self.schoolIDSelected = [[[self.schools objectAtIndex:indexPath.section]objectAtIndex:indexPath.row]objectForKey:ID];
+            self.schoolNameSelected = [[[self.schools objectAtIndex:indexPath.section]objectAtIndex:indexPath.row]objectForKey:SCHOOL_NAME];
+            [self performSegueWithIdentifier:SEGUE_TO_SCHOOL_STATS sender:self];
+        }
+    }
+    else
+    {
+        for (id viewController in self.navigationController.viewControllers)
+        {
+            if([viewController isKindOfClass:[AddNewUserTableViewController class]])
+            {
+                AddNewUserTableViewController *ANUTVC = viewController;
+                
+                if(self.isCorporationSearch)
+                    ANUTVC.corpSelected = [[self.schools objectAtIndex:indexPath.section]objectAtIndex:indexPath.row];
+                else
+                    ANUTVC.schoolSelected = [[self.schools objectAtIndex:indexPath.section]objectAtIndex:indexPath.row];
+                [self.navigationController popViewControllerAnimated:YES];
+                break;
+            }
+            else if([viewController isKindOfClass:[UsersSchoolsTableViewController class]])
+            {
+                UsersSchoolsTableViewController *USTVC = viewController;
+                USTVC.schoolSelected = [[self.schools objectAtIndex:indexPath.section]objectAtIndex:indexPath.row];
+                [self.navigationController popViewControllerAnimated:YES];
+                break;
+            }
+            
+            
         }
 
-        
     }
+    
 }
 
 

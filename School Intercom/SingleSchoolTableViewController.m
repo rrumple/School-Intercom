@@ -24,6 +24,8 @@
 @property (weak, nonatomic) IBOutlet UIImageView *schoolImage;
 @property (weak, nonatomic) IBOutlet UIButton *updateButton;
 @property (nonatomic, strong) AdminModel *adminData;
+@property (weak, nonatomic) IBOutlet UILabel *numOfCalEventsLabel;
+@property (weak, nonatomic) IBOutlet UILabel *numOfNewsPostsLabel;
 
 @end
 
@@ -58,7 +60,11 @@
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
     self.numOfLoginsLabel.text = [self.schoolData objectForKey:@"numLogins"];
     self.lastLoginDateLabel.text = [self.schoolData objectForKey:@"lastLogin"];
-    
+    if([[self.schoolData objectForKey:USER_ACCOUNT_TYPE]intValue] > 0)
+    {
+        self.numOfCalEventsLabel.text = [self.schoolData objectForKey:@"numCalEvents"];
+        self.numOfNewsPostsLabel.text = [self.schoolData objectForKey:@"numNewsPosts"];
+    }
     
     
     NSString *pngFilePath = [NSString stringWithFormat:@"%@/%@",docDir, [self.schoolData objectForKey:SCHOOL_IMAGE_NAME]];

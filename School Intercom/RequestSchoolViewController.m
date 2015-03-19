@@ -202,7 +202,7 @@
 
 - (void)checkToSeeIfAButtonShouldBeUnhidden
 {
-    if([self.yourNameTF.text length] > 0 && [self.schoolnameTF.text length] > 0 && [self.cityTF.text length] > 0 && [self.stateTF.text length] > 0 && [self.schoolContactTF.text length] > 0 && [self.yourEmailTF.text length] > 0)
+    if([[HelperMethods prepStringForValidation:self.yourNameTF.text] length] > 0 && [[HelperMethods prepStringForValidation:self.schoolnameTF.text] length] > 0 && [[HelperMethods prepStringForValidation:self.cityTF.text] length] > 0 && [self.stateTF.text length] > 0 && [[HelperMethods prepStringForValidation:self.schoolContactTF.text] length] > 0 && [self.yourEmailTF.text length] > 0 && [HelperMethods isEmailValid:self.yourEmailTF.text])
     {
         self.addSchoolSendButton.hidden = NO;
     }

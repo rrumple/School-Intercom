@@ -28,7 +28,78 @@
 
 - (void)getSchoolsFromDatabase
 {
-    
+    dispatch_queue_t createQueue = dispatch_queue_create("queryDatabaseForSchools", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.adminData getSchoolsFromDatabaseForAccountType:self.mainUserData.accountType andID:self.idToQuery];
+        
+        if (dataArray)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    
+                    NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+                    for(NSArray *corpArray in dataArray)
+                    {
+                        NSMutableArray *corpArrayMutable = [corpArray mutableCopy];
+                        [tempArray addObject:corpArrayMutable];
+                    }
+                    
+                    
+                    
+                    if(self.existingSchools != (id)[NSNull null])
+                    {
+                        
+                        for (int i = 0; i < [dataArray count]; i++)
+                        {
+                            for(int x = 0; x < [dataArray[i] count]; x++)
+                            {
+                                for(int c = 0; c < [self.existingSchools count]; c++ )
+                                {
+                                    
+                                    if([[dataArray[i][x]objectForKey:ID] isEqualToString:[self.existingSchools[c] objectForKey:ID]])
+                                    {
+                                        [tempArray[i]removeObject:dataArray[i][x]];
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+                        
+                        
+                    }
+                    
+                    NSMutableArray *tempArray2 = [[NSMutableArray alloc]init];
+                    for(NSArray * array in tempArray)
+                    {
+                        if ([array count] >= 1)
+                        {
+                            [tempArray2 addObject:array];
+                        }
+                    }
+                    
+                    if([tempArray2 count] == 0)
+                    {
+                        [tempArray2 addObject:@[@{@"name":@"", @"schoolName":@"No Schools To Display"}]];
+                        [tempArray2 addObject:@[@{@"name":@"",@"schoolName":CELL_EXIT}]];
+                        
+                    }
+                    
+                    self.schools = tempArray2;
+                    
+                    [self.tableView reloadData];
+                    
+                });
+                
+                
+                
+                
+                
+            });
+            
+        }
+    });
+
 }
 
 - (void)viewDidLoad {

@@ -46,6 +46,7 @@
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *bottomConstraint;
 @property (nonatomic) BOOL loginViaRestore;
 @property (nonatomic) BOOL bypassToCreateAccount;
+@property (nonatomic) BOOL bypassNoAccountAlert;
 
 
 @property (weak, nonatomic) IBOutlet UIView *loadingIndicatorView;
@@ -206,6 +207,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete) name:IAPHelperProductRestoreCompleted object:nil];
       [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete:) name:IAPHelperProductRestoreCompletedWithNumber object:nil];
     
+   
+
+    
     self.isLoadDataComplete = NO;
     self.isLoadImageComplete = NO;
     self.imageDownloading = NO;
@@ -332,6 +336,9 @@
                     
                     self.isLoadDataComplete = YES;
                     
+                    
+                    
+                    
                 }
             });
             
@@ -404,10 +411,17 @@
 - (void)showNoAccountAlert
 {
     
-    self.noAccountAlert = [[UIAlertView alloc]initWithTitle:@"Create an Intercom Account or Restore/Login to an Existing Account." message:Nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"New User", @"Restore Purchases", @"Login", nil];
-    self.noAccountAlert.tag = zAlertNoUser;
+    if(!self.bypassNoAccountAlert)
+    {
+        self.noAccountAlert = [[UIAlertView alloc]initWithTitle:@"Create an Intercom Account or Restore/Login to an Existing Account." message:Nil delegate:self cancelButtonTitle:nil otherButtonTitles:@"New User", @"Restore Purchases", @"Login", @"Try Demo School", nil];
+        self.noAccountAlert.tag = zAlertNoUser;
     
-    [self.noAccountAlert show];
+        [self.noAccountAlert show];
+    }
+    else
+    {
+        self.bypassNoAccountAlert = false;
+    }
 }
 
 - (void)showNoActiveSchoolsAlert
@@ -553,6 +567,7 @@
     [super viewDidLoad];
     self.loginViaRestore = false;
     self.bypassToCreateAccount = false;
+    self.bypassNoAccountAlert = false;
     //hash tester
     NSLog(@"%@", [HelperMethods encryptText:@"tester"]);
     
@@ -785,6 +800,7 @@
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(createAccountOnNextLoad) name:@"LogOutNotification" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loginUser:) name:@"LOGIN_USER" object:nil];
         
 }
 
@@ -810,6 +826,7 @@
         MNC.isFirstLoad = YES;
         MNC.mainUserData = self.mainUserData;
         
+        
         [self.purchseSuccess dismissWithClickedButtonIndex:0 animated:YES];
         
     }
@@ -832,6 +849,21 @@
     self.numberOfSchoolsRestored = 0;
     [[SchoolIntercomIAPHelper sharedInstance] restoreCompletedTransactions];
 
+}
+
+- (void)loginUser:(NSNotification *)notification
+{
+    self.bypassNoAccountAlert = true;
+   
+    
+    NSString *email = notification.object;
+    self.loginViaRestore = true;
+    [self.existingUserData setValue:email forKey:USER_EMAIL];
+    [self.existingUserData setValue:[HelperMethods encryptText:@"demoaccount0828" ]forKey:USER_PASSWORD];
+    
+    [self loginExistingUser];
+    
+    
 }
 
 - (void)loginToDemoAccount
@@ -1218,6 +1250,15 @@
         else if (buttonIndex == zAlertButtonAdminLogin)
         {
             [self showExistingAccountAlert];
+        }
+        else if (buttonIndex == zAlertButtonTryDemo)
+        {
+            [Flurry logEvent:@"Demo_School_Loaded"];
+            self.mainUserData.isAccountCreated = YES;
+            self.mainUserData.isPendingVerification = NO;
+                
+            self.mainUserData.isDemoInUse = YES;
+            [self loginToDemoAccount];
         }
     }
     else if (alertView.tag == zAlertEnterEmail)

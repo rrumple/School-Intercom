@@ -280,6 +280,7 @@
         AllSchoolsTableViewController *ASTVC = segue.destinationViewController;
         ASTVC.mainUserData = self.mainUserData;
         ASTVC.isCorporationSearch = self.isCorporationSearch;
+        ASTVC.isManagingSchools = false;
     }
     
     

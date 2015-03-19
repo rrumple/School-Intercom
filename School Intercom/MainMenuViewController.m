@@ -20,12 +20,13 @@
 @property (weak, nonatomic) IBOutlet UIButton *switchSchoolButton;
 @property (weak, nonatomic) IBOutlet UIButton *lunchMenuButton;
 @property (nonatomic) BOOL signOut;
-@property (weak, nonatomic) IBOutlet UIButton *updateAppButton;
+
 @property (weak, nonatomic) IBOutlet UILabel *switchSchoolBadge;
 @property (nonatomic, strong) NSArray *calendarData;
 @property (weak, nonatomic) IBOutlet UIButton *adminToolsButton;
 @property (weak, nonatomic) IBOutlet UIButton *fundraisingButton;
 @property (weak, nonatomic) IBOutlet UIButton *logOutButton;
+@property (weak, nonatomic) IBOutlet UIButton *homeButton;
 @end
 
 @implementation MainMenuViewController
@@ -78,7 +79,7 @@
                 else
                 {
                     
-                     if([self.mainUserData.accountType intValue] > 0)
+                     //if([self.mainUserData.accountType intValue] > 0)
                      [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];
                      
                     
@@ -104,6 +105,7 @@
     {
         [self updateTeacherNames];
     }
+    
 
     [super viewDidLoad];
     
@@ -251,6 +253,25 @@
                     }
                     
                    
+                    if([[tempDic objectForKey:@"systemMessages"]count] > 0)
+                    {
+                        for (NSDictionary *messageDic in [tempDic objectForKey:@"systemMessages"])
+                        {
+                            if([[messageDic objectForKey:@"systemMessage"] isEqualToString:@"99"])
+                            {
+                                NSString *email = [self.mainUserData.userInfo objectForKey:USER_EMAIL];
+                                [self logOutButtonPressed];
+                                [[NSNotificationCenter defaultCenter] postNotificationName:@"LOGIN_USER" object:email userInfo:nil];
+                                
+                                dispatch_queue_t createQueue = dispatch_queue_create("deleteSystemMessage", NULL);
+                                dispatch_async(createQueue, ^{
+                                    NSArray *dataArray;
+                                    dataArray = [self.introData systemMessageHandledDeleteFromDatabase:[messageDic objectForKey:ID]];
+                                    });
+
+                            }
+                        }
+                    }
                     
                     
                 }
@@ -267,11 +288,16 @@
 {
     [super viewWillAppear:animated];
     
+    if([self.mainUserData.accountType intValue] == utGrandparent)
+    {
+        [self updateTeacherNames];
+    }
+    
     self.switchSchoolBadge.alpha = 0;
     
     self.headerFont = self.rootFont.font;
     
-    if([self.mainUserData.accountType intValue] > 0)
+    if([self.mainUserData.accountType intValue] > 0 && [self.mainUserData.accountType intValue] < 8)
     {
         self.adminToolsButton.hidden = false;
         
@@ -285,10 +311,8 @@
     
     if(self.mainUserData.isDemoInUse)
     {
-        [self.switchSchoolButton setTitle:@"Exit Demo" forState:UIControlStateNormal];
-        [self.switchSchoolButton setHidden:false];
-        self.fundraisingButton.hidden = true;
-        self.logOutButton.hidden = true;
+        [self.logOutButton setTitle:@"Exit Demo" forState:UIControlStateNormal];
+
     }
     else if([self.mainUserData getNumberOfSchools] > 1)
     {
@@ -330,13 +354,6 @@
         self.lunchMenuButton.center = center;
         
     }
-    
-    
-    NSLog(@"%@", [[NSUserDefaults standardUserDefaults] objectForKey:IS_APP_UP_TO_DATE]);
-    if (![[NSUserDefaults standardUserDefaults] objectForKey:IS_APP_UP_TO_DATE] || [[[NSUserDefaults standardUserDefaults] objectForKey:IS_APP_UP_TO_DATE]boolValue])
-        self.updateAppButton.hidden = YES;
-    else
-        self.updateAppButton.hidden = NO;
     
     
     
@@ -403,6 +420,7 @@
     self.screenShotView.image = image;
     self.alertReceived = NO;
     self.viewToLoad = 999;
+    self.screenShotView.hidden = false;
     
 }
 
@@ -413,25 +431,28 @@
 
 - (IBAction)logOutButtonPressed
 {
-    dispatch_queue_t createQueue = dispatch_queue_create("logoutuser", NULL);
-    dispatch_async(createQueue, ^{
-        NSArray *dataArray;
-        dataArray = [self.introData logOutUserInDatabase:self.mainUserData.userID];
-        if ([dataArray count] == 1)
-        {
-            dispatch_async(dispatch_get_main_queue(), ^{
-                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+    if(!self.mainUserData.isDemoInUse)
+    {
+        dispatch_queue_t createQueue = dispatch_queue_create("logoutuser", NULL);
+        dispatch_async(createQueue, ^{
+            NSArray *dataArray;
+            dataArray = [self.introData logOutUserInDatabase:self.mainUserData.userID];
+            if ([dataArray count] == 1)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                    
+                    if([[tempDic objectForKey:@"error"] boolValue])
+                    {
+                        [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertExistingUserIncorrectPassword andDelegate:self];
+                        
+                        
+                    }
+                });
                 
-                if([[tempDic objectForKey:@"error"] boolValue])
-                {
-                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertExistingUserIncorrectPassword andDelegate:self];
-                    
-                    
-                }
-            });
-            
-        }
-    });
+            }
+        });
+    }
 
     
     NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
@@ -439,14 +460,11 @@
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
     [self.mainUserData clearAllData];
     [self.delegate signOut];
+    
+
 
 }
 
-- (IBAction)updateSchoolButtonPressed
-{
-    [[UIApplication sharedApplication]openURL:[NSURL URLWithString:@"https://itunes.apple.com/us/app/school-intercom/id917103099?mt=8&uo=4"]];
-    //Does not work in Simulator
-}
 
 - (void)exitOutOfSchool
 {
@@ -454,19 +472,9 @@
 }
 - (IBAction)switchSchoolsButtonPressed:(UIButton *)sender
 {
-   if ([sender.titleLabel.text isEqualToString:@"Exit Demo"])
-   {
+   
+    [self performSegueWithIdentifier:SEGUE_TO_SWITCH_VIEW sender:self];
     
-       NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
-       [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
-       [[NSURLCache sharedURLCache] removeAllCachedResponses];
-       [self.mainUserData clearAllData];
-       [self.delegate signOut];
-   }
-   else
-   {
-        [self performSegueWithIdentifier:SEGUE_TO_SWITCH_VIEW sender:self];
-   }
 }
 - (IBAction)adminButtonPressed
 {
@@ -528,6 +536,7 @@
 
 - (IBAction)calendarPressed
 {
+    self.screenShotView.hidden = true;
      [Flurry logEvent:@"CALENDAR_VIEWED"];
     [self sortCalendar];
     self.lastViewSelected = mv_Calendar;
@@ -544,6 +553,7 @@
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
+    self.screenShotView.hidden = true;
     if([segue.identifier isEqualToString:SEGUE_TO_HOME_VIEW])
     {
         [Flurry logEvent:@"ALERT_SCREEN_VIEWED"];

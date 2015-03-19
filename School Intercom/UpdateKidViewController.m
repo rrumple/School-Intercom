@@ -203,7 +203,7 @@
                 else
                 {
                     
-                    if([self.mainUserData.accountType intValue] > 0)
+                    if([self.mainUserData.accountType intValue] > 0 && [self.mainUserData.accountType intValue] < 8)
                         [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];
                     
                     
@@ -651,7 +651,7 @@
     {
         case 1:
         {
-            if ([newString length] > 0)
+            if ([[HelperMethods prepStringForValidation:newString] length] > 0)
                 self.firstNameTFready = YES;
             else
                 self.firstNameTFready = NO;
@@ -659,7 +659,7 @@
             break;
         case 2:
         {
-            if ([newString length] > 0)
+            if ([[HelperMethods prepStringForValidation:newString] length] > 0)
                 self.lastNameTFready = YES;
             else
                 self.lastNameTFready = NO;

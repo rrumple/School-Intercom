@@ -248,7 +248,7 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     
-        if ([[[NSUserDefaults standardUserDefaults]objectForKey:ACCOUNT_CREATED]boolValue])
+       /* if ([[[NSUserDefaults standardUserDefaults]objectForKey:ACCOUNT_CREATED]boolValue])
         {
             RegistrationModel *registerData = [[RegistrationModel alloc]init];
             
@@ -298,6 +298,7 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
                 }
             });
         }
+        */
     
     [[SchoolIntercomIAPHelper sharedInstance] updateProductIdentifiersFromDatabase];
 

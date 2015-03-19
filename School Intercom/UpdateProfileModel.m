@@ -129,4 +129,24 @@
     return dataArray;
 }
 
+- (NSArray *)addGrandparent:(NSString *)firstName lastName:(NSString *)lastName withEmail:(NSString *)email parentUserId:(NSString *)userID atSchool:(NSString *)schoolID
+{
+    
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_GRANDPARENT withKeys:@[USER_FIRST_NAME, USER_LAST_NAME, USER_EMAIL, @"parentUserID", SCHOOL_ID ] andData:@[firstName, lastName, email, userID, schoolID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+}
+
+- (NSArray *)getGrandparentsOfUserID:(NSString *)userID
+{
+    
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_GRANDPARENTS withKeys:@[USER_ID] andData:@[userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+}
+
 @end

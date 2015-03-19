@@ -63,4 +63,14 @@
 
 - (NSArray *)getParentsOfTeacher:(NSString *)teacherID;
 
+- (NSArray *)getSchoolStats:(NSString *)schoolID forUserID:(NSString *)userID;
+
+
+- (NSArray *)getAlertsSubmittedByUser:(NSString *)userID;
+
+- (NSArray *)deleteAlert:(NSString *)alertID;
+
+- (NSArray *)updateAlert:(NSString *)alertID withText:(NSString *)text userMakingChange:(NSString *)userID;
+
+
 @end

@@ -109,7 +109,14 @@
     return dataArray;
 }
 
-
+- (NSArray *)systemMessageHandledDeleteFromDatabase:(NSString *)messageID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_DELETE_SYSTEM_MESSAGE withKeys:@[@"messageID"  ] andData:@[messageID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+}
 
 
 @end

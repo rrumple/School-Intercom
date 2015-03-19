@@ -33,4 +33,7 @@
 
 - (NSArray *)changeSchoolStatusForUser:(NSString *)schoolID ofUser:(NSString *)userID isActive:(NSString *)isActive;
 
+- (NSArray *)addGrandparent:(NSString *)firstName lastName:(NSString *)lastName withEmail:(NSString *)email parentUserId:(NSString *)userID atSchool:(NSString *)schoolID;
+
+- (NSArray *)getGrandparentsOfUserID:(NSString *)userID;
 @end

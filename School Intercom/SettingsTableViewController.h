@@ -10,6 +10,7 @@
 #import "UpdateProfileViewController.h"
 #import "UpdateKidsViewController.h"
 #import "AddSchoolViewController.h"
+#import "AddGrandparentViewController.h"
 
 @protocol SettingsTableViewControllerDelegate;
 

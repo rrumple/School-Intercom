@@ -315,4 +315,50 @@
     
 }
 
+- (NSArray *)getSchoolStats:(NSString *)schoolID forUserID:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_SCHOOL_STATS withKeys:@[SCHOOL_ID, USER_ID] andData:@[schoolID, userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+}
+
+
+- (NSArray *)getAlertsSubmittedByUser:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_ALERTS_SUBMITTED_BY_USER withKeys:@[USER_ID] andData:@[userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)deleteAlert:(NSString *)alertID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_DELETE_ALERT withKeys:@[@"alertID"] andData:@[alertID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)updateAlert:(NSString *)alertID withText:(NSString *)text userMakingChange:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_ALERT withKeys:@[@"alertID", USER_ID, ALERT_TEXT] andData:@[alertID, userID,text]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+
+}
+
+
+
 @end

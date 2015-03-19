@@ -10,4 +10,9 @@
 
 @interface SchoolStatsViewController : UIViewController
 
+@property (nonatomic, strong) UserData *mainUserData;
+@property (nonatomic, strong) NSString *schoolIDSelected;
+@property (nonatomic, strong) NSString *schoolNameSelected;
+
+
 @end

@@ -128,7 +128,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     
-    if([self.mainUserData.accountType intValue] > 0)
+    if([self.mainUserData.accountType intValue] > 0 && [self.mainUserData.accountType intValue] < 8)
     {
         self.restorePurchasesButton.hidden = true;
     }
