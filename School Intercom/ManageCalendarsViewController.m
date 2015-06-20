@@ -158,7 +158,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"calendarCell" forIndexPath:indexPath];
 
     
-    cell.textLabel.text = [[self.calendarData objectAtIndex:indexPath.row] objectForKey:CAL_TITLE];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@",[[self.calendarData objectAtIndex:indexPath.row] objectForKey:CAL_TITLE]];
     
     NSLog(@"%@", [[self.calendarData objectAtIndex:indexPath.row]objectForKey:CAL_START_DATE]);
     
@@ -166,7 +166,7 @@
     startTimeArray = [HelperMethods ConvertHourUsingDateArray:startTimeArray];
 
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@, %@ @ %@:%@%@", [HelperMethods getMonthWithInt:[startTimeArray[1] integerValue]shortName:NO], startTimeArray[2], startTimeArray[0], startTimeArray[3], startTimeArray[4], startTimeArray[5]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@, %@ @ %@:%@%@ - %@", [HelperMethods getMonthWithInt:[startTimeArray[1] integerValue]shortName:NO], startTimeArray[2], startTimeArray[0], startTimeArray[3], startTimeArray[4], startTimeArray[5],[self.mainUserData getClassName:[[self.calendarData objectAtIndex:indexPath.row]objectForKey:@"classID"]]];
 
     
     

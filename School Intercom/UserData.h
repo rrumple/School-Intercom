@@ -26,6 +26,7 @@
 @property (nonatomic, strong) NSString *accountType;
 @property (nonatomic, strong) NSArray *newsData;
 @property (nonatomic, strong) NSArray *teacherNames;
+@property (nonatomic, strong) NSArray *classData;
 
 
 
@@ -68,5 +69,7 @@
 - (void)removeTeacher:(NSString *)teacherID;
 
 - (NSString *)getTeacherName:(NSString *)teacherID;
+
+- (NSString *)getClassName:(NSString *)classID;
 
 @end

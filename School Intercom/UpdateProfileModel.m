@@ -73,7 +73,7 @@
 
 - (NSArray *)updateKidFromKidDicData:(NSDictionary *)kidData
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_KID withKeys:@[KID_ID, KID_FIRST_NAME, KID_LAST_NAME, TEACHER_ID, SCHOOL_ID, USER_ID] andData:@[kidData[KID_ID], kidData[KID_FIRST_NAME], kidData[KID_LAST_NAME], kidData[TEACHER_ID], kidData[SCHOOL_ID], kidData[USER_ID]]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_KID withKeys:@[KID_ID, KID_FIRST_NAME, KID_LAST_NAME, @"classID", SCHOOL_ID, USER_ID] andData:@[kidData[KID_ID], kidData[KID_FIRST_NAME], kidData[KID_LAST_NAME], kidData[@"classID"], kidData[SCHOOL_ID], kidData[USER_ID]]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
@@ -91,17 +91,17 @@
 
 }
 
-- (NSArray *)deleteTeacher:(NSString *)teacherID fromKidInDatabase:(NSString *)kidID
+- (NSArray *)deleteClass:(NSString *)classID fromKidInDatabase:(NSString *)kidID
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_DELETE_TEACHER_FROM_KID withKeys:@[KID_ID, TEACHER_ID] andData:@[kidID, teacherID]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_DELETE_TEACHER_FROM_KID withKeys:@[KID_ID, @"classID"] andData:@[kidID, classID]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
     return dataArray;}
 
-- (NSArray *)addTeacher:(NSString *)teacherID ToKidInDatabase:(NSString *)kidID
+- (NSArray *)addClass:(NSString *)classID ToKidInDatabase:(NSString *)kidID
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_TEACHER withKeys:@[KID_ID, TEACHER_ID] andData:@[kidID, teacherID]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_TEACHER withKeys:@[KID_ID, @"classID"] andData:@[kidID, classID]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     

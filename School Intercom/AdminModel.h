@@ -47,7 +47,7 @@
 
 - (NSArray *)getCalendarEventsForUser:(NSString *)userID;
 
-- (NSArray *)addEventForUser:(NSString *)userID withCalendarTitle:(NSString *)calTitle andLocation:(NSString *)calLoc andStartDate:(NSString *)startDate andEndDate:(NSString *)endDate andIsAllDay:(NSString *)isAllDay andMoreInfo:(NSString *)moreInfo;
+- (NSArray *)addEventForUser:(NSString *)userID withCalendarTitle:(NSString *)calTitle andLocation:(NSString *)calLoc andStartDate:(NSString *)startDate andEndDate:(NSString *)endDate andIsAllDay:(NSString *)isAllDay andMoreInfo:(NSString *)moreInfo forClassID:(NSString *)classID;
 
 - (NSArray *)updateEvent:(NSString *)eventID withCalendarTitle:(NSString *)calTitle andLocation:(NSString *)calLoc andStartDate:(NSString *)startDate andEndDate:(NSString *)endDate andIsAllDay:(NSString *)isAllDay andMoreInfo:(NSString *)moreInfo;
 
@@ -55,13 +55,15 @@
 
 - (NSArray *)getNewsPostsforUser:(NSString *)userID;
 
-- (NSArray *)addNewsForUser:(NSString *)userID withNewsTitle:(NSString *)newsTitle andText:(NSString *)newsText andNewsImageName:(NSString *)newsImageName andNewsDate:(NSString *)newsDate sendAlert:(NSString *)sendAlert;
+- (NSArray *)addNewsForUser:(NSString *)userID withNewsTitle:(NSString *)newsTitle andText:(NSString *)newsText andNewsImageName:(NSString *)newsImageName andNewsDate:(NSString *)newsDate sendAlert:(NSString *)sendAlert classID:(NSString *)classID;
 
 - (NSArray *)updateNews:(NSString *)newsID withNewsTitle:(NSString *)newsTitle andText:(NSString *)newsText andNewsImageName:(NSString *)newsImageName andNewsDate:(NSString *)newsDate;
 
 - (NSArray *)deleteNews:(NSString *)newsID;
 
 - (NSArray *)getParentsOfTeacher:(NSString *)teacherID;
+
+- (NSArray *)getParentsOfClass:(NSString *)classID;
 
 - (NSArray *)getSchoolStats:(NSString *)schoolID forUserID:(NSString *)userID;
 

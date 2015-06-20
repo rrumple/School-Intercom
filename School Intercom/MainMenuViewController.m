@@ -520,6 +520,10 @@
     {
         [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:@"teacherCalData"]];
     }
+    if([self.mainUserData.appData objectForKey:@"classCalendarData"] != (id)[NSNull null])
+    {
+        [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:@"classCalendarData"]];
+    }
     
     
     if(tempArray != (id)[NSNull null])

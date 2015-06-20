@@ -57,7 +57,9 @@
 @property (nonatomic) int kidCounter;
 
 @property (nonatomic, strong) NSArray *teachers;
+@property (nonatomic, strong) NSDictionary *teacherData;
 @property (nonatomic, strong) NSString *teacherSelected;
+@property (nonatomic, strong) NSString *classSelected;
 
 @property (nonatomic, strong) NSTimer *timer;
 
@@ -186,13 +188,17 @@
         
         if (teachersArray)
         {
+            NSDictionary *teacherDic = [teachersArray objectAtIndex:0];
+            NSArray *teacherNames = [teacherDic objectForKey:@"teachers"];
+            NSDictionary *teacherData = [teacherDic objectForKey:@"teacherData"];
             dispatch_async(dispatch_get_main_queue(), ^{
               
                 NSMutableArray *tempArray = [[NSMutableArray alloc]initWithObjects:@{TEACHER_FIRST_NAME: @"Don't Know"}, nil];
                 
-                [tempArray addObjectsFromArray:teachersArray];
+                [tempArray addObjectsFromArray:teacherNames];
                 
                 self.teachers = tempArray;
+                self.teacherData = teacherData;
             });
             
         }
@@ -379,6 +385,7 @@
     pickerView.delegate = self;
     
     [pickerView setShowsSelectionIndicator:YES];
+    
  
     
     
@@ -526,11 +533,17 @@
     [self.addChildActivityView startAnimating];
     self.registerData.childFirstName = self.childFirstname.text;
     self.registerData.childLastName = self.childLastName.text;
-    self.registerData.childGradeLevel = self.teacherSelected;
+    self.registerData.childGradeLevel = self.classSelected;
     self.kidCounter++;
     self.addChildButton.enabled = NO;
     if([self.numberOfChildrenTextField.text intValue] > 1)
         self.finshedButton.hidden = NO;
+    self.classSelected = @"0";
+    self.teacherSelected = @"0";
+    
+    UIPickerView *tempPicker = (UIPickerView *)self.childGradeLevel.inputView;
+    [tempPicker selectRow:0 inComponent:0 animated:false];
+    [tempPicker reloadAllComponents];
     [self addChildToDatabase];
 }
 
@@ -674,15 +687,25 @@
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
-    
-    if(pickerView.tag == zPickerState)
-        return [self.registerData.stateArray count];
-    else if(pickerView.tag == zPickerCity)
-        return [self.registerData.cityArray count];
-    else if(pickerView.tag == zPickerSchool)
-        return [self.registerData.schoolArray count];
-    else if(pickerView.tag == zPickerTeacher)
-        return [self.teachers count];
+    if(component == 0)
+    {
+        if(pickerView.tag == zPickerState)
+            return [self.registerData.stateArray count];
+        else if(pickerView.tag == zPickerCity)
+            return [self.registerData.cityArray count];
+        else if(pickerView.tag == zPickerSchool)
+            return [self.registerData.schoolArray count];
+        else if(pickerView.tag == zPickerTeacher)
+            return [self.teachers count];
+    }
+    else
+    {
+        NSArray *tempArray = [self.teacherData objectForKey:self.teacherSelected];
+        if(tempArray)
+            return [tempArray count];
+        else
+            return 0;
+    }
     
     
     return 0;
@@ -690,9 +713,29 @@
 
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
-    //if(pickerView.tag == zPickerTeacher)
-      //  return 2;
-    //else
+    if(pickerView.tag == zPickerTeacher)
+    {
+        NSArray *tempArray = [self.teacherData objectForKey:self.teacherSelected];
+        if(tempArray)
+        {
+            if([tempArray count] > 1)
+            {
+                self.classSelected = [[[self.teacherData objectForKey:self.teacherSelected]objectAtIndex:0]objectForKey:ID];
+                return 2;
+            }
+            else
+            {
+                self.classSelected = [[[self.teacherData objectForKey:self.teacherSelected]objectAtIndex:0]objectForKey:ID];
+                return 1;
+            }
+        }
+        else
+        {
+            self.classSelected = @"0";
+            return 1;
+        }
+    }
+    else
         return 1;
 }
 
@@ -706,14 +749,28 @@
         return [self.registerData.schoolArray objectAtIndex:row];
     else if(pickerView.tag == zPickerTeacher)
     {
-        if (row == 0)
+        if(component == 0)
         {
-            return @"Don't Know";
+            if (row == 0)
+            {
+                return @"Don't Know";
+            }
+            else
+            {
+                return [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME]];
+                /*if([[[self.teachers objectAtIndex:row]objectForKey:@"className"]isEqualToString:@""])
+                {
+                    return [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME]];
+                }
+                else
+                {
+                    return [NSString stringWithFormat:@"%@ %@ - %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME], [HelperMethods convertGradeLevel:[[self.teachers objectAtIndex:row] objectForKey:@"grade"] appendGrade:YES]];
+                }*/
+            }
         }
         else
         {
-            return [NSString stringWithFormat:@"%@ %@ - %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME], [HelperMethods convertGradeLevel:[[self.teachers objectAtIndex:row] objectForKey:@"grade"] appendGrade:YES]];
-
+            return [NSString stringWithFormat:@"%@", [[[self.teacherData objectForKey:self.teacherSelected]objectAtIndex:row] objectForKey:@"className"]];
         }
     }
     
@@ -724,57 +781,66 @@
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    if(pickerView.tag == zPickerState)
+    if(component == 0)
     {
-        if([self.registerData.stateArray count] == 0)
-            [self.stateIndicatorView startAnimating];
-        else
+        if(pickerView.tag == zPickerState)
         {
-            self.stateTextField.text = [self.registerData.stateArray objectAtIndex:row];
-            self.stateSelected = row;
-            [self.stateIndicatorView stopAnimating];
+            if([self.registerData.stateArray count] == 0)
+                [self.stateIndicatorView startAnimating];
+            else
+            {
+                self.stateTextField.text = [self.registerData.stateArray objectAtIndex:row];
+                self.stateSelected = row;
+                [self.stateIndicatorView stopAnimating];
 
+            }
         }
-    }
-    else if(pickerView.tag == zPickerCity)
-    {
-        if([self.registerData.cityArray count] == 0)
-            [self.cityIndicatorView startAnimating];
-        else
+        else if(pickerView.tag == zPickerCity)
         {
-            [self.cityIndicatorView stopAnimating];
-            self.cityTextField.text = [self.registerData.cityArray objectAtIndex:row];
-            self.citySelected = row;
+            if([self.registerData.cityArray count] == 0)
+                [self.cityIndicatorView startAnimating];
+            else
+            {
+                [self.cityIndicatorView stopAnimating];
+                self.cityTextField.text = [self.registerData.cityArray objectAtIndex:row];
+                self.citySelected = row;
+            }
         }
-    }
-    else if(pickerView.tag == zPickerSchool)
-    {
-        if([self.registerData.schoolArray count] == 0)
-            [self.schoolIndicatorView startAnimating];
-        else
+        else if(pickerView.tag == zPickerSchool)
         {
-            [self.schoolIndicatorView stopAnimating];
-            self.schoolIDSelected = [[self.registerData.schoolDicsArray objectAtIndex:row] objectForKey:ID];
-            self.schoolTextField.text = [self.registerData.schoolArray objectAtIndex:row];
-            self.registerData.schoolSelected = [self.registerData.schoolDicsArray objectAtIndex:row];
-            self.schoolSelected = row;
-          
+            if([self.registerData.schoolArray count] == 0)
+                [self.schoolIndicatorView startAnimating];
+            else
+            {
+                [self.schoolIndicatorView stopAnimating];
+                self.schoolIDSelected = [[self.registerData.schoolDicsArray objectAtIndex:row] objectForKey:ID];
+                self.schoolTextField.text = [self.registerData.schoolArray objectAtIndex:row];
+                self.registerData.schoolSelected = [self.registerData.schoolDicsArray objectAtIndex:row];
+                self.schoolSelected = row;
+              
+            }
         }
-    }
-    else if(pickerView.tag == zPickerTeacher)
-    {
-        if(row == 0)
+        else if(pickerView.tag == zPickerTeacher)
         {
-            self.teacherSelected = @"0";
-            self.childGradeLevel.text = @"Don't Know";
-        }
-        else
-        {
-            self.teacherSelected = [[self.teachers objectAtIndex:row] objectForKey:ID];
-            self.childGradeLevel.text = [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row]objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_LAST_NAME]];
+            if(row == 0)
+            {
+                self.teacherSelected = @"0";
+                self.classSelected = @"0";
+                self.childGradeLevel.text = @"Don't Know";
+            }
+            else
+            {
+                self.teacherSelected = [[self.teachers objectAtIndex:row] objectForKey:ID];
+                self.childGradeLevel.text = [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row]objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_LAST_NAME]];
+                [pickerView reloadAllComponents];
 
+            }
+            
         }
-        
+    }
+    else
+    {
+        self.classSelected = [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:row]objectForKey:ID];
     }
 }
 
@@ -834,6 +900,7 @@
     else if(self.childGradeLevel.isFirstResponder && [self.childGradeLevel.text isEqualToString:@""])
     {
         self.teacherSelected = @"0";
+        self.classSelected = @"0";
         self.childGradeLevel.text = @"Don't Know";
     }
 }

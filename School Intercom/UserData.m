@@ -30,6 +30,7 @@
 @synthesize userInfo = _userInfo;
 @synthesize appData = _appData;
 @synthesize teacherNames = _teacherNames;
+@synthesize classData = _classData;
 
 
 
@@ -68,6 +69,7 @@
         self.isAdmin = [[[NSUserDefaults standardUserDefaults]objectForKey:USER_IS_ADMIN] boolValue];
         self.accountType = [[NSUserDefaults standardUserDefaults] objectForKey:USER_ACCOUNT_TYPE];
         self.teacherNames = [[NSUserDefaults standardUserDefaults]objectForKey:@"teacherNames"];
+        self.classData = [[NSUserDefaults standardUserDefaults]objectForKey:@"classData"];
         if(![[NSUserDefaults standardUserDefaults]objectForKey:@"tutorials"])
         {
             NSMutableArray *tempArray = [[NSMutableArray alloc]init];
@@ -88,6 +90,12 @@
     }
     
     return self;
+}
+
+-(NSArray *)classData
+{
+    if (!_classData) _classData = [[NSArray alloc]init];
+    return _classData;
 }
 
 - (NSArray *)teacherNames
@@ -148,6 +156,13 @@
 {
     _appData = appData;
     [self sortNews];
+}
+
+- (void)setClassData:(NSArray *)classData
+{
+    _classData = classData;
+    [[NSUserDefaults standardUserDefaults]setValue:classData forKey:@"classData"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
 }
 
 - (void)setTeacherNames:(NSArray *)teacherNames
@@ -445,6 +460,7 @@
     self.isAdmin = NO;
     self.accountType = @"";
     self.teacherNames = @[];
+    self.classData = @[];
     
     [self resetTutorials];
 }
@@ -545,15 +561,18 @@
     {
         [tempArray addObjectsFromArray:[self.appData objectForKey:@"newsData"]];
         
-    }/*
-      if([self.mainUserData.appData objectForKey:@"corpCalData"] != (id)[NSNull null])
-      {
-      [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:@"corpCalData"]];
-      
-      }*/
+    }
+    if([self.appData objectForKey:@"corpNewsData"] != (id)[NSNull null])
+    {
+      [tempArray addObjectsFromArray:[self.appData objectForKey:@"corpNewsData"]];
+    }
     if([self.appData objectForKey:@"teacherNewsData"] != (id)[NSNull null])
     {
         [tempArray addObjectsFromArray:[self.appData objectForKey:@"teacherNewsData"]];
+    }
+    if([self.appData objectForKey:@"classNewsData"] != (id)[NSNull null])
+    {
+        [tempArray addObjectsFromArray:[self.appData objectForKey:@"classNewsData"]];
     }
     
     
@@ -611,6 +630,17 @@
     {
         if([[tempDic objectForKey:ID]isEqualToString:teacherID])
             return [tempDic objectForKey:TEACHER_NAME];
+    }
+    
+    return @"";
+}
+
+- (NSString *)getClassName:(NSString *)classID
+{
+    for(NSDictionary *tempDic in self.classData)
+    {
+        if([[tempDic objectForKey:ID]isEqualToString:classID])
+            return [tempDic objectForKey:@"className"];
     }
     
     return @"";

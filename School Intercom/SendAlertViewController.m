@@ -122,11 +122,11 @@
     switch ([self.mainUserData.accountType intValue])
     {
         case utTeacher://teacher is logged in
-            self.groupPickerValues = @[@"4", @"6"];
+            self.groupPickerValues = @[@"7",@"4", @"6"];
             break;
         case utSecretary://schoolAdmin is logged in
         case utPrincipal:
-            self.groupPickerValues = @[@"3", @"4", @"6"];
+            self.groupPickerValues = @[@"3", @"6"];
               break;
         case utSuperintendent://Corp Admin is logged in
             self.groupPickerValues = @[@"2", @"3"];
@@ -135,7 +135,7 @@
             //sales are not allowed to send alerts
             break;
         case utSuperUser://Super User is logged in
-            self.groupPickerValues = @[@"1", @"2", @"3", @"4", @"5", @"6"];
+            self.groupPickerValues = @[@"1", @"2", @"3", @"5", @"6"];
             break;
         default:
             break;
@@ -436,8 +436,18 @@
             switch ([self.mainUserData.accountType intValue])
         {
             case utTeacher:
-                self.sendAlertButton.hidden = false;
-                self.alertIDToInsert = self.mainUserData.userID;
+                switch([self.destinationPicker intValue])
+            {
+                case zPickerSecondGroup:
+                    runQuery = YES;
+                    self.queryType = [NSString stringWithFormat:@"%i", quGetAllClasses];
+                    self.idToSendToDatabase = self.mainUserData.userID;
+                    break;
+                default:
+                    self.sendAlertButton.hidden = false;
+                    self.alertIDToInsert = [self.secondGroupSelected objectForKey:ID];
+                    break;
+            }
                 break;
             case utSecretary:
             case utPrincipal:
@@ -538,12 +548,18 @@
             {
                 case zPickerSecondGroup:
                     runQuery = YES;
-                    self.queryType = [NSString stringWithFormat:@"%i", quGetAllParent];
+                    self.queryType = [NSString stringWithFormat:@"%i", quGetAllClasses];
                     self.idToSendToDatabase = self.mainUserData.userID;
+                    
+                    break;
+                case zPickerThirdGroup:
+                    runQuery = YES;
+                    self.queryType = [NSString stringWithFormat:@"%i", quGetAllParentsInClass];
+                    self.idToSendToDatabase = [self.secondGroupSelected objectForKey:ID];
                     break;
                 default:
                     self.sendAlertButton.hidden = false;
-                    self.alertIDToInsert = [self.secondGroupSelected objectForKey:ID];
+                    self.alertIDToInsert = [self.thirdGroupSelected objectForKey:ID];
                     break;
             }
 
@@ -596,9 +612,18 @@
             }
 
                 break;
+            
                 
         }
             break;
+        case agAllClasses:
+            switch ([self.mainUserData.accountType intValue])
+        {
+            case utTeacher:
+                self.sendAlertButton.hidden = false;
+                self.alertIDToInsert = self.mainUserData.userID;
+                break;
+        }
             
     }
     if(runQuery)
@@ -658,6 +683,10 @@
         case agOneClassroom:
             switch ([self.mainUserData.accountType intValue])
             {
+                case utTeacher:
+                    self.secondGroupTextField.placeholder = @"Select Class";
+                    self.teacherSelected = @"";
+                    break;
                 case utSecretary:
                 case utPrincipal:
                     //self.secondGroupTextField.hidden = false;
@@ -706,7 +735,8 @@
             {
                 case utTeacher:
                     //self.secondGroupTextField.hidden = false;
-                    self.secondGroupTextField.placeholder = @"Select Parent";
+                    self.secondGroupTextField.placeholder = @"Select Class";
+                    self.thirdGroupTextField.placeholder = @"Select Parent";
                     break;
                 case utSecretary:
                 case utPrincipal:
@@ -1209,6 +1239,8 @@
                 case agOneTeacher: [self sendAlertOfType:@"1"];
                     break;
                 case agOneParent: [self sendAlertOfType:@"1"];
+                    break;
+                case agAllClasses: [self sendAlertOfType:@"10"];
                     break;
                     
             }

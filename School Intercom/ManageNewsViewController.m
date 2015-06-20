@@ -150,7 +150,7 @@
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"newsCell" forIndexPath:indexPath];
     
     
-    cell.textLabel.text = [[self.newsData objectAtIndex:indexPath.row] objectForKey:NEWS_TITLE];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@",[[self.newsData objectAtIndex:indexPath.row] objectForKey:NEWS_TITLE]];
     
     NSLog(@"%@", [[self.newsData objectAtIndex:indexPath.row]objectForKey:NEWS_DATE]);
     
@@ -158,7 +158,7 @@
     startTimeArray = [HelperMethods ConvertHourUsingDateArray:startTimeArray];
     
     
-    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@, %@", [HelperMethods getMonthWithInt:[startTimeArray[1] integerValue]shortName:NO], startTimeArray[2], startTimeArray[0]];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@ %@, %@ - %@", [HelperMethods getMonthWithInt:[startTimeArray[1] integerValue]shortName:NO], startTimeArray[2], startTimeArray[0], [self.mainUserData getClassName:[[self.newsData objectAtIndex:indexPath.row]objectForKey:@"classID"]]];
     
     
     

@@ -76,9 +76,9 @@
         [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:ALERT_DATA]];
 
     }
-    if([self.mainUserData.appData objectForKey:@"teacherAlerts"] != (id)[NSNull null])
+    if([self.mainUserData.appData objectForKey:@"classAlerts"] != (id)[NSNull null])
     {
-       [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:@"teacherAlerts"]];
+       [tempArray addObjectsFromArray:[self.mainUserData.appData objectForKey:@"classAlerts"]];
         
     }
     if([self.mainUserData.appData objectForKey:@"corpAlerts"] != (id)[NSNull null])

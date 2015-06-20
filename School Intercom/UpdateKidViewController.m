@@ -23,11 +23,15 @@
 @property (nonatomic) BOOL gradeTFready;
 @property (nonatomic) BOOL firstNameTFready;
 @property (nonatomic) BOOL lastNameTFready;
-@property (nonatomic, strong) NSArray *teachers;
+
 @property (nonatomic, strong) NSArray *masterListOfTeachers;
+@property (nonatomic, strong) NSDictionary *masterListOfClasses;
 @property (nonatomic, strong) NSArray *kidTeachers;
 
+@property (nonatomic, strong) NSArray *teachers;
+@property (nonatomic, strong) NSDictionary *teacherData;
 @property (nonatomic, strong) NSString *teacherSelected;
+@property (nonatomic, strong) NSString *classSelected;
 @property (weak, nonatomic) IBOutlet UIButton *showAddTeacherButton;
 @property (weak, nonatomic) IBOutlet UILabel *swipeLabel;
 @property (nonatomic) NSInteger rowSelected;
@@ -78,18 +82,39 @@
 - (void)filterTeachers
 {
     NSMutableArray *tempTeacherArray = [self.masterListOfTeachers mutableCopy];
+    NSMutableDictionary *tempDataDic = [self.masterListOfClasses mutableCopy];
     
     if([self.masterListOfTeachers count] > 0 && [self.kidTeachers count] > 0)
     {
         for(NSDictionary *teacher in self.masterListOfTeachers)
         {
+            
+            NSMutableArray *tempClasses = [[self.masterListOfClasses objectForKey:[teacher objectForKey:ID]]mutableCopy];
+            NSArray *classes = [self.masterListOfClasses objectForKey:[teacher objectForKey:ID]];
+            
             for(NSDictionary *otherTeacher in self.kidTeachers)
             {
-                if([[teacher objectForKey:ID] isEqualToString:[otherTeacher objectForKey:TEACHER_ID]])
+                for(NSDictionary *class in classes)
                 {
-                    [tempTeacherArray removeObject:teacher];
+                    if([[class objectForKey:ID] isEqualToString:[otherTeacher objectForKey:@"classID"]])
+                    {
+                        [tempClasses removeObject:class];
+                        
+                    }
                 }
             }
+            
+            
+            if([tempClasses count] == 0)
+            {
+                [tempTeacherArray removeObject:teacher];
+                [tempDataDic removeObjectForKey:[teacher objectForKey:ID]];
+            }
+            else
+            {
+                [tempDataDic setObject:tempClasses forKey:[teacher objectForKey:ID]];
+            }
+            
         }
     }
     
@@ -97,6 +122,7 @@
         [tempTeacherArray addObject:@{TEACHER_PREFIX:@"No Teachers ", TEACHER_LAST_NAME:@"to Display", ID:@"999"}];
     
     self.teachers = tempTeacherArray;
+    self.teacherData = tempDataDic;
     
     UIPickerView *tempPicker = (UIPickerView *)self.gradeTF.inputView;
     [tempPicker reloadAllComponents];
@@ -118,10 +144,15 @@
         
         if (teachersArray)
         {
+            NSDictionary *teacherDic = [teachersArray objectAtIndex:0];
+            NSArray *teacherNames = [teacherDic objectForKey:@"teachers"];
+            NSDictionary *teacherData = [teacherDic objectForKey:@"teacherData"];
+            
             dispatch_async(dispatch_get_main_queue(), ^{
                 
                 
-                self.masterListOfTeachers = teachersArray;
+                self.masterListOfTeachers = teacherNames;
+                self.masterListOfClasses = teacherData;
                 
                 [self filterTeachers];
                 
@@ -228,7 +259,7 @@
     dispatch_queue_t createQueue = dispatch_queue_create("deleteTeacher", NULL);
     dispatch_async(createQueue, ^{
         NSArray *dataArray;
-        dataArray = [self.updateProfileData deleteTeacher:[[self.kidTeachers objectAtIndex:self.rowSelected]objectForKey:TEACHER_ID] fromKidInDatabase:[self.kidData objectForKey:ID]];
+        dataArray = [self.updateProfileData deleteClass:[[self.kidTeachers objectAtIndex:self.rowSelected]objectForKey:@"classID"]fromKidInDatabase:[self.kidData objectForKey:ID]];
         if ([dataArray count] == 1)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -259,7 +290,7 @@
     dispatch_queue_t createQueue = dispatch_queue_create("addKidTeacher", NULL);
     dispatch_async(createQueue, ^{
     NSArray *dataArray;
-        dataArray = [self.updateProfileData addTeacher:self.teacherSelected ToKidInDatabase:[self.kidData objectForKey:ID]];
+        dataArray = [self.updateProfileData addClass:self.classSelected ToKidInDatabase:[self.kidData objectForKey:ID]]; 
         if ([dataArray count] == 1)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -301,13 +332,13 @@
     else
     {
         kidID = [self.kidData objectForKey:ID];
-        if(!self.teacherSelected)
-            self.teacherSelected = @"999";
+        if(!self.classSelected)
+            self.classSelected = @"999";
     }
         
     
     
-    NSDictionary *tempDic = [[NSDictionary alloc]initWithObjects:@[kidID, self.firstNameTF.text, self.lastNameTF.text, self.teacherSelected, self.mainUserData.schoolIDselected, self.mainUserData.userID ] forKeys:@[KID_ID, KID_FIRST_NAME, KID_LAST_NAME, TEACHER_ID, SCHOOL_ID, USER_ID]];
+    NSDictionary *tempDic = [[NSDictionary alloc]initWithObjects:@[kidID, self.firstNameTF.text, self.lastNameTF.text, self.classSelected, self.mainUserData.schoolIDselected, self.mainUserData.userID ] forKeys:@[KID_ID, KID_FIRST_NAME, KID_LAST_NAME, @"classID", SCHOOL_ID, USER_ID]];
     
     dispatch_queue_t createQueue = dispatch_queue_create("updateKid", NULL);
     dispatch_async(createQueue, ^{
@@ -339,10 +370,11 @@
                         stringOne = @"Kid Updated";
                         stringTwo = [NSString stringWithFormat:@"%@'s information has been updated", self.firstNameTF.text];
                     }
-                    
+                    [self filterTeachers];
                     UIAlertView *alert = [[UIAlertView alloc]initWithTitle:stringOne message:stringTwo delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
                     alert.tag = zAlertKidAddUpdatedSuccess;
                     [alert show];
+                    
                     
                 }
             });
@@ -728,8 +760,7 @@
     
     
     cell.textLabel.text = [NSString stringWithFormat:@"%@ - %@", [[self.kidTeachers objectAtIndex:indexPath.row] objectForKey:TEACHER_NAME], [HelperMethods convertGradeLevel:[[self.kidTeachers objectAtIndex:indexPath.row]objectForKey:@"grade"]appendGrade:YES]];
-    if(![[[self.kidTeachers objectAtIndex:indexPath.row]objectForKey:TEACHER_SUBJECT] isEqualToString:@""])
-        cell.detailTextLabel.text = [[self.kidTeachers objectAtIndex:indexPath.row]objectForKey:TEACHER_SUBJECT];
+        cell.detailTextLabel.text = [[self.kidTeachers objectAtIndex:indexPath.row]objectForKey:@"className"];
     
     return cell;
 }
@@ -751,9 +782,20 @@
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
+    if(component == 0)
+    {
+        if(pickerView.tag == zPickerTeacher)
+            return [self.teachers count];
+    }
+    else
+    {
+        NSArray *tempArray = [self.teacherData objectForKey:self.teacherSelected];
+        if(tempArray)
+            return [tempArray count];
+        else
+            return 0;
+    }
     
-    if(pickerView.tag == zPickerTeacher)
-        return [self.teachers count];
     
     
     return 0;
@@ -761,10 +803,30 @@
 
 -(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
 {
-    //if(pickerView.tag == zPickerTeacher)
-    //  return 2;
-    //else
-    return 1;
+    if(pickerView.tag == zPickerTeacher)
+    {
+        NSArray *tempArray = [self.teacherData objectForKey:self.teacherSelected];
+        if(tempArray)
+        {
+            if([tempArray count] > 1)
+            {
+                self.classSelected = [[[self.teacherData objectForKey:self.teacherSelected]objectAtIndex:0]objectForKey:ID];
+                return 2;
+            }
+            else
+            {
+                self.classSelected = [[[self.teacherData objectForKey:self.teacherSelected]objectAtIndex:0]objectForKey:ID];
+                return 1;
+            }
+        }
+        else
+        {
+            self.classSelected = @"0";
+            return 1;
+        }
+    }
+    else
+        return 1;
 }
 
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
@@ -772,16 +834,22 @@
     
     if(pickerView.tag == zPickerTeacher)
     {
-        if([[[self.teachers objectAtIndex:row]objectForKey:ID] isEqualToString:@"999"])
-            return @"No Teachers to Display";
-        else if(![[[self.teachers objectAtIndex:row]objectForKey:TEACHER_SUBJECT]isEqualToString:@" "])
+        if(component == 0)
         {
-            return [NSString stringWithFormat:@"%@ %@ - %@ %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME], [HelperMethods convertGradeLevel:[[self.teachers objectAtIndex:row] objectForKey:@"grade"]appendGrade:NO], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_SUBJECT]];
+            if([[[self.teachers objectAtIndex:row]objectForKey:ID] isEqualToString:@"999"])
+                return @"No Teachers to Display";
+            else
+            {
+                return [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME]];
+                
+            }
         }
         else
         {
-            return [NSString stringWithFormat:@"%@ %@ - %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME], [HelperMethods convertGradeLevel:[[self.teachers objectAtIndex:row] objectForKey:@"grade"]appendGrade:YES]];
+            return [NSString stringWithFormat:@"%@", [[[self.teacherData objectForKey:self.teacherSelected]objectAtIndex:row] objectForKey:@"className"]];
         }
+        
+      
         
     }
     
@@ -792,22 +860,19 @@
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
-    if(pickerView.tag == zPickerTeacher)
+    if(component == 0)
     {
-        self.teacherSelected = [[self.teachers objectAtIndex:row] objectForKey:ID];
-        if(![[[self.teachers objectAtIndex:row]objectForKey:TEACHER_SUBJECT]isEqualToString:@" "])
+        if(pickerView.tag == zPickerTeacher)
         {
-            self.gradeTF.text = [NSString stringWithFormat:@"%@ %@ - %@", [[self.teachers objectAtIndex:row]objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_LAST_NAME], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_SUBJECT]];
+                self.teacherSelected = [[self.teachers objectAtIndex:row] objectForKey:ID];
+                self.gradeTF.text = [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row]objectForKey:           TEACHER_PREFIX], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_LAST_NAME]];
+                [pickerView reloadAllComponents];
             
         }
-        else
-        {
-            self.gradeTF.text = [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row]objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_LAST_NAME]];
-
-        }
-        
-        
-        
+    }
+    else
+    {
+        self.classSelected = [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:row]objectForKey:ID];
     }
 }
 
@@ -833,17 +898,9 @@
 {
     if(self.gradeTF.isFirstResponder && [self.gradeTF.text length] == 0 && ![[[self.teachers objectAtIndex:0]objectForKey:ID] isEqualToString:@"999"] )
     {
-        if(![[[self.teachers objectAtIndex:0]objectForKey:TEACHER_SUBJECT] isEqualToString:@" "])
-        {
-            self.gradeTF.text = [NSString stringWithFormat:@"%@ %@ - %@", [[self.teachers objectAtIndex:0]objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:0]objectForKey:TEACHER_LAST_NAME], [[self.teachers objectAtIndex:0]objectForKey:TEACHER_SUBJECT]];
-
-        }
-        else
-        {
-            self.gradeTF.text = [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:0]objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:0]objectForKey:TEACHER_LAST_NAME]];
-        }
+        self.gradeTF.text = [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:0]objectForKey:           TEACHER_PREFIX], [[self.teachers objectAtIndex:0]objectForKey:TEACHER_LAST_NAME]];
         self.teacherSelected = [[self.teachers objectAtIndex:0] objectForKey:ID];
-        
+        self.classSelected = [[self.teachers objectAtIndex:0]objectForKey:@"classID"];
     }
 }
 

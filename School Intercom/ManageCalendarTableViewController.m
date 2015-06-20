@@ -8,13 +8,14 @@
 
 #import "ManageCalendarTableViewController.h"
 
-@interface ManageCalendarTableViewController () <UITextFieldDelegate, UIAlertViewDelegate>
+@interface ManageCalendarTableViewController () <UITextFieldDelegate, UIAlertViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UIGestureRecognizerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UIButton *addupdateButton;
 @property (weak, nonatomic) IBOutlet UITextField *eventTitleTextField;
 @property (weak, nonatomic) IBOutlet UITextField *locationTextField;
 @property (weak, nonatomic) IBOutlet UITextField *startDateTextField;
 @property (weak, nonatomic) IBOutlet UITextField *endDateTextField;
+@property (weak, nonatomic) IBOutlet UITextField *classRoomTextfield;
 @property (weak, nonatomic) IBOutlet UISwitch *allDaySwitch;
 @property (weak, nonatomic) IBOutlet UITextView *moreInfoTextView;
 @property (nonatomic, strong) UIDatePicker *startDatePicker;
@@ -25,6 +26,7 @@
 @property (nonatomic, strong) NSString *endDateUnaltered;
 @property (nonatomic, strong) AdminModel *adminData;
 @property (nonatomic, strong) NSCalendar *calendar;
+@property (nonatomic, strong) NSString *classSelected;
 
 @end
 
@@ -88,7 +90,7 @@
     dispatch_queue_t createQueue = dispatch_queue_create("addEvent", NULL);
     dispatch_async(createQueue, ^{
         NSArray *databaseData;
-        databaseData = [self.adminData addEventForUser:self.mainUserData.userID withCalendarTitle:self.eventTitleTextField.text andLocation:self.locationTextField.text andStartDate:self.startDateUnaltered andEndDate:self.endDateUnaltered andIsAllDay:[NSString stringWithFormat:@"%i", isAllDay] andMoreInfo:self.moreInfoTextView.text];
+        databaseData = [self.adminData addEventForUser:self.mainUserData.userID withCalendarTitle:self.eventTitleTextField.text andLocation:self.locationTextField.text andStartDate:self.startDateUnaltered andEndDate:self.endDateUnaltered andIsAllDay:[NSString stringWithFormat:@"%i", isAllDay] andMoreInfo:self.moreInfoTextView.text forClassID:self.classSelected];
         
         if (databaseData)
         {
@@ -189,6 +191,35 @@
     [self.eventTitleTextField resignFirstResponder];
     [self.locationTextField resignFirstResponder];
     [self.moreInfoTextView resignFirstResponder];
+    [self.classRoomTextfield resignFirstResponder];
+}
+
+-(UIPickerView *)createPickerWithTag:(NSInteger)tag
+{
+    UIPickerView *pickerView = [[UIPickerView alloc]init];
+    pickerView.tag = tag;
+    pickerView.dataSource = self;
+    pickerView.delegate = self;
+    
+    [pickerView setShowsSelectionIndicator:YES];
+    
+    
+    
+    UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
+    
+    [tapGR setNumberOfTapsRequired:1];
+    [tapGR setDelegate:self];
+    [pickerView addGestureRecognizer:tapGR];
+    
+    return pickerView;
+}
+
+- (void)pickerViewTapped
+{
+    if(self.classRoomTextfield.isFirstResponder)
+    {
+        [self hideKeyboard];
+    }
 }
 
 
@@ -201,12 +232,22 @@
     [self.dateFormatter setLocale:usLocale];
     [self.dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
    
-    
+    self.classRoomTextfield.inputView = [self createPickerWithTag:zPickerClassRoom];
     [self setupTapGestures];
     
     NSLocale *locale = [NSLocale currentLocale];
     
-    
+    if([self.mainUserData.classData count] > 0)
+    {
+        self.classRoomTextfield.text = [[self.mainUserData.classData objectAtIndex:0] objectForKey:@"className"];
+        self.classSelected = [[self.mainUserData.classData objectAtIndex:0]objectForKey:ID];
+    }
+    else
+    {
+        self.classRoomTextfield.text = @"No Classes Found";
+        self.classSelected = @"0";
+        [self.classRoomTextfield setEnabled:false];
+    }
     
     
     self.startDatePicker = [[UIDatePicker  alloc]init];
@@ -403,6 +444,51 @@
 {
     if(alertView.tag == zAlertAddEventSuccess)
         [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    
+    if(pickerView.tag == zPickerClassRoom)
+        return [self.mainUserData.classData count];
+    
+    
+    return 0;
+}
+
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    
+    if(pickerView.tag == zPickerClassRoom)
+    {
+        return [[self.mainUserData.classData objectAtIndex:row] objectForKey:@"className"];
+        
+    }
+    
+    return nil;
+}
+
+
+
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    if(pickerView.tag == zPickerClassRoom)
+    {
+        self.classSelected = [[self.mainUserData.classData objectAtIndex:row] objectForKey:ID];
+        self.classRoomTextfield.text = [[self.mainUserData.classData objectAtIndex:row] objectForKey:@"className"];
+       
+        
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return TRUE;
 }
 
 

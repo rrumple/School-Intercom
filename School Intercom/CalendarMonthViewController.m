@@ -604,7 +604,7 @@
     [dismissButton addTarget:self action:@selector(hideHelpPressed) forControlEvents:UIControlEventTouchDown];
     [self.helpOverlay addSubview:dismissButton];
     
-    self.adImageButton = [[UIButton alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height - 60, 320, 60)];
+    self.adImageButton = [[UIButton alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height - 60, self.view.frame.size.width, 60)];
     [self.adImageButton addTarget:self action:@selector(adButtonclicked) forControlEvents:UIControlEventTouchDown];
     [self.adImageButton setTitle:@"" forState:UIControlStateNormal];
     
@@ -775,7 +775,7 @@
         NSLog(@"%@", tempDate);
       
        
-        if ([usersEvent.title isEqualToString:[event objectForKey:CAL_TITLE]] && [usersEvent.location isEqualToString:[event objectForKey:CAL_LOCATION]] && [tempDate isEqualToString:[event objectForKey:CAL_START_DATE]])
+        if ([usersEvent.title isEqualToString:[event objectForKey:CAL_TITLE]] && [tempDate isEqualToString:[event objectForKey:CAL_START_DATE]])
         {
             return YES;
         }
@@ -1033,14 +1033,15 @@
         //UILabel *cellLabel = (UILabel *)[cell.contentView viewWithTag:2];
         //UILabel *calLabel = (UILabel *)[cell.contentView viewWithTag:1];
         
-        UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 1, 185, 40)];
-        UILabel *dateLabel = [[UILabel alloc]initWithFrame:CGRectMake(238, 11, 62, 21)];
+        UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 1, 180, 40)];
+        UILabel *dateLabel = [[UILabel alloc]initWithFrame:CGRectMake(235, 2, 80, 40)];
         UILabel *createdByLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 38, 150, 15)];
         
-        dateLabel.textAlignment = NSTextAlignmentRight;
+        dateLabel.textAlignment = NSTextAlignmentLeft;
+        dateLabel.numberOfLines = 4;
         
-        dateLabel.font = [UIFont systemFontOfSize:11.0];
-        titleLabel.font = [UIFont systemFontOfSize:14.0];
+        dateLabel.font = [UIFont systemFontOfSize:9.0];
+        titleLabel.font = [UIFont systemFontOfSize:13.0];
         titleLabel.numberOfLines = 2;
         createdByLabel.font = [UIFont systemFontOfSize:10.0];
         
@@ -1069,20 +1070,45 @@
         [addButton addTarget:self action:@selector(addEventToCalendar:) forControlEvents:UIControlEventTouchDown];
         
         titleLabel.text = [calendarDic objectForKey:CAL_TITLE];
-        NSArray *dateArray = [self getDateArrayFromString:[calendarDic objectForKey:CAL_START_DATE]];
-        NSString *stringDate = [NSString stringWithFormat:@"%@/%@/%@", dateArray[1], dateArray[2], dateArray[0]];
+        
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        
+        NSDate *startDate = [dateFormatter dateFromString:[calendarDic objectForKey:CAL_START_DATE]];
+        NSDate *endDate = [dateFormatter dateFromString:[calendarDic objectForKey:CAL_END_DATE]];
+        
+        NSString *stringDate = @"";
+        
+        
+        
 
-        if([[calendarDic objectForKey:CAL_IS_ALL_DAY]boolValue] && ![[calendarDic objectForKey:CAL_START_DATE] isEqualToString:[calendarDic objectForKey:CAL_END_DATE]])
+        if([[calendarDic objectForKey:CAL_IS_ALL_DAY]boolValue] && ![[HelperMethods dateToStringMMddyyyy:startDate] isEqualToString:[HelperMethods dateToStringMMddyyyy:endDate]])
         {
             
-            dateLabel.frame =  CGRectMake(238, 2, 62, 40);
-            dateLabel.numberOfLines = 3;
-            NSArray *dateArray2 = [self getDateArrayFromString:[calendarDic objectForKey:CAL_END_DATE]];
-            stringDate = [NSString stringWithFormat:@"%@/%@/%@\n     thru\n%@/%@/%@", dateArray[1], dateArray[2], dateArray[0], dateArray2[1], dateArray2[2], dateArray2[0]];
+            dateLabel.frame = CGRectMake(235, 8, 80, 40);
+            NSString *dateString2 = [HelperMethods dateToStringEEEMMddyyyy:endDate];
+            stringDate = [NSString stringWithFormat:@"%@\n          thru\n%@", [HelperMethods dateToStringEEEMMddyyyy:startDate],dateString2 ];
 
+        }else if([[calendarDic objectForKey:CAL_IS_ALL_DAY]boolValue])
+        {
+            NSString *dateString = [HelperMethods dateToStringEEEMMddyyyy:startDate];
+            stringDate = [NSString stringWithFormat:@"\n%@", dateString];
+            
+            
+        } else
+        {
+            NSString *dateString = [HelperMethods dateToStringEEEMMddyyyyhhmma:startDate];
+            stringDate = [NSString stringWithFormat:@"\n%@", dateString];
         }
-      
-        dateLabel.text = stringDate;
+        NSMutableAttributedString * attDate = [[NSMutableAttributedString alloc]initWithString:stringDate];
+        NSInteger strLength = [stringDate length];
+        NSMutableParagraphStyle *style = [[NSMutableParagraphStyle alloc] init];
+        [style setLineSpacing:2];
+        [attDate addAttribute:NSParagraphStyleAttributeName
+                          value:style
+                          range:NSMakeRange(0, strLength)];
+        [dateLabel setAttributedText:attDate];
+        
         
         if([[calendarDic objectForKey:TEACHER_ID] length] > 3)
         {

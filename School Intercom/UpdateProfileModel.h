@@ -25,9 +25,9 @@
 
 - (NSArray *)deleteKidFromDatabase:(NSString *)kidID;
 
-- (NSArray *)deleteTeacher:(NSString *)teacherID fromKidInDatabase:(NSString *)kidID;
+- (NSArray *)deleteClass:(NSString *)classID fromKidInDatabase:(NSString *)kidID;
 
-- (NSArray *)addTeacher:(NSString *)teacherID ToKidInDatabase:(NSString *)kidID;
+- (NSArray *)addClass:(NSString *)classID ToKidInDatabase:(NSString *)kidID;
 
 - (NSArray *)zeroOutBadgeForSchoolID:(NSString *)schoolID ofUser:(NSString *)userID;
 

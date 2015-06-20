@@ -134,7 +134,7 @@
 
 - (NSArray *)addChildToDatabaseWithUserID:(NSString *)userID
 {
-    NSArray *keys = @[USER_ID, SCHOOL_ID, KID_FIRST_NAME, KID_LAST_NAME, TEACHER_ID];
+    NSArray *keys = @[USER_ID, SCHOOL_ID, KID_FIRST_NAME, KID_LAST_NAME, @"classID"];
     NSArray *data = @[userID, [self.schoolSelected objectForKey:ID], self.childFirstName, self.childLastName, self.childGradeLevel];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_KID withKeys:keys andData:data];

@@ -571,6 +571,54 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
     return newArray;
 }
 
++ (NSString *)dateToStringMMddyyyy:(NSDate *)date
+{
+    NSString *dateString = @"";
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"MM/dd/yyyy"];
+    
+    
+    
+    dateString = [dateFormatter stringFromDate:date];
+    
+    
+    
+    return dateString;
+    
+}
+
++ (NSString *)dateToStringEEEMMddyyyy:(NSDate *)date
+{
+    NSString *dateString = @"";
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"EEE - MM/dd/yyyy"];
+    
+    
+    
+    dateString = [dateFormatter stringFromDate:date];
+    
+    
+    
+    return dateString;
+    
+}
+
++ (NSString *)dateToStringEEEMMddyyyyhhmma:(NSDate *)date
+{
+    NSString *dateString = @"";
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"EEE - MM/dd/yyyy \n@ hh:mma"];
+    
+    
+    
+    dateString = [dateFormatter stringFromDate:date];
+    
+    
+    
+    return dateString;
+    
+    
+}
 
 
 

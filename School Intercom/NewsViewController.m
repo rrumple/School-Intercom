@@ -235,7 +235,7 @@
     if([self.delegate respondsToSelector:@selector(snapshotOfViewAsImage:)])
     {
         [self.delegate snapshotOfViewAsImage:[UIView captureView:self.view]];
-        
+
     }
     
     [self.navigationController popToRootViewControllerAnimated:NO];

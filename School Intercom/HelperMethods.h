@@ -27,4 +27,7 @@ UIKIT_EXTERN NSString * const HelperMethodsImageDownloadCompleted;
 + (NSArray *)getDictonaryOfUserTypes;
 + (NSString *)getMonthWithInt:(NSInteger)num shortName:(BOOL)shortName;
 + (NSArray *)ConvertHourUsingDateArray:(NSArray *)dateArray;
++ (NSString *)dateToStringMMddyyyy:(NSDate *)date;
++ (NSString *)dateToStringEEEMMddyyyy:(NSDate *)date;
++ (NSString *)dateToStringEEEMMddyyyyhhmma:(NSDate *)date;
 @end

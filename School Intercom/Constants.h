@@ -28,7 +28,8 @@ typedef enum
     zPickerFifthGroup,
     zPickerGrade,
     zPickerPrefix,
-    zPickerName
+    zPickerName,
+    zPickerClassRoom
 } PickerType;
 
 //LoginScreen Alertview
@@ -57,7 +58,9 @@ typedef enum
     quGetAllTeachers,
     quGetAllSchools,
     quGetAllCorps,
-    quGetAllParentsForOneSchool
+    quGetAllParentsForOneSchool,
+    quGetAllClasses,
+    quGetAllParentsInClass
 }queryTypes;
 
 typedef enum
@@ -151,7 +154,8 @@ typedef enum
    agOneSchool,
    agOneClassroom,
    agOneTeacher,
-   agOneParent
+   agOneParent,
+   agAllClasses
 }AlertGroups;
 
 typedef enum
@@ -220,16 +224,16 @@ typedef enum
 
 //php file defines
 
-#define PHP_LOGIN_USER @"login_user.php"
+#define PHP_LOGIN_USER @"login_user_122.php"
 
 
 #define PHP_GET_STATES @"get_states.php"
 #define PHP_GET_CITIES @"get_cities.php"
 #define PHP_GET_SCHOOLS @"get_schools.php"
 #define PHP_ADD_USER @"add_user.php"
-#define PHP_ADD_KID @"add_kid.php"
+#define PHP_ADD_KID @"add_kid_122.php"
 #define PHP_CHECK_STATUS @"verify_check.php"
-#define PHP_LOAD_DATA @"load_data_test.php"
+#define PHP_LOAD_DATA @"load_data_122.php"
 #define PHP_LOAD_LOCAL_AD @"load_local_ad.php"
 #define PHP_ADD_SCHOOL @"add_school.php"
 #define PHP_SEND_EMAIL @"send_email.php"
@@ -240,7 +244,7 @@ typedef enum
 #define PHP_UPDATE_AD_CLICKED @"update_ad_clicked.php"
 #define PHP_UPDATE_HAS_PURCHASED @"update_has_purchased.php"
 #define PHP_GET_KIDS @"get_kids.php"
-#define PHP_UPDATE_KID @"update_kid.php"
+#define PHP_UPDATE_KID @"update_kid_122.php"
 #define PHP_DELETE_KID @"delete_kid.php"
 #define PHP_ADD_SCHOOL_TO_USER @"add_school_to_user.php"
 #define PHP_GET_PRODUCT_IDS @"get_product_ids.php"
@@ -250,10 +254,10 @@ typedef enum
 #define PHP_CHANGE_SCHOOL_STATUS @"change_school_status.php"
 #define PHP_RESTORE_PURCHASE @"restore_purchase.php"
 #define PHP_GET_EMAIL @"get_email.php"
-#define PHP_GET_TEACHERS @"get_teachers.php"
-#define PHP_GET_KID_TEACHERS @"get_kid_teachers.php"
-#define PHP_ADD_TEACHER @"add_teacher.php"
-#define PHP_DELETE_TEACHER_FROM_KID @"delete_teacher_from_kid.php"
+#define PHP_GET_TEACHERS @"get_teachers_122.php"
+#define PHP_GET_KID_TEACHERS @"get_kid_teachers_122.php"
+#define PHP_ADD_TEACHER @"add_teacher_122.php"
+#define PHP_DELETE_TEACHER_FROM_KID @"delete_teacher_from_kid_122.php"
 #define PHP_GET_ALERT_GROUPS @"get_alert_groups.php"
 #define PHP_GET_SECONDARY_ALERT_GROUP @"get_secondary_alert_groups.php"
 #define PHP_INSERT_ALERT @"insert_alert.php"
@@ -282,6 +286,7 @@ typedef enum
 #define PHP_UPDATE_NEWS_POST @"update_news.php"
 #define PHP_DELETE_NEWS_POST @"delete_news.php"
 #define PHP_GET_PARENTS_OF_TEACHER @"get_parents.php"
+#define PHP_GET_PARENTS_OF_CLASS @"get_parents_class.php"
 #define PHP_GET_FUNDRAISER_DATA @"get_fundraiser_data.php"
 #define PHP_UPDATE_TEACHER_NAMES @"update_teacher_names.php"
 #define PHP_LOG_OUT_USER @"log_out_user.php"

@@ -223,9 +223,9 @@
 }
 
 
-- (NSArray *)addEventForUser:(NSString *)userID withCalendarTitle:(NSString *)calTitle andLocation:(NSString *)calLoc andStartDate:(NSString *)startDate andEndDate:(NSString *)endDate andIsAllDay:(NSString *)isAllDay andMoreInfo:(NSString *)moreInfo
+- (NSArray *)addEventForUser:(NSString *)userID withCalendarTitle:(NSString *)calTitle andLocation:(NSString *)calLoc andStartDate:(NSString *)startDate andEndDate:(NSString *)endDate andIsAllDay:(NSString *)isAllDay andMoreInfo:(NSString *)moreInfo forClassID:(NSString *)classID
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_EVENT withKeys:@[USER_ID, CAL_TITLE, CAL_LOCATION, CAL_START_DATE, CAL_END_DATE, CAL_IS_ALL_DAY, CAL_MORE_INFO] andData:@[userID, calTitle, calLoc, startDate, endDate, isAllDay, moreInfo]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_EVENT withKeys:@[USER_ID, CAL_TITLE, CAL_LOCATION, CAL_START_DATE, CAL_END_DATE, CAL_IS_ALL_DAY, CAL_MORE_INFO, @"classID"] andData:@[userID, calTitle, calLoc, startDate, endDate, isAllDay, moreInfo, classID]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
@@ -270,9 +270,9 @@
 }
 
 
-- (NSArray *)addNewsForUser:(NSString *)userID withNewsTitle:(NSString *)newsTitle andText:(NSString *)newsText andNewsImageName:(NSString *)newsImageName andNewsDate:(NSString *)newsDate sendAlert:(NSString *)sendAlert
+- (NSArray *)addNewsForUser:(NSString *)userID withNewsTitle:(NSString *)newsTitle andText:(NSString *)newsText andNewsImageName:(NSString *)newsImageName andNewsDate:(NSString *)newsDate sendAlert:(NSString *)sendAlert classID:(NSString *)classID
 {
-    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_NEWS_POST withKeys:@[USER_ID, NEWS_TITLE, NEWS_TEXT, NEWS_IMAGE_NAME, NEWS_DATE, @"sendAlert"] andData:@[userID, newsTitle, newsText, newsImageName, newsDate, sendAlert]];
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_NEWS_POST withKeys:@[USER_ID, NEWS_TITLE, NEWS_TEXT, NEWS_IMAGE_NAME, NEWS_DATE, @"sendAlert", @"classID"] andData:@[userID, newsTitle, newsText, newsImageName, newsDate, sendAlert,classID]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     
@@ -307,6 +307,17 @@
 - (NSArray *)getParentsOfTeacher:(NSString *)teacherID
 {
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_PARENTS_OF_TEACHER withKeys:@[TEACHER_ID] andData:@[teacherID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)getParentsOfClass:(NSString *)classID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_PARENTS_OF_CLASS withKeys:@[@"classID"] andData:@[classID]];
     NSArray *dataArray;
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
     

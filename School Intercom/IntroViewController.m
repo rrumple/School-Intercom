@@ -904,6 +904,12 @@
     
     self.mainUserData.userID = [tempDic objectForKey:USER_ID];
     
+    if([self.mainUserData.accountType intValue] == 1)
+    {
+        self.mainUserData.classData = [tempDic objectForKey:@"classData"];
+        NSLog(@"%@", self.mainUserData.classData);
+    }
+    
     /*
     if([self.mainUserData.accountType intValue] > 0)
         [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];

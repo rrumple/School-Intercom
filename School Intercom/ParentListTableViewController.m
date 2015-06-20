@@ -8,11 +8,14 @@
 
 #import "ParentListTableViewController.h"
 
-@interface ParentListTableViewController ()
+@interface ParentListTableViewController () <UIPickerViewDataSource, UIPickerViewDelegate, UIGestureRecognizerDelegate>
 
 @property (nonatomic, strong) NSArray *parentData;
 @property (nonatomic, strong) AdminModel *adminData;
+@property (nonatomic, strong) UITextField *classRoomTextfield;
 @property (strong, nonatomic) IBOutlet UITableView *parentListTableView;
+@property (nonatomic, strong) NSString *classSelected;
+@property (nonatomic) BOOL isFirstRun;
 @end
 
 @implementation ParentListTableViewController
@@ -28,7 +31,7 @@
     dispatch_queue_t createQueue = dispatch_queue_create("getParents", NULL);
     dispatch_async(createQueue, ^{
         NSArray *databaseData;
-        databaseData = [self.adminData getParentsOfTeacher:self.mainUserData.userID];
+        databaseData = [self.adminData getParentsOfClass:self.classSelected];
         
         if (databaseData)
         {
@@ -45,8 +48,68 @@
     
 }
 
+- (void)hideKeyboard
+{
+    [self.classRoomTextfield resignFirstResponder];
+}
+
+-(UIPickerView *)createPickerWithTag:(NSInteger)tag
+{
+    UIPickerView *pickerView = [[UIPickerView alloc]init];
+    pickerView.tag = tag;
+    pickerView.dataSource = self;
+    pickerView.delegate = self;
+    
+    [pickerView setShowsSelectionIndicator:YES];
+    
+    
+    
+    UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
+    
+    [tapGR setNumberOfTapsRequired:1];
+    [tapGR setDelegate:self];
+    [pickerView addGestureRecognizer:tapGR];
+    
+    return pickerView;
+}
+
+- (void)pickerViewTapped
+{
+    if(self.classRoomTextfield.isFirstResponder)
+    {
+        [self hideKeyboard];
+    }
+}
+
+- (void)setupTapGestures
+{
+    
+    UITapGestureRecognizer *gestureRecgnizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideKeyboard)];
+    gestureRecgnizer.cancelsTouchesInView = NO;
+    
+    
+    [self.view addGestureRecognizer:gestureRecgnizer];
+    
+    
+    
+    
+}
+
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self setupTapGestures];
+    self.isFirstRun = true;
+    if([self.mainUserData.classData count] > 0)
+    {
+        self.classSelected = [[self.mainUserData.classData objectAtIndex:0]objectForKey:ID];
+    }
+    else
+    {
+        self.classSelected = @"0";
+    }
+   
     
     [self getParentsOfTeacherInDatabase];
     // Uncomment the following line to preserve selection between presentations.
@@ -106,8 +169,27 @@
     {
         CellIdentifier = CELL_EXIT;
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-        UILabel *totalParentsLabel = (UILabel *)[cell viewWithTag:1];
-        totalParentsLabel.text = [NSString stringWithFormat:@"Total Parents : %lu", (unsigned long)[self.parentData count]];
+        //UILabel *totalParentsLabel = (UILabel *)[cell viewWithTag:1];
+        UITextField *classTF = (UITextField *) [cell viewWithTag:2];
+        
+        if(self.isFirstRun)
+        {
+            classTF.inputView = [self createPickerWithTag:zPickerClassRoom];
+        if([self.mainUserData.classData count] > 0)
+        {
+            classTF.text = [[self.mainUserData.classData objectAtIndex:0] objectForKey:@"className"];
+            self.classSelected = [[self.mainUserData.classData objectAtIndex:0]objectForKey:ID];
+        }
+        else
+        {
+            classTF.text = @"No Classes Found";
+            self.classSelected = @"0";
+            [classTF setEnabled:false];
+        }
+        self.classRoomTextfield = classTF;
+            self.isFirstRun = false;
+        }
+        //totalParentsLabel.text = [NSString stringWithFormat:@"Total Parents : %lu", (unsigned long)[self.parentData count]];
     }
     else
     {
@@ -122,7 +204,51 @@
     return cell;
 }
 
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    
+    if(pickerView.tag == zPickerClassRoom)
+        return [self.mainUserData.classData count];
+    
+    
+    return 0;
+}
 
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    
+    if(pickerView.tag == zPickerClassRoom)
+    {
+        return [[self.mainUserData.classData objectAtIndex:row] objectForKey:@"className"];
+        
+    }
+    
+    return nil;
+}
+
+
+
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    if(pickerView.tag == zPickerClassRoom)
+    {
+        self.classSelected = [[self.mainUserData.classData objectAtIndex:row] objectForKey:ID];
+        self.classRoomTextfield.text = [[self.mainUserData.classData objectAtIndex:row] objectForKey:@"className"];
+        [self getParentsOfTeacherInDatabase];
+        
+        
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return TRUE;
+}
 
 
 /*

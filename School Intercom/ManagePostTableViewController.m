@@ -8,7 +8,7 @@
 
 #import "ManagePostTableViewController.h"
 
-@interface ManagePostTableViewController () <UITextFieldDelegate, UIAlertViewDelegate>
+@interface ManagePostTableViewController () <UITextFieldDelegate, UIAlertViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UIGestureRecognizerDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *titleLabel;
 @property (weak, nonatomic) IBOutlet UIButton *addUpdateButton;
 @property (weak, nonatomic) IBOutlet UITextField *postTitleTextField;
@@ -27,6 +27,8 @@
 @property (weak, nonatomic) IBOutlet UIButton *previewEditButton;
 @property (nonatomic, strong) NSString *textViewDesignView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
+@property (nonatomic, strong) NSString *classSelected;
+@property (weak, nonatomic) IBOutlet UITextField *classRoomTextfield;
 
 @end
 
@@ -78,7 +80,7 @@
     dispatch_queue_t createQueue = dispatch_queue_create("addPost", NULL);
     dispatch_async(createQueue, ^{
         NSArray *databaseData;
-        databaseData = [self.adminData addNewsForUser:self.mainUserData.userID withNewsTitle:self.postTitleTextField.text andText:self.textViewDesignView andNewsImageName:self.newsImageFileName andNewsDate:self.dateUnaltered sendAlert:[NSString stringWithFormat:@"%i", self.sendAlert.on]];
+        databaseData = [self.adminData addNewsForUser:self.mainUserData.userID withNewsTitle:self.postTitleTextField.text andText:self.textViewDesignView andNewsImageName:self.newsImageFileName andNewsDate:self.dateUnaltered sendAlert:[NSString stringWithFormat:@"%i", self.sendAlert.on] classID:self.classSelected];
         if (databaseData)
         {
             dispatch_async(dispatch_get_main_queue(), ^{
@@ -138,8 +140,37 @@
     [self.dateTextfield resignFirstResponder];
     [self.postTitleTextField resignFirstResponder];
     [self.newsTextView resignFirstResponder];
-
+    [self.classRoomTextfield resignFirstResponder];
 }
+
+-(UIPickerView *)createPickerWithTag:(NSInteger)tag
+{
+    UIPickerView *pickerView = [[UIPickerView alloc]init];
+    pickerView.tag = tag;
+    pickerView.dataSource = self;
+    pickerView.delegate = self;
+    
+    [pickerView setShowsSelectionIndicator:YES];
+    
+    
+    
+    UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
+    
+    [tapGR setNumberOfTapsRequired:1];
+    [tapGR setDelegate:self];
+    [pickerView addGestureRecognizer:tapGR];
+    
+    return pickerView;
+}
+
+- (void)pickerViewTapped
+{
+    if(self.classRoomTextfield.isFirstResponder)
+    {
+        [self hideKeyboard];
+    }
+}
+
 
 
 - (void)viewDidLoad
@@ -155,10 +186,22 @@
     [self.dateFormatter setLocale:usLocale];
     [self.dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
     
-    
+    self.classRoomTextfield.inputView = [self createPickerWithTag:zPickerClassRoom];
     [self setupTapGestures];
     
     NSLocale *locale = [NSLocale currentLocale];
+    
+    if([self.mainUserData.classData count] > 0)
+    {
+        self.classRoomTextfield.text = [[self.mainUserData.classData objectAtIndex:0] objectForKey:@"className"];
+        self.classSelected = [[self.mainUserData.classData objectAtIndex:0]objectForKey:ID];
+    }
+    else
+    {
+        self.classRoomTextfield.text = @"No Classes Found";
+        self.classSelected = @"0";
+        [self.classRoomTextfield setEnabled:false];
+    }
 
     self.datePicker = [[UIDatePicker  alloc]init];
     self.datePicker.datePickerMode = UIDatePickerModeDate;
@@ -467,6 +510,51 @@
 {
     if(alertView.tag == zAlertAddNewsSuccess)
         [self.navigationController popViewControllerAnimated:YES];
+}
+
+-(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
+{
+    
+    if(pickerView.tag == zPickerClassRoom)
+        return [self.mainUserData.classData count];
+    
+    
+    return 0;
+}
+
+-(NSInteger)numberOfComponentsInPickerView:(UIPickerView *)pickerView
+{
+    return 1;
+}
+
+-(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
+{
+    
+    if(pickerView.tag == zPickerClassRoom)
+    {
+        return [[self.mainUserData.classData objectAtIndex:row] objectForKey:@"className"];
+        
+    }
+    
+    return nil;
+}
+
+
+
+-(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
+{
+    if(pickerView.tag == zPickerClassRoom)
+    {
+        self.classSelected = [[self.mainUserData.classData objectAtIndex:row] objectForKey:ID];
+        self.classRoomTextfield.text = [[self.mainUserData.classData objectAtIndex:row] objectForKey:@"className"];
+        
+        
+    }
+}
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return TRUE;
 }
 
 @end
