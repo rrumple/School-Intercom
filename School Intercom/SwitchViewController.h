@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "UserData.h"
 #import "UpdateProfileModel.h"
+#import "AdModel.h"
+#import <Google/Analytics.h>
 
 
 @protocol SwitchViewControllerDelegate;

@@ -11,6 +11,9 @@
 #import "NewsDetailViewController.h"
 #import "AdModel.h"
 #import "UserData.h"
+#import <Google/Analytics.h>
+
+
 
 @protocol NewsViewControllerDelegate;
 

@@ -7,6 +7,7 @@
 //
 
 #import "SendAlertViewController.h"
+#import <Google/Analytics.h>
 
 
 @interface SendAlertViewController () <UITextFieldDelegate, UITextViewDelegate, UIPickerViewDataSource, UIPickerViewDelegate, UIGestureRecognizerDelegate, UIAlertViewDelegate>
@@ -68,7 +69,7 @@
  
                     [self setupGroupPicker];
                     self.destinationPicker = [NSString stringWithFormat:@"%i", zPickerSecondGroup];
-                    UIPickerView *tempPicker = (UIPickerView *)self.groupTextField.inputView;
+                    UIPickerView *tempPicker = (UIPickerView *) [self.groupTextField.inputView viewWithTag:zPickerGroup];
                     [tempPicker reloadAllComponents];
                     [tempPicker selectRow:0 inComponent:0 animated:NO];
                
@@ -142,6 +143,16 @@
     }
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Send_Alert_Screen"];
+    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -185,6 +196,14 @@
         self.groupTextField.text = text;
         [self updateCharacterCount:self.messageTextview.text];
     }
+    else if(self.isUserAlert)
+    {
+        self.groupHeaderLabel.text = @"Send Alert to User:";
+        [self.groupTextField setEnabled:false];
+        self.groupTextField.text = [self.userAlertData objectForKey:@"name"];
+        self.sendAlertButton.hidden = false;
+        self.alertIDToInsert = [self.userAlertData objectForKey:ID];
+    }
     else
     {
          [self getAlertGroupsFromDatabase];
@@ -199,7 +218,7 @@
     }
     
     
-    
+    self.messageTextview.delegate = self;
     [self setupTapGestures];
     
     [self.messageTextview.layer setCornerRadius:10.0f];
@@ -214,7 +233,7 @@
     
 }
 
--(UIPickerView *)createPickerWithTag:(NSInteger)tag
+-(UIView *)createPickerWithTag:(NSInteger)tag
 {
     UIPickerView *pickerView = [[UIPickerView alloc]init];
     pickerView.tag = tag;
@@ -222,18 +241,31 @@
     pickerView.delegate = self;
     pickerView.showsSelectionIndicator = YES;
     
+    UIToolbar *toolBar= [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];
+    [toolBar setBarStyle:UIBarStyleBlackOpaque];
+    UIBarButtonItem *barButtonDone = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                                      style:UIBarButtonItemStyleBordered target:self action:@selector(hideKeyboard)];
+    
+    toolBar.barTintColor = [UIColor colorWithRed:0.820f green:0.835f blue:0.859f alpha:1.00f];
+    
+    toolBar.items = [[NSArray alloc] initWithObjects:barButtonDone,nil];
+    barButtonDone.tintColor=[UIColor blackColor];
     
     
+    UIView *pickerParentView = [[UIView alloc]initWithFrame:CGRectMake(0, 60, 320, 216)];
+    [pickerParentView addSubview:pickerView];
+    [pickerParentView addSubview:toolBar];
     
-    UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
+    
+    /*UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
     tapGR.cancelsTouchesInView = NO;
     
     [tapGR setNumberOfTapsRequired:1];
     
     [tapGR setDelegate:self];
-    [pickerView addGestureRecognizer:tapGR];
+    [pickerView addGestureRecognizer:tapGR];*/
     
-    return pickerView;
+    return pickerParentView;
 }
 
 
@@ -298,6 +330,7 @@
     
     UITapGestureRecognizer *gestureRecgnizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideKeyboard)];
     gestureRecgnizer.cancelsTouchesInView = NO;
+
     
     
     [self.view addGestureRecognizer:gestureRecgnizer];
@@ -311,10 +344,14 @@
 
 - (void)sendAlertOfType:(NSString *)alertType
 {
+    NSString *schoolID = self.mainUserData.schoolIDselected;
+    if(self.mainUserData.accountType.intValue > 0 && self.mainUserData.accountType.intValue < 4)
+        schoolID = [self.mainUserData.userInfo objectForKey:@"worksAtSchoolID"];
+    
     dispatch_queue_t createQueue = dispatch_queue_create("insertAlert", NULL);
     dispatch_async(createQueue, ^{
         NSArray *dataArray;
-        dataArray = [self.adminData insertAlert:self.alertIDToInsert withMessage:self.messageTextview.text ofType:alertType fromSchool:self.mainUserData.schoolIDselected fromUser:self.mainUserData.userID];
+        dataArray = [self.adminData insertAlert:self.alertIDToInsert withMessage:self.messageTextview.text ofType:alertType fromSchool:schoolID fromUser:self.mainUserData.userID];
         
         if (dataArray)
         {
@@ -329,10 +366,16 @@
                     }
                     else
                     {
-                        [Flurry logEvent:@"Alert Sent"];
+                        //[Flurry logEvent:@"Alert Sent"];
+                        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+                        [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"Alerts"
+                                                                              action:@"Alert_Sent"
+                                                                               label:@"Alerts"
+                                                                               value:@1] build]];
                         UIAlertView *alertSent = [[UIAlertView alloc]initWithTitle:@"Alert Sent" message:@"The alert will arrive shortly." delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
                         [alertSent show];
-                        
+                        if(self.autoClose)
+                            alertSent.tag = zAlertAddEventSuccess;
                         [self resetAlertScreen];
 
                     }
@@ -456,7 +499,7 @@
                 case zPickerSecondGroup:
                     runQuery = YES;
                     self.queryType = [NSString stringWithFormat:@"%i", quGetAllTeachers];
-                    self.idToSendToDatabase = self.mainUserData.schoolIDselected;
+                    self.idToSendToDatabase = [self.mainUserData.userInfo objectForKey:@"worksAtSchoolID"];
                 break;
                 default:
                     self.sendAlertButton.hidden = false;
@@ -571,7 +614,7 @@
                 case zPickerSecondGroup:
                     runQuery = YES;
                     self.queryType = [NSString stringWithFormat:@"%i", quGetAllTeachers];
-                    self.idToSendToDatabase = self.mainUserData.schoolIDselected;
+                    self.idToSendToDatabase = [self.mainUserData.userInfo objectForKey:@"worksAtSchoolID"];
                     
                     break;
                 case zPickerThirdGroup:
@@ -787,7 +830,7 @@
     self.fifthGroupTextField.text = @"";
     self.destinationPicker = [NSString stringWithFormat:@"%i",zPickerSecondGroup];
 
-    UIPickerView * tempPicker = (UIPickerView *)self.groupTextField.inputView;
+    UIPickerView * tempPicker = (UIPickerView *)[self.groupTextField.inputView viewWithTag:zPickerGroup];
     [tempPicker selectRow:0 inComponent:0 animated:NO];
 
     
@@ -824,28 +867,28 @@
                                 self.secondGroupTextField.enabled = true;
                                 self.secondGroupTextField.hidden = false;
                                 self.destinationPicker = [NSString stringWithFormat:@"%i", zPickerThirdGroup];
-                                tempPicker = (UIPickerView *)self.secondGroupTextField.inputView;
+                                tempPicker = (UIPickerView *)[self.secondGroupTextField.inputView viewWithTag:zPickerSecondGroup];
                                 break;
                             case zPickerThirdGroup:
                                 self.thirdAlertGroupsData = [tempDic objectForKey:DATA];
                                 self.thirdGroupTextField.enabled = true;
                                 self.thirdGroupTextField.hidden = false;
                                 self.destinationPicker = [NSString stringWithFormat:@"%i", zPickerFourthGroup];
-                                tempPicker = (UIPickerView *)self.thirdGroupTextField.inputView;
+                                tempPicker = (UIPickerView *)[self.thirdGroupTextField.inputView viewWithTag:zPickerThirdGroup];
                                 break;
                             case zPickerFourthGroup:
                                 self.fourthAlertGroupsData = [tempDic objectForKey:DATA];
                                 self.fourthGroupTextField.enabled = true;
                                 self.fourthGroupTextField.hidden = false;
                                 self.destinationPicker = [NSString stringWithFormat:@"%i", zPickerFifthGroup];
-                                tempPicker = (UIPickerView *)self.fourthGroupTextField.inputView;
+                                tempPicker = (UIPickerView *)[self.fourthGroupTextField.inputView viewWithTag:zPickerFourthGroup];
                                 break;
                             case zPickerFifthGroup:
                                 self.fifthAlertGroupsData = [tempDic objectForKey:DATA];
                                 self.fifthGroupTextField.enabled = true;
                                 self.fifthGroupTextField.hidden = false;
                                 self.destinationPicker = @"999";
-                                tempPicker = (UIPickerView *)self.fifthGroupTextField.inputView;
+                                tempPicker = (UIPickerView *)[self.fifthGroupTextField.inputView viewWithTag:zPickerFifthGroup];
                                 break;
                                 
                         }
@@ -877,6 +920,7 @@
 
 - (IBAction)sendAlertButtonPressed:(UIButton *)sender
 {
+    [self hideKeyboard];
     if([sender.titleLabel.text isEqualToString:@"Update"])
     {
         [self updateAlertInDatabase];
@@ -1209,9 +1253,30 @@
 
 - (IBAction)testAlertButtonPressed:(id)sender
 {
-    NSDictionary *testNotification = [NSJSONSerialization JSONObjectWithData:[@"{'aps':{'alert':'Test Alert','sound':'default'}}" dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
+   /*
+    NSDictionary *testNotification = [NSJSONSerialization JSONObjectWithData:[@"{'aps':{'messageID':'NS-7641f0372f823a5d66d6a2cc00df26ce746595753245958656', 'alert':'Test Alert','sound':'default'}}" dataUsingEncoding:NSUTF8StringEncoding] options:0 error:nil];
     
     [[[UIApplication sharedApplication] delegate] application:[UIApplication sharedApplication] didReceiveRemoteNotification:testNotification];
+    */
+    
+    NSString *messageID = @"7641f0372f823a5d66d6a2cc00df26ce746595753245958656";
+    NSString *newStr = [messageID substringToIndex:3];
+    if([newStr isEqualToString:@"NS-"])
+    {
+        NSString *schoolID = [messageID substringToIndex:35];
+        schoolID = [schoolID substringFromIndex:3];
+        
+       // NSLog(@"%@", schoolID);
+        
+    }
+    else
+    {
+        //NSString *schoolID = [messageID substringToIndex:32];
+    
+          // NSLog(@"%@", schoolID);
+        
+    }
+
     
 }
 
@@ -1226,23 +1291,31 @@
     {
         if(buttonIndex == 1)
         {
-            switch ([[self.groupSelected objectForKey:ID]integerValue])
+            if(self.isUserAlert)
             {
-                case agAllUsers: [self sendAlertOfType:@"5"];
-                    break;
-                case agSchoolCorporation: [self sendAlertOfType:@"2"];
-                    break;
-                case agOneSchool: [self sendAlertOfType:@"3"];
-                    break;
-                case agOneClassroom: [self sendAlertOfType:@"4"];
-                    break;
-                case agOneTeacher: [self sendAlertOfType:@"1"];
-                    break;
-                case agOneParent: [self sendAlertOfType:@"1"];
-                    break;
-                case agAllClasses: [self sendAlertOfType:@"10"];
-                    break;
-                    
+                [self sendAlertOfType:@"1"];
+            }
+            else
+            {
+            
+                switch ([[self.groupSelected objectForKey:ID]integerValue])
+                {
+                    case agAllUsers: [self sendAlertOfType:@"5"];
+                        break;
+                    case agSchoolCorporation: [self sendAlertOfType:@"2"];
+                        break;
+                    case agOneSchool: [self sendAlertOfType:@"3"];
+                        break;
+                    case agOneClassroom: [self sendAlertOfType:@"4"];
+                        break;
+                    case agOneTeacher: [self sendAlertOfType:@"1"];
+                        break;
+                    case agOneParent: [self sendAlertOfType:@"1"];
+                        break;
+                    case agAllClasses: [self sendAlertOfType:@"10"];
+                        break;
+                        
+                }
             }
 
         }

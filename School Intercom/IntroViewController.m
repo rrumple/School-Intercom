@@ -10,6 +10,10 @@
 #import "SchoolIntercomIAPHelper.h"
 #import <StoreKit/StoreKit.h>
 #import "SwitchViewController.h"
+#import "Reachability.h"
+
+
+
 
 @interface IntroViewController ()
 {
@@ -21,6 +25,7 @@
 @property (weak, nonatomic) IBOutlet UIImageView *micImageView;
 @property (nonatomic, strong) IntroModel *introData;
 @property (nonatomic) BOOL isLoadDataComplete;
+@property (nonatomic) BOOL isUpdateTeachersComplete;
 @property (nonatomic) BOOL isLoadImageComplete;
 @property (nonatomic) BOOL imageDownloading;
 @property (nonatomic, strong) NSTimer *timer;
@@ -38,6 +43,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *switchSchoolsButton;
 @property (nonatomic) BOOL isInAppPurchaseEnabled;
 @property (nonatomic) BOOL warningViewed;
+@property (weak, nonatomic) IBOutlet UIButton *logoutButton;
 @property (weak, nonatomic) IBOutlet UILabel *loadingActivityIndicatorLabel;
 @property (nonatomic,strong) UIColor *defaultBackgroundColor;
 @property (nonatomic) NSUInteger numberOfSchoolsRestored;
@@ -100,10 +106,19 @@
     return UIInterfaceOrientationMaskPortrait;
 }
 
+- (IBAction)logoutButtonPressed:(id)sender {
+    
+    NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
+    [[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+    [[NSURLCache sharedURLCache] removeAllCachedResponses];
+    [self.mainUserData clearAllData];
+    [self checkForValidUser];
+    
+}
 
 - (void)showHomeScreen
 {
-    if(self.isLoadDataComplete && self.isLoadImageComplete)
+    if(self.isLoadDataComplete && self.isLoadImageComplete && self.isUpdateTeachersComplete)
     {
         self.loadingIndicatorView.hidden = true;
         self.loadingActivityIndicatorLabel.text = @"Purchasing...";
@@ -134,7 +149,7 @@
 
 - (void)setBackgroundImage
 {
-    NSLog(@"setBackGroundImage Called");
+   // NSLog(@"setBackGroundImage Called");
  
 
     NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
@@ -169,7 +184,7 @@
         }
         else
         {
-            NSLog(@"Timer Started");
+            //NSLog(@"Timer Started");
              self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(setBackgroundImage) userInfo:nil repeats:NO];
             
         }
@@ -189,12 +204,65 @@
     [self.noActiveSchoolsAlert dismissWithClickedButtonIndex:0 animated:NO];
     [self.productPurchasedFailedAlert dismissWithClickedButtonIndex:0 animated:NO];
     [self.purchseSuccess dismissWithClickedButtonIndex:0 animated:NO];
+    
+   
 
+
+}
+
+-(void)viewDidLayoutSubviews
+{
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone) {
+        
+        CGSize iOSDeviceScreenSize = [[UIScreen mainScreen] bounds].size;
+        
+        //----------------HERE WE SETUP FOR IPHONE 4/4s/iPod----------------------
+        
+        if(iOSDeviceScreenSize.height == 480){
+            
+            CGRect rect =  self.schoolLogoImageView.frame;
+            rect.origin.y += 67;
+            self.schoolLogoImageView.frame = rect;
+        }
+        
+        //----------------HERE WE SETUP FOR IPHONE 5----------------------
+        
+        if(iOSDeviceScreenSize.height == 568){
+            
+            CGRect rect =  self.schoolLogoImageView.frame;
+            rect.origin.y += 67;
+            self.schoolLogoImageView.frame = rect;
+        }
+        
+        //----------------HERE WE SETUP FOR IPHONE 6----------------------
+        
+        
+        if(iOSDeviceScreenSize.height == 667){
+            
+            CGRect rect =  self.schoolLogoImageView.frame;
+            rect.origin.y += 105;
+            self.schoolLogoImageView.frame = rect;
+        }
+        
+        //----------------HERE WE SETUP FOR IPHONE 6+ ----------------------
+        if(iOSDeviceScreenSize.height == 736){
+            
+            CGRect rect =  self.schoolLogoImageView.frame;
+            rect.origin.y += 102;
+            self.schoolLogoImageView.frame = rect;
+        }
+        
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Intro_Screen"];
+    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
     
     //[self checkToEnablePurchases];
     
@@ -207,9 +275,17 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete) name:IAPHelperProductRestoreCompleted object:nil];
       [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete:) name:IAPHelperProductRestoreCompletedWithNumber object:nil];
     
-   
 
-    
+
+    /*
+    Reachability *reachability = [Reachability reachabilityWithHostName:@"www.myschoolintercom.com"];
+    NetworkStatus netStatus = [reachability currentReachabilityStatus];
+
+    if (netStatus == NotReachable) { NSLog(@"no"); }
+    else if (netStatus == ReachableViaWiFi) { NSLog(@"wifi"); }
+    else if (netStatus == ReachableViaWWAN) { NSLog(@"cellular"); }
+    */
+     
     self.isLoadDataComplete = NO;
     self.isLoadImageComplete = NO;
     self.imageDownloading = NO;
@@ -272,6 +348,7 @@
 {
     
     [self.loadingActivityIndicator startAnimating];
+    self.logoutButton.hidden = YES;
     
     self.loadingIndicatorView.hidden = false;
     self.loadingActivityIndicatorLabel.text = @"Loading...";
@@ -342,6 +419,15 @@
                 }
             });
             
+        }
+        else if([dataArray count] == 0)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Server Unreachable" message:@"Check your internet connection, and make sure Intercom is allowed a data connection on your device.  Close the app and try again, if the problem persists please contact support@myschoolintercom.com" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                alert.tag = zAlertFailedConnection;
+                [alert show];
+                self.loadingIndicatorView.hidden = true;
+            });
         }
     });
 
@@ -513,6 +599,7 @@
     {
         //check the database to see if the users Registered status has changed
         [self checkVerifyStatus];
+        self.logoutButton.hidden = false;
     }
     
 }
@@ -568,8 +655,14 @@
     self.loginViaRestore = false;
     self.bypassToCreateAccount = false;
     self.bypassNoAccountAlert = false;
+    self.isUpdateTeachersComplete = true;
+    
+    
+    //put ADs in Test mode
+    self.mainUserData.isAdTestMode = true;
+    
     //hash tester
-    NSLog(@"%@", [HelperMethods encryptText:@"tester"]);
+    //NSLog(@"%@", [HelperMethods encryptText:@"tester"]);
     
     self.versionLabel.text = [NSString stringWithFormat:@"V%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]];
     
@@ -605,7 +698,7 @@
     [self.loadingIndicatorView.layer setShadowOpacity:0.8];
     [self.loadingIndicatorView.layer setShadowRadius:3.0];
     [self.loadingIndicatorView.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
-    NSLog(@"SCHOOL DATA--- %@", self.mainUserData.schoolData);
+    //NSLog(@"SCHOOL DATA--- %@", self.mainUserData.schoolData);
     
     
     
@@ -616,7 +709,10 @@
         [self.view setNeedsUpdateConstraints];
         
     }
-
+    
+   
+    
+   
     
 }
 
@@ -710,7 +806,7 @@
 
 - (void)restoreComplete:(NSNotification *)notification
 {
-    NSLog(@"%lu", (unsigned long)[self.restoredSchools count]);
+   // NSLog(@"%lu", (unsigned long)[self.restoredSchools count]);
     
     [self getUserEmailFromDatabase];
 }
@@ -756,7 +852,7 @@
     SKPaymentTransaction *transaction = notification.object;
     NSString *productIdentifier = transaction.payment.productIdentifier;
     NSString *transactionIdentifier = transaction.transactionIdentifier;
-    NSLog(@"%@ restored", productIdentifier);
+    //NSLog(@"%@ restored", productIdentifier);
     
     [self.restoredSchools setObject:transactionIdentifier forKey:productIdentifier];
     
@@ -898,17 +994,29 @@
     [userInfo setObject:[tempDic objectForKey:USER_LAST_NAME] forKey:USER_LAST_NAME];
     [userInfo setObject:[tempDic objectForKey:USER_EMAIL] forKey:USER_EMAIL];
     [userInfo setObject:[tempDic objectForKey:@"prefix"] forKey:@"prefix"];
+    
     self.mainUserData.accountType = [tempDic objectForKey:USER_ACCOUNT_TYPE];
+    
+    if(self.mainUserData.accountType.intValue > 0 && self.mainUserData.accountType.intValue < 4)
+        [userInfo setObject:[tempDic objectForKey:@"worksAtSchoolID"] forKey:@"worksAtSchoolID"];
+    
     
     self.mainUserData.userInfo = userInfo;
     
     self.mainUserData.userID = [tempDic objectForKey:USER_ID];
+    [self updateTeacherNames];
     
     if([self.mainUserData.accountType intValue] == 1)
     {
         self.mainUserData.classData = [tempDic objectForKey:@"classData"];
-        NSLog(@"%@", self.mainUserData.classData);
+        //NSLog(@"%@", self.mainUserData.classData);
     }
+    
+    /*
+    for(NSDictionary *userClassData in [tempDic objectForKey:@"usersClassData"])
+    {
+        [self.mainUserData addUserClass:userClassData];
+    }*/
     
     /*
     if([self.mainUserData.accountType intValue] > 0)
@@ -1058,6 +1166,54 @@
 
 }
 
+- (void)updateTeacherNames
+{
+    self.isUpdateTeachersComplete = false;
+    dispatch_queue_t createQueue = dispatch_queue_create("updateTeacherNames", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.introData updateTeacherNamesForUser:self.mainUserData.userID];
+        if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertExistingUserIncorrectPassword andDelegate:self];
+                    
+                    
+                }
+                else
+                {
+                    [self.mainUserData resetTeacherNamesAndUserClasses];
+                    
+                    //if([self.mainUserData.accountType intValue] > 0)
+                    [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];
+                    
+                    
+                    
+                    for(NSDictionary *teacherData in [tempDic objectForKey:@"teacherNames"])
+                    {
+                        [self.mainUserData addTeacherName:teacherData];
+                    }
+                    
+                    for(NSDictionary *userClassData in [tempDic objectForKey:@"usersClassData"])
+                    {
+                        [self.mainUserData addUserClass:userClassData];
+                    }
+                    
+                    self.isUpdateTeachersComplete = true;
+                    
+                    
+                }
+            });
+            
+        }
+    });
+    
+}
+
 - (void)loginExistingUser
 {
     
@@ -1080,6 +1236,7 @@
                 }
                 else
                 {
+                    
                     [self finishLogin:tempDic];
                 }
             });
@@ -1259,7 +1416,12 @@
         }
         else if (buttonIndex == zAlertButtonTryDemo)
         {
-            [Flurry logEvent:@"Demo_School_Loaded"];
+            //[Flurry logEvent:@"Demo_School_Loaded"];
+            id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+            [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"Demo School"
+                                                                  action:@"Demo_School_Logged_Into"
+                                                                   label:@"Demo School"
+                                                                   value:@1] build]];
             self.mainUserData.isAccountCreated = YES;
             self.mainUserData.isPendingVerification = NO;
                 
@@ -1393,6 +1555,10 @@
     else if (alertView.tag == zAlertPasswordChangeSuccess)
     {
         [self showExistingAccountAlert];
+    }
+    else if(alertView.tag == zAlertFailedConnection)
+    {
+        
     }
 }
 

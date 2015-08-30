@@ -20,11 +20,11 @@
     return _databaseRequest;
 }
 
-- (NSArray *)getAdFromDatabase:(NSString *)schoolID
+- (NSArray *)getAdFromDatabase:(NSString *)schoolID forUser:(NSString *)userID
 {
     NSArray *dataArray;
-    NSArray *keys = @[SCHOOL_ID];
-    NSArray *data = @[schoolID];
+    NSArray *keys = @[SCHOOL_ID, USER_ID];
+    NSArray *data = @[schoolID, userID];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_LOAD_LOCAL_AD withKeys:keys andData:data];
     
@@ -42,6 +42,48 @@
     NSArray *data = @[adID, schoolID];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_AD_CLICKED withKeys:keys andData:data];
+    
+    
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+    
+}
+- (NSArray *)updateMMAdClickCountInDatabse:(NSString *)userID andSchoolID:(NSString *)schoolID
+{
+    NSArray *dataArray;
+    NSArray *keys = @[USER_ID, SCHOOL_ID];
+    NSArray *data = @[userID, schoolID];
+    
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_MM_AD_CLICKED withKeys:keys andData:data];
+    
+    
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+    
+}
+- (NSArray *)updateMMAdFailedCountInDatabse:(NSString *)userID andSchoolID:(NSString *)schoolID
+{
+    NSArray *dataArray;
+    NSArray *keys = @[USER_ID, SCHOOL_ID];
+    NSArray *data = @[userID, schoolID];
+    
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_MM_AD_FAILED withKeys:keys andData:data];
+    
+    
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    return dataArray;
+    
+}
+- (NSArray *)updateMMAdImpCountInDatabse:(NSString *)userID andSchoolID:(NSString *)schoolID
+{
+    NSArray *dataArray;
+    NSArray *keys = @[USER_ID, SCHOOL_ID];
+    NSArray *data = @[userID, schoolID];
+    
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_MM_AD_IMP_COUNT withKeys:keys andData:data];
     
     
     dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];

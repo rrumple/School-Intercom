@@ -15,6 +15,7 @@
 #import "ManageNewsViewController.h"
 #import "ParentListTableViewController.h"
 #import "AllSchoolsTableViewController.h"
+#import "ClassesTableViewController.h"
 
 
 
@@ -34,6 +35,16 @@
     self.rowCount = rowCount;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Admin_Tools_Screen"];
+    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     
@@ -42,7 +53,7 @@
     switch ([self.mainUserData.accountType intValue])
     {
         case utTeacher:
-            self.cellsToShow = @[CELL_PARENT_LIST, CELL_SEND_ALERT, CELL_MANAGE_CALENDAR, CELL_MANAGE_NEWS];
+            self.cellsToShow = @[CELL_PARENT_LIST, CELL_SEND_ALERT, CELL_MANAGE_CALENDAR, CELL_MANAGE_NEWS, CELL_MANAGE_CLASSES];
             [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utSecretary:
@@ -50,11 +61,11 @@
             [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utPrincipal:
-            self.cellsToShow = @[CELL_SEND_ALERT, CELL_USER_APPROVALS, CELL_MANAGE_CALENDAR, CELL_MANAGE_NEWS];
+            self.cellsToShow = @[CELL_TEACHER_LIST, CELL_SEND_ALERT, CELL_USER_APPROVALS, CELL_MANAGE_CALENDAR, CELL_MANAGE_NEWS];
             [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utSuperintendent:
-            self.cellsToShow = @[CELL_SEND_ALERT];
+            self.cellsToShow = @[CELL_PRINCIPAL_LIST, CELL_SEND_ALERT];
             [self setAdminDatawithSections:2 andRows:[self.cellsToShow count]];
             break;
         case utSales:
@@ -103,13 +114,13 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_USER_APPROVALS])
     {
-        [Flurry logEvent:@"User_Approvals_Accessed"];
+        //[Flurry logEvent:@"User_Approvals_Accessed"];
         ApproveUsersTableViewController *AUTVC = segue.destinationViewController;
         AUTVC.mainUserData = self.mainUserData;
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_AD_STATS])
     {
-        [Flurry logEvent:@"AD_Data_Accessed"];
+        //[Flurry logEvent:@"AD_Data_Accessed"];
         LandscapeNavigationController *LSNC = segue.destinationViewController;
         LSNC.mainUserData = self.mainUserData;
     }
@@ -120,29 +131,35 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_MANAGE_CALENDARS])
     {
-        [Flurry logEvent:@"Manage_Calendars_Accessed"];
+        //[Flurry logEvent:@"Manage_Calendars_Accessed"];
         ManageCalendarsViewController *MCVC = segue.destinationViewController;
         MCVC.mainUserData = self.mainUserData;
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_MANAGE_NEWS])
     {
-        [Flurry logEvent:@"Manage_News_Accessed"];
+        //[Flurry logEvent:@"Manage_News_Accessed"];
         ManageNewsViewController *MNVC = segue.destinationViewController;
         MNVC.mainUserData = self.mainUserData;
     }
-    else if ([segue.identifier isEqualToString:SEGUE_TO_PARENT_LIST])
+    else if ([segue.identifier isEqualToString:SEGUE_TO_PARENT_LIST] || [segue.identifier isEqualToString:SEGUE_TO_TEACHER_LIST] || [segue.identifier isEqualToString:SEGUE_TO_PRINCIPAL_LIST])
     {
-        [Flurry logEvent:@"Parent_List_Accessed"];
+        //[Flurry logEvent:@"Parent_List_Accessed"];
         ParentListTableViewController *PLTVC = segue.destinationViewController;
         PLTVC.mainUserData = self.mainUserData;
     }
     else if ([segue.identifier isEqualToString:SEGUE_TO_MANAGE_SCHOOLS])
     {
-        [Flurry logEvent:@"Manage_Schools_Accessed"];
+        //[Flurry logEvent:@"Manage_Schools_Accessed"];
         AllSchoolsTableViewController *ASTVC = segue.destinationViewController;
         ASTVC.mainUserData = self.mainUserData;
         ASTVC.isCorporationSearch = false;
         ASTVC.isManagingSchools = true;
+    }
+    else if([segue.identifier isEqualToString:SEGUE_TO_CLASS_LIST])
+    {
+        //[Flurry logEvent:@"Manage_Classes_Accessed"];
+        ClassesTableViewController *CTVC = segue.destinationViewController;
+        CTVC.mainUserData = self.mainUserData;
     }
 
 

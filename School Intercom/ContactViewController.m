@@ -60,7 +60,7 @@
     
 }
 
--(UIPickerView *)createPickerWithTag:(NSInteger)tag
+-(UIView *)createPickerWithTag:(NSInteger)tag
 {
     UIPickerView *pickerView = [[UIPickerView alloc]init];
     pickerView.tag = tag;
@@ -69,8 +69,22 @@
     pickerView.showsSelectionIndicator = YES;
     
     
+    UIToolbar *toolBar= [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];
+    [toolBar setBarStyle:UIBarStyleBlackOpaque];
+    UIBarButtonItem *barButtonDone = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                                      style:UIBarButtonItemStyleBordered target:self action:@selector(hideKeyboard)];
+    
+    toolBar.barTintColor = [UIColor colorWithRed:0.820f green:0.835f blue:0.859f alpha:1.00f];
+    
+    toolBar.items = [[NSArray alloc] initWithObjects:barButtonDone,nil];
+    barButtonDone.tintColor=[UIColor blackColor];
     
     
+    UIView *pickerParentView = [[UIView alloc]initWithFrame:CGRectMake(0, 60, 320, 216)];
+    [pickerParentView addSubview:pickerView];
+    [pickerParentView addSubview:toolBar];
+
+/*
     UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
     //tapGR.cancelsTouchesInView = NO;
     
@@ -78,8 +92,9 @@
     
     [tapGR setDelegate:self];
     [pickerView addGestureRecognizer:tapGR];
+ */
     
-    return pickerView;
+    return pickerParentView;
 }
 
 
@@ -91,22 +106,35 @@
     if([self.mainUserData.accountType intValue] != 8)
     {
         self.toNames = [self.mainUserData.teacherNames mutableCopy];
-        [self.toNames addObject:@{@"teacherName":@"Submit Bugs/Feedback",@"id":@"374825e5c3d74cca7e85cbc23e61bc90"}];
-        NSLog(@"%@", self.toNames);
+        [self.toNames addObject:@{@"teacherName":@"School Intercom Support",@"id":@"2614481955643163136"}];
+        //NSLog(@"%@", self.toNames);
         NSMutableArray *itemsToRemove = [[NSMutableArray alloc]init];
         for (NSDictionary *tempDic in self.toNames)
         {
-            if([[tempDic objectForKey:ID]isEqualToString:self.mainUserData.userID] || ![[tempDic objectForKey:SCHOOL_ID]isEqualToString:self.mainUserData.schoolIDselected])
-                if(![[tempDic objectForKey:@"teacherName"]isEqualToString:@"Submit Bugs/Feedback"])
-                    [itemsToRemove addObject:tempDic];
+            BOOL flag = false;
+            
+            if([[tempDic objectForKey:USER_ACCOUNT_TYPE]intValue] == 4)
+                if(![[tempDic objectForKey:CORP_ID]isEqualToString:[self.mainUserData.schoolData objectForKey:CORP_ID]])
+                    flag = true;
+            if([[tempDic objectForKey:USER_ACCOUNT_TYPE]intValue] != 4)
+                if(![[tempDic objectForKey:SCHOOL_ID]isEqualToString:self.mainUserData.schoolIDselected])
+                    if(![[tempDic objectForKey:@"teacherName"]isEqualToString:@"School Intercom Support"])
+                        flag = true;
+            
+            if([[tempDic objectForKey:ID]isEqualToString:self.mainUserData.userID])
+                    flag = true;
+           
+            
+            if(flag)
+                [itemsToRemove addObject:tempDic];
         }
         
         [self.toNames removeObjectsInArray:itemsToRemove];
         
-          NSLog(@"%@", self.toNames);
+          //NSLog(@"%@", self.toNames);
     }
     else
-        [self.toNames addObject:@{@"teacherName":@"Submit Bugs/Feedback",@"id":@"374825e5c3d74cca7e85cbc23e61bc90"}];
+        [self.toNames addObject:@{@"teacherName":@"School Intercom Support",@"id":@"2614481955643163136"}];
     
     
     [self setupTapGestures];
@@ -142,6 +170,13 @@
     [super viewWillAppear:animated];
     
     [self.headerLabel setFont:FONT_CHARCOAL_CY(17.0f)];
+
+        
+        
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"Contact_Screen"];
+        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+
 
 }
 
@@ -242,7 +277,7 @@
         {
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSLog(@"%@", [emailArray objectAtIndex:0]);
+               // NSLog(@"%@", [emailArray objectAtIndex:0]);
                 
                 
                 if(![[[emailArray objectAtIndex:0]objectForKey:@"error"] boolValue])

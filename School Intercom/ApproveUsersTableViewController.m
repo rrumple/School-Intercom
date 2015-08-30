@@ -8,6 +8,7 @@
 
 #import "ApproveUsersTableViewController.h"
 #import "AdminModel.h"
+#import <Google/Analytics.h>
 
 @interface ApproveUsersTableViewController ()<UIAlertViewDelegate, UITextFieldDelegate>
 
@@ -77,7 +78,7 @@
         {
             dispatch_async(dispatch_get_main_queue(), ^{
                 
-                NSLog(@"%@", userApprovalArray);
+                //NSLog(@"%@", userApprovalArray);
                 
                 self.denyMessage = @"";
                 self.selectedControl = nil;
@@ -123,6 +124,16 @@
     self.pendingUsersDataToShow = tempArray;
     
 
+}
+
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Approve_Users_Screen"];
+    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
 }
 
 - (void)viewDidLoad {
@@ -281,7 +292,7 @@
     {
         if(buttonIndex == 1)
         {
-            NSLog(@"%@", self.currentIndexPath);
+            //NSLog(@"%@", self.currentIndexPath);
             self.selectedUser = [[self.pendingUsersDataToShow objectAtIndex:self.currentIndexPath.section] objectAtIndex:self.currentIndexPath.row];
             NSMutableArray *tempArray = [[self.pendingUsersDataToShow objectAtIndex:self.currentIndexPath.section] mutableCopy];
             [tempArray removeObjectAtIndex:self.currentIndexPath.row];

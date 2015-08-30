@@ -130,13 +130,21 @@
     
 }
 
-
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"List_Kids_Screen"];
+    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+}
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [Flurry logEvent:@"UPDATE_KIDS_SCREEN_VIEWED"];
+    //[Flurry logEvent:@"UPDATE_KIDS_SCREEN_VIEWED"];
 	self.kidsTableView.delegate = self;
     self.kidsTableView.dataSource = self;
     
@@ -261,7 +269,7 @@
         fName.text = [NSString stringWithFormat:@"%@ %@", [kidsDic objectForKey:KID_FIRST_NAME], [kidsDic objectForKey:KID_LAST_NAME]];
         
         NSString *docDir = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) objectAtIndex:0];
-        NSLog(@"%@", kidsDic);
+       //NSLog(@"%@", kidsDic);
         NSString *pngFilePath = [NSString stringWithFormat:@"%@/%@",docDir, [kidsDic objectForKey:SCHOOL_IMAGE_NAME]];
         
         if([[NSFileManager defaultManager] fileExistsAtPath:pngFilePath])

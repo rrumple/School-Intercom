@@ -580,7 +580,7 @@ CGRect barRect;
 {
     UITouch *touch = [touches anyObject];
     CGPoint point = [touch locationInView:self];
-    NSLog(@"Touch x: %f, y:%f", point.x, point.y);
+    //NSLog(@"Touch x: %f, y:%f", point.x, point.y);
     
     for (int i = 0; i < self.kNumberOfBars; i++)
     {
@@ -600,7 +600,7 @@ CGRect barRect;
             //self.barLabel.hidden = false;
             //self.barLabel.text = self.impressions[i];
             [self barPressed:i andType:1];
-            NSLog(@"Tapped a bar with index %d, value %f", i, [self.chartData1[i] floatValue]);
+            //NSLog(@"Tapped a bar with index %d, value %f", i, [self.chartData1[i] floatValue]);
             break;
         }
         if (CGRectContainsPoint(touchAreas4[i], point))
@@ -611,12 +611,12 @@ CGRect barRect;
            // self.barLabel.hidden = false;
             //self.barLabel.text = self.clicks[i];
             [self barPressed:i andType:2];
-            NSLog(@"Tapped a Click Bar with index %d, value %f", i,[self.chartData2[i] floatValue]);
+            //NSLog(@"Tapped a Click Bar with index %d, value %f", i,[self.chartData2[i] floatValue]);
                   break;
         }
         if (CGRectContainsPoint(touchAreas3[i], point))
         {
-            NSLog(@"Tapped a Bar Label with index %d, value %@", i, self.labels[i]);
+            //NSLog(@"Tapped a Bar Label with index %d, value %@", i, self.labels[i]);
             [self buttonPressed:i];
             break;
             

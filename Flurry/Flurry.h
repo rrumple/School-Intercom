@@ -186,7 +186,7 @@ typedef enum {
  *  - (void)applicationDidFinishLaunching:(UIApplication *)application 
  {
  // Optional Flurry startup methods
- [Flurry startSession:@"YOUR_API_KEY"];
+ //[Flurry startSession:@"YOUR_API_KEY"];
  // ....
  }
  * @endcode
@@ -217,7 +217,7 @@ typedef enum {
  *  - (BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
  {
  // Optional Flurry startup methods
- [Flurry startSession:@"YOUR_API_KEY" withOptions:launchOptions];
+ //[Flurry startSession:@"YOUR_API_KEY" withOptions:launchOptions];
  // ....
  }
  * @endcode
@@ -237,7 +237,7 @@ typedef enum {
  *  - (BOOL) application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
  {
  // Optional Flurry startup methods
- [Flurry activeSessionExists:@"YOUR_API_KEY" withOptions:launchOptions];
+ //[Flurry activeSessionExists:@"YOUR_API_KEY" withOptions:launchOptions];
  // ....
  }
  * @endcode
@@ -261,7 +261,7 @@ typedef enum {
  *  - (void)allBackgroundTasksFinished
  {
  // ....
- [Flurry pauseBackgroundSession];
+ //[Flurry pauseBackgroundSession];
  // ....
  }
  * @endcode
@@ -282,7 +282,7 @@ typedef enum {
  *  - (void)interestingSDKWrapperLibraryfunction
  {
      // ... after calling startSession
-     [Flurry addOrigin:@"Interesting_Wrapper" withVersion:@"1.0.0"];
+     //[Flurry addOrigin:@"Interesting_Wrapper" withVersion:@"1.0.0"];
      // more code ...
  }
  *  @endcode
@@ -314,7 +314,7 @@ typedef enum {
         @"Origin Info Item Key", // Parameter Name
         nil];
     // ... after calling startSession
-    [Flurry addOrigin:@"Interesting_Wrapper" withVersion:@"1.0.0"];
+    //[Flurry addOrigin:@"Interesting_Wrapper" withVersion:@"1.0.0"];
     // more code ...
  }
  *  @endcode
@@ -356,7 +356,7 @@ typedef enum {
  *  @code
  *  - (void)interestingAppAction 
  {
- [Flurry logEvent:@"Interesting_Action"];
+ //[Flurry logEvent:@"Interesting_Action"];
  // Perform interesting action
  }
  *  @endcode
@@ -401,7 +401,7 @@ typedef enum {
  [NSDictionary dictionaryWithObjectsAndKeys:@"Cool Item", // Parameter Value
  @"Item Purchased", // Parameter Name
  nil];
- [Flurry logEvent:@"Something Cool Purchased" withParameters:params];
+ //[Flurry logEvent:@"Something Cool Purchased" withParameters:params];
  // Give user cool item
  }
  *  @endcode
@@ -427,13 +427,13 @@ typedef enum {
  *  @code
  *  - (void) uncaughtExceptionHandler(NSException *exception) 
  {
- [Flurry logError:@"Uncaught" message:@"Crash!" exception:exception];
+ //[Flurry logError:@"Uncaught" message:@"Crash!" exception:exception];
  }
  
  - (void)applicationDidFinishLaunching:(UIApplication *)application 
  {
  NSSetUncaughtExceptionHandler(&uncaughtExceptionHandler);
- [Flurry startSession:@"YOUR_API_KEY"];
+ //[Flurry startSession:@"YOUR_API_KEY"];
  // ....
  }
  *  @endcode
@@ -455,7 +455,7 @@ typedef enum {
  *  @code
  *  - (void) webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error 
  {
- [Flurry logError:@"WebView No Load" message:[error localizedDescription] error:error];
+ //[Flurry logError:@"WebView No Load" message:[error localizedDescription] error:error];
  }
  *  @endcode
  * 
@@ -487,13 +487,13 @@ typedef enum {
  *  @code
  *  - (void)startLevel 
  {
- [Flurry logEvent:@"Level Played" timed:YES];
+ //[Flurry logEvent:@"Level Played" timed:YES];
  // Start user on level
  }
  
  - (void)endLevel 
  {
- [Flurry endTimedEvent:@"Level Played" withParameters:nil];
+ //[Flurry endTimedEvent:@"Level Played" withParameters:nil];
  // User done with level
  }
  *  @endcode
@@ -530,7 +530,7 @@ typedef enum {
  @"Current Points", // Parameter Name
  nil];
  
- [Flurry logEvent:@"Level Played" withParameters:params timed:YES];
+ //[Flurry logEvent:@"Level Played" withParameters:params timed:YES];
  // Start user on level
  }
  
@@ -541,7 +541,7 @@ typedef enum {
  [NSDictionary dictionaryWithObjectsAndKeys:@"200", // Parameter Value
  @"Current Points", // Parameter Name
  nil];
- [Flurry endTimedEvent:@"Level Played" withParameters:params];
+ //[Flurry endTimedEvent:@"Level Played" withParameters:params];
  // User done with level
  }
  *  @endcode
@@ -580,7 +580,7 @@ typedef enum {
  @"Current Points", // Parameter Name
  nil];
  
- [Flurry logEvent:@"Level Played" withParameters:params timed:YES];
+ //[Flurry logEvent:@"Level Played" withParameters:params timed:YES];
  // Start user on level
  }
  
@@ -591,7 +591,7 @@ typedef enum {
  [NSDictionary dictionaryWithObjectsAndKeys:@"200", // Parameter Value
  @"Current Points", // Parameter Name
  nil];
- [Flurry endTimedEvent:@"Level Played" withParameters:params];
+ //[Flurry endTimedEvent:@"Level Played" withParameters:params];
  // User done with level
  }
  *  @endcode
@@ -633,7 +633,7 @@ typedef enum {
  *  @code
  * -(void) trackViewsFromTabBar:(UITabBarController*) tabBar 
  {
- [Flurry logAllPageViewsForTarget:tabBar];
+ //[Flurry logAllPageViewsForTarget:tabBar];
  }
  *  @endcode
  * 
@@ -650,7 +650,7 @@ typedef enum {
  *  @code
  * -(void) dealloc
  {
- [Flurry stopLogPageViewsForTarget:_tabBarController];
+ //[Flurry stopLogPageViewsForTarget:_tabBarController];
  [_tabBarController release];
  [super dealloc];
  }
@@ -673,7 +673,7 @@ typedef enum {
  *  @code
  *  -(void) trackView 
  {
- [Flurry logPageView];
+ //[Flurry logPageView];
  }
  *  @endcode
  *
@@ -758,7 +758,7 @@ typedef enum {
  *
  *  @code
  CLLocation *location = locationManager.location;
- [Flurry  setLatitude:location.coordinate.latitude
+ //[Flurry  setLatitude:location.coordinate.latitude
             longitude:location.coordinate.longitude
    horizontalAccuracy:location.horizontalAccuracy
      verticalAccuracy:location.verticalAccuracy];

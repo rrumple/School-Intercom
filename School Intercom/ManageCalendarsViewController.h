@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "AdminModel.h"
+#import <Google/Analytics.h>
 
 @interface ManageCalendarsViewController : UIViewController
 

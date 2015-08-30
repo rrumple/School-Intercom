@@ -31,6 +31,7 @@
 @property (nonatomic, strong) NSArray *teachers;
 @property (nonatomic, strong) NSDictionary *teacherData;
 @property (nonatomic, strong) NSString *teacherSelected;
+@property (nonatomic) NSInteger teacherSelectedRow;
 @property (nonatomic, strong) NSString *classSelected;
 @property (weak, nonatomic) IBOutlet UIButton *showAddTeacherButton;
 @property (weak, nonatomic) IBOutlet UILabel *swipeLabel;
@@ -84,6 +85,11 @@
     NSMutableArray *tempTeacherArray = [self.masterListOfTeachers mutableCopy];
     NSMutableDictionary *tempDataDic = [self.masterListOfClasses mutableCopy];
     
+    if(!tempTeacherArray)
+        tempTeacherArray = [[NSMutableArray alloc]init];
+    if(!tempDataDic)
+        tempDataDic = [[NSMutableDictionary alloc]init];
+    
     if([self.masterListOfTeachers count] > 0 && [self.kidTeachers count] > 0)
     {
         for(NSDictionary *teacher in self.masterListOfTeachers)
@@ -94,10 +100,13 @@
             
             for(NSDictionary *otherTeacher in self.kidTeachers)
             {
+                
                 for(NSDictionary *class in classes)
                 {
+                    
                     if([[class objectForKey:ID] isEqualToString:[otherTeacher objectForKey:@"classID"]])
                     {
+                        //NSLog(@"test");
                         [tempClasses removeObject:class];
                         
                     }
@@ -121,10 +130,13 @@
     if([tempTeacherArray count] == 0)
         [tempTeacherArray addObject:@{TEACHER_PREFIX:@"No Teachers ", TEACHER_LAST_NAME:@"to Display", ID:@"999"}];
     
+        
+    
     self.teachers = tempTeacherArray;
     self.teacherData = tempDataDic;
-    
-    UIPickerView *tempPicker = (UIPickerView *)self.gradeTF.inputView;
+  
+    UIPickerView *tempPicker = (UIPickerView *)[self.gradeTF.inputView viewWithTag:zPickerTeacher];
+    //self.gradeTF.inputView = [self createPickerWithTag:zPickerTeacher];
     [tempPicker reloadAllComponents];
 
 }
@@ -233,15 +245,21 @@
                 }
                 else
                 {
+                    [self.mainUserData resetTeacherNamesAndUserClasses];
                     
-                    if([self.mainUserData.accountType intValue] > 0 && [self.mainUserData.accountType intValue] < 8)
-                        [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];
+                    //if([self.mainUserData.accountType intValue] > 0)
+                    [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];
                     
                     
                     
                     for(NSDictionary *teacherData in [tempDic objectForKey:@"teacherNames"])
                     {
                         [self.mainUserData addTeacherName:teacherData];
+                    }
+                    
+                    for(NSDictionary *userClassData in [tempDic objectForKey:@"usersClassData"])
+                    {
+                        [self.mainUserData addUserClass:userClassData];
                     }
                     
                     
@@ -272,9 +290,11 @@
                 }
                 else
                 {
+                    UIPickerView *tempPicker = (UIPickerView *)[self.gradeTF.inputView viewWithTag:zPickerTeacher];
+                    [tempPicker selectRow:0 inComponent:0 animated:NO];
                     self.mainUserData.teacherNames = nil;
-                    [self updateTeacherNames];
                     [self getKidsTeachersFromDatabase];
+                    [self updateTeacherNames];
                     [[NSNotificationCenter defaultCenter] postNotificationName:@"LOAD_DATA" object:nil userInfo:nil];
                     
                 }
@@ -307,9 +327,13 @@
                     {
                         [self.mainUserData addTeacherName:teacherData];
                     }
-
+                    UIPickerView *tempPicker = (UIPickerView *)[self.gradeTF.inputView viewWithTag:zPickerTeacher];
+                    [tempPicker selectRow:0 inComponent:0 animated:NO];
+                    self.teacherSelected = [[self.teachers objectAtIndex:0] objectForKey:ID];
+                    self.teacherSelectedRow = 0;
                     
                     [self getKidsTeachersFromDatabase];
+                    
                     self.gradeTF.text = @"";
                     self.gradeTF.hidden = true;
                     self.showAddTeacherButton.hidden = false;
@@ -386,7 +410,7 @@
 
 - (void)checkToSeeIfButtonShouldBeEnabled
 {
-    NSLog(@"%@", self.firstNameTF.text);
+    //NSLog(@"%@", self.firstNameTF.text);
     if(self.addingNewKid)
     {
         if(self.firstNameTFready && self.lastNameTFready && [self.gradeTF.text length] > 0)
@@ -444,16 +468,14 @@
     
     UITapGestureRecognizer *gestureRecgnizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideKeyboard)];
     gestureRecgnizer.cancelsTouchesInView = NO;
-    
+   
     
     [self.view addGestureRecognizer:gestureRecgnizer];
     
     
-    
-    
 }
 
--(UIPickerView *)createPickerWithTag:(NSInteger)tag
+-(UIView *)createPickerWithTag:(NSInteger)tag
 {
     UIPickerView *pickerView = [[UIPickerView alloc]init];
     pickerView.tag = tag;
@@ -462,15 +484,30 @@
     
     [pickerView setShowsSelectionIndicator:YES];
     
+    UIToolbar *toolBar= [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];
+    [toolBar setBarStyle:UIBarStyleBlackOpaque];
+    UIBarButtonItem *barButtonDone = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                                      style:UIBarButtonItemStyleBordered target:self action:@selector(hideKeyboard)];
     
+    toolBar.barTintColor = [UIColor colorWithRed:0.820f green:0.835f blue:0.859f alpha:1.00f];
+    
+    toolBar.items = [[NSArray alloc] initWithObjects:barButtonDone,nil];
+    barButtonDone.tintColor=[UIColor blackColor];
+    
+    
+    UIView *pickerParentView = [[UIView alloc]initWithFrame:CGRectMake(0, 60, 320, 216)];
+    [pickerParentView addSubview:pickerView];
+    [pickerParentView addSubview:toolBar];
+/*
     
     UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
     
     [tapGR setNumberOfTapsRequired:1];
     [tapGR setDelegate:self];
     [pickerView addGestureRecognizer:tapGR];
+ */
     
-    return pickerView;
+    return pickerParentView;
 }
 
 - (void)pickerViewTapped
@@ -552,6 +589,16 @@
 
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Add_Update_Kid_Screen"];
+    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+    
+}
 
 
 - (void)viewDidLoad
@@ -579,9 +626,9 @@
     if (self.addingNewKid)
     {
        
-        [self.addUpdateButton setTitle:@"Add Kid" forState:UIControlStateNormal];
+        [self.addUpdateButton setTitle:@"Add Student" forState:UIControlStateNormal];
         self.schoolTF.text = [self.mainUserData getSchoolNameFromID:self.mainUserData.schoolIDselected];
-        self.header.text = @"Add a Kid";
+        self.header.text = @"Add a Student";
         self.teacherTableView.hidden = true;
         self.swipeLabel.hidden = true;
         self.showAddTeacherButton.hidden = true;
@@ -636,6 +683,8 @@
 
 - (IBAction)addUpdateButtonPressed:(UIButton *)sender
 {
+    [self hideKeyboard];
+    
     if(self.changesMade && [sender.titleLabel.text isEqualToString:@"Add Teacher"])
     {
         [self addTeacherButtonPressed];
@@ -744,6 +793,11 @@
     
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForFooterInSection:(NSInteger)section
+{
+    return 0.01f;
+}
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     if(self.addingNewKid)
@@ -759,8 +813,8 @@
     UITableViewCell *cell = [[UITableViewCell alloc]initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:@"cell"];
     
     
-    cell.textLabel.text = [NSString stringWithFormat:@"%@ - %@", [[self.kidTeachers objectAtIndex:indexPath.row] objectForKey:TEACHER_NAME], [HelperMethods convertGradeLevel:[[self.kidTeachers objectAtIndex:indexPath.row]objectForKey:@"grade"]appendGrade:YES]];
-        cell.detailTextLabel.text = [[self.kidTeachers objectAtIndex:indexPath.row]objectForKey:@"className"];
+    cell.textLabel.text = [NSString stringWithFormat:@"%@", [[self.kidTeachers objectAtIndex:indexPath.row] objectForKey:@"teacherName"]];
+    cell.detailTextLabel.text = [[self.kidTeachers objectAtIndex:indexPath.row]objectForKey:@"className"];
     
     return cell;
 }
@@ -779,6 +833,7 @@
         
     }
 }
+
 
 -(NSInteger)pickerView:(UIPickerView *)pickerView numberOfRowsInComponent:(NSInteger)component
 {
@@ -829,9 +884,10 @@
         return 1;
 }
 
+
 -(NSString *)pickerView:(UIPickerView *)pickerView titleForRow:(NSInteger)row forComponent:(NSInteger)component
 {
-    
+    /*
     if(pickerView.tag == zPickerTeacher)
     {
         if(component == 0)
@@ -852,11 +908,39 @@
       
         
     }
+     */
     
     return nil;
 }
 
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
+    UILabel *retval = (id)view;
+    if (!retval) {
+        retval= [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [pickerView rowSizeForComponent:component].width, [pickerView rowSizeForComponent:component].height)];
+    }
+    if(pickerView.tag == zPickerTeacher)
+    {
+        if(component == 0)
+        {
+            if([[[self.teachers objectAtIndex:row]objectForKey:ID] isEqualToString:@"999"])
+                retval.text = @"No Teachers to Display";
+            else
+            {
+                retval.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:row] objectForKey:@"teacherName"]];
+                
+            }
+        }
+        else
+        {
+            retval.text = [NSString stringWithFormat:@"%@", [[[self.teacherData objectForKey:self.teacherSelected]objectAtIndex:row] objectForKey:@"className"]];
+        }
+    }
 
+    retval.textAlignment = NSTextAlignmentCenter;
+        retval.font = [UIFont systemFontOfSize:22];
+        retval.adjustsFontSizeToFitWidth = YES;
+    return retval;
+}
 
 -(void)pickerView:(UIPickerView *)pickerView didSelectRow:(NSInteger)row inComponent:(NSInteger)component
 {
@@ -865,20 +949,38 @@
         if(pickerView.tag == zPickerTeacher)
         {
                 self.teacherSelected = [[self.teachers objectAtIndex:row] objectForKey:ID];
-                self.gradeTF.text = [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row]objectForKey:           TEACHER_PREFIX], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_LAST_NAME]];
+                self.teacherSelectedRow = row;
+                if([[self.teacherData objectForKey:self.teacherSelected]count] > 1)
+                {
+                    self.gradeTF.text = [NSString stringWithFormat:@"%@ - %@", [[self.teachers objectAtIndex:self.teacherSelectedRow] objectForKey:@"teacherName"],
+                                         [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:0]objectForKey:@"className"]] ;
+                }
+                else
+                    self.gradeTF.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:row]objectForKey:@"teacherName"]] ;
                 [pickerView reloadAllComponents];
+            
             
         }
     }
     else
     {
         self.classSelected = [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:row]objectForKey:ID];
+        self.gradeTF.text = [NSString stringWithFormat:@"%@ - %@", [[self.teachers objectAtIndex:self.teacherSelectedRow] objectForKey:@"teacherName"],
+                             [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:0]objectForKey:@"className"]] ;
+        [pickerView reloadAllComponents];
     }
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
 {
     return TRUE;
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [self hideKeyboard];
+    
+    return YES;
 }
 
 - (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
@@ -898,9 +1000,13 @@
 {
     if(self.gradeTF.isFirstResponder && [self.gradeTF.text length] == 0 && ![[[self.teachers objectAtIndex:0]objectForKey:ID] isEqualToString:@"999"] )
     {
-        self.gradeTF.text = [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:0]objectForKey:           TEACHER_PREFIX], [[self.teachers objectAtIndex:0]objectForKey:TEACHER_LAST_NAME]];
+        //self.gradeTF.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:0]objectForKey:@"teacherName"]];
         self.teacherSelected = [[self.teachers objectAtIndex:0] objectForKey:ID];
+        self.teacherSelectedRow = 0;
         self.classSelected = [[self.teachers objectAtIndex:0]objectForKey:@"classID"];
+        self.gradeTF.text = [NSString stringWithFormat:@"%@ - %@", [[self.teachers objectAtIndex:self.teacherSelectedRow] objectForKey:@"teacherName"],
+                             [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:0]objectForKey:@"className"]] ;
+        
     }
 }
 

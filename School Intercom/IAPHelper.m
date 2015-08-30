@@ -55,11 +55,11 @@ NSString *const IAPHelperProductRestoreCompletedWithNumber = @"IAPHelperProductR
         if(productPurchased)
         {
             [_purchasedProductIdentifiers addObject:productIdentifier];
-            NSLog(@"Previously purchased: %@", productIdentifier);
+            //NSLog(@"Previously purchased: %@", productIdentifier);
         }
         else
         {
-            NSLog(@"Not Purchased: %@", productIdentifier);
+            //NSLog(@"Not Purchased: %@", productIdentifier);
         }
     }
 
@@ -87,7 +87,7 @@ NSString *const IAPHelperProductRestoreCompletedWithNumber = @"IAPHelperProductR
             }
             
             
-            NSLog(@"%@", tempSet);
+            //NSLog(@"%@", tempSet);
             // });
             
         }
@@ -115,14 +115,14 @@ NSString *const IAPHelperProductRestoreCompletedWithNumber = @"IAPHelperProductR
 
 - (void)productsRequest:(SKProductsRequest *)request didReceiveResponse:(SKProductsResponse *)response
 {
-    NSLog(@"Loaded list of produts...");
+    //NSLog(@"Loaded list of produts...");
     _productsRequest = nil;
     
     NSArray * skProducts = response.products;
-    for(SKProduct * skProduct in skProducts)
-    {
-        NSLog(@"Found product: %@ %@ %0.2f", skProduct.productIdentifier, skProduct.localizedTitle, skProduct.price.floatValue);
-    }
+    //for(SKProduct * skProduct in skProducts)
+    //{
+        //NSLog(@"Found product: %@ %@ %0.2f", skProduct.productIdentifier, skProduct.localizedTitle, skProduct.price.floatValue);
+    //}
     
     _completionHandler(YES, skProducts);
     _completionHandler = nil;
@@ -144,7 +144,7 @@ NSString *const IAPHelperProductRestoreCompletedWithNumber = @"IAPHelperProductR
 
 - (void)buyProduct:(SKProduct *)product
 {
-    NSLog(@"Buying %@...", product.productIdentifier);
+   // NSLog(@"Buying %@...", product.productIdentifier);
     
     SKPayment *payment = [SKPayment paymentWithProduct:product];
     [[SKPaymentQueue defaultQueue] addPayment:payment];
@@ -153,7 +153,7 @@ NSString *const IAPHelperProductRestoreCompletedWithNumber = @"IAPHelperProductR
 - (void)restoreCompletedTransactions {
     
     
-    NSLog(@"restore started");
+    //NSLog(@"restore started");
     self.numberOfRestoredTransactions = 0;
     [[SKPaymentQueue defaultQueue] restoreCompletedTransactions];
 }
@@ -174,7 +174,7 @@ NSString *const IAPHelperProductRestoreCompletedWithNumber = @"IAPHelperProductR
 
 - (void)provideContentForRestoredProductIdentifier:(SKPaymentTransaction *)transaction
 {
-    NSLog(@"%@", transaction.payment.productIdentifier);
+   // NSLog(@"%@", transaction.payment.productIdentifier);
     if (![[[NSUserDefaults standardUserDefaults] valueForKey:transaction.payment.productIdentifier]boolValue])
     {
         self.numberOfRestoredTransactions++;

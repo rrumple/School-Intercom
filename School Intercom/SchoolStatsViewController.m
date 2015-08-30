@@ -8,11 +8,12 @@
 
 #import "SchoolStatsViewController.h"
 #import "AdminModel.h"
+#import "ShowLoginScreenViewController.h"
 
 @interface SchoolStatsViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *totalGrandparentLabel;
 @property (weak, nonatomic) IBOutlet UILabel *totalUsersLabel;
-@property (weak, nonatomic) IBOutlet UILabel *fundraiserPackPurchasesLabel;
+@property (weak, nonatomic) IBOutlet UILabel *offerPackPurchasesLabel;
 @property (weak, nonatomic) IBOutlet UILabel *activeAdvertisersLabel;
 @property (weak, nonatomic) IBOutlet UILabel *activeUsersTodayLabel;
 @property (weak, nonatomic) IBOutlet UILabel *activeTeachersTodayLabel;
@@ -55,7 +56,7 @@
                         
                         self.totalUsersLabel.text = [NSString stringWithFormat:@"%@",[tempDic objectForKey:@"totalUsers"]];
                         self.totalGrandparentLabel.text = [NSString stringWithFormat:@"%@", [tempDic objectForKey:@"totalGrandparents"]];
-                        self.fundraiserPackPurchasesLabel.text = [NSString stringWithFormat:@"%@",[tempDic objectForKey:@"totalFundraiserPacksPurchased"]];
+                        self.offerPackPurchasesLabel.text = [NSString stringWithFormat:@"%@",[tempDic objectForKey:@"totalFundraiserPacksPurchased"]];
                         self.activeAdvertisersLabel.text = [NSString stringWithFormat:@"%@",[tempDic objectForKey:@"totalActiveAds"]];
                         self.activeUsersTodayLabel.text = [NSString stringWithFormat:@"%@",[tempDic objectForKey:@"totalActiveUsersToday"]];
                         self.activeTeachersTodayLabel.text = [NSString stringWithFormat:@"%@",[tempDic objectForKey:@"totalActiveTeachersToday"]];
@@ -144,6 +145,17 @@
     
     
     return cell;
+}
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+    {
+    if([segue.identifier isEqualToString:@"showLoginSegue"])
+    {
+        ShowLoginScreenViewController *SLSVC = segue.destinationViewController;
+        
+        SLSVC.schoolData = [self.mainUserData getSchoolDataForSchoolID:self.schoolIDSelected];
+        
+
+    }
 }
 
 

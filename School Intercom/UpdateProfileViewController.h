@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "UpdateProfileModel.h"
 #import "IntroModel.h"
+#import <Google/Analytics.h>
 
 @interface UpdateProfileViewController : UIViewController <UITextFieldDelegate>
 @property (nonatomic, strong) UserData *mainUserData;

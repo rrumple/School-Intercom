@@ -32,6 +32,16 @@
     self.rowCount = rowCount;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Settings_Screen"];
+    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+}
+
 
 - (void)viewDidLoad
 {

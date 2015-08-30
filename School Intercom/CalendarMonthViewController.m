@@ -30,9 +30,14 @@
  */
 
 #import "CalendarMonthViewController.h"
+#import "AdminToolsQuickAddView.h"
+#import "SendAlertViewController.h"
+#import "ManageCalendarTableViewController.h"
+#import "ManagePostTableViewController.h"
+@import GoogleMobileAds;
 
 
-@interface CalendarMonthViewController ()
+@interface CalendarMonthViewController () <GADBannerViewDelegate>
 @property (nonatomic, strong) NSArray *monthArray;
 @property (nonatomic, strong) NSArray *monthsUsed;
 @property (nonatomic, strong) NSArray *yearsUsed;
@@ -46,11 +51,24 @@
 @property (nonatomic, strong) NSDictionary *adData;
 @property (strong, nonatomic) UIButton *adImageButton;
 @property (nonatomic, strong) NSDateFormatter *dateFormatter;
+@property (strong, nonatomic)  UIView *quickAddView;
+@property (strong, nonatomic)  UIButton *quickAddButton;
+@property (nonatomic, strong) AdminToolsQuickAddView *tempView;
+@property (nonatomic, strong) SendAlertViewController *SAVC;
+
+@property (strong, nonatomic)  GADBannerView *adView;
+@property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic) BOOL viewDisappeared;
 @end
 
 #pragma mark - CalendarMonthViewController
 @implementation CalendarMonthViewController
 
+- (SendAlertViewController *)SAVC
+{
+    if (!_SAVC) _SAVC = [[SendAlertViewController alloc]init];
+    return _SAVC;
+}
 - (NSDateFormatter *)dateFormatter
 {
     if (!_dateFormatter) _dateFormatter = [[NSDateFormatter alloc]init];
@@ -107,6 +125,30 @@
                                     [NSNumber numberWithInt:0],
                                     [NSNumber numberWithInt:0],
                                     [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
+                                    [NSNumber numberWithInt:0],
                                     nil];
     return _monthArray;
     
@@ -147,7 +189,7 @@
                 
                 if([[tempDic objectForKey:@"error"] boolValue])
                 {
-                    NSLog(@"%@", tempDic);
+                    //NSLog(@"%@", tempDic);
                 }
             });
             
@@ -171,7 +213,7 @@
     
     NSString *baseImageURL = [NSString stringWithFormat:@"%@%@%@", AD_IMAGE_URL, AD_DIRECTORY, fileName];
     
-    NSLog(@"%@", baseImageURL);
+    //NSLog(@"%@", baseImageURL);
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("get Image", NULL);
     dispatch_async(downloadQueue, ^{
@@ -183,7 +225,7 @@
             UIImage *image = [UIImage imageWithData:data];
             [self.adImageButton setImage:image forState:UIControlStateNormal];
             //[spinner stopAnimating];
-            NSLog(@"%f, %f", image.size.width, image.size.height);
+            //NSLog(@"%f, %f", image.size.width, image.size.height);
         });
         
         
@@ -198,7 +240,7 @@
     dispatch_queue_t createQueue = dispatch_queue_create("getLocalAd", NULL);
     dispatch_async(createQueue, ^{
         NSArray *adDataArray;
-        adDataArray = [self.adModel getAdFromDatabase:self.mainUserData.schoolIDselected];
+        adDataArray = [self.adModel getAdFromDatabase:self.mainUserData.schoolIDselected forUser:self.mainUserData.userID];
         
         if ([adDataArray count] == 1)
         {
@@ -241,7 +283,7 @@
                  if ( granted )
                  {
                      
-                     NSLog(@"User has granted permission!");
+                     //NSLog(@"User has granted permission!");
                      // Create the start date components
                      NSDateComponents *oneDayAgoComponents = [[NSDateComponents alloc] init];
                      oneDayAgoComponents.day = -1;
@@ -266,7 +308,7 @@
                                                                              endDate:sixMonthsFromNow
                                                                            calendars:nil];
                      self.eventsArray = [store eventsMatchingPredicate:predicate];
-                     NSLog(@"The content of array is%@",self.eventsArray);
+                     //NSLog(@"The content of array is%@",self.eventsArray);
                      // Fetch all events that match the predicate
                      dispatch_async(dispatch_get_main_queue(), ^{
                          
@@ -337,12 +379,12 @@
 - (void)getSectionCount
 {
     
-    NSMutableArray *tempArray = [self.monthArray mutableCopy];
+    NSMutableArray *tempArray = [[NSMutableArray alloc] init];
     NSMutableArray *monthsUsed = [[NSMutableArray alloc]init];
     NSMutableArray *yearsUsed = [[NSMutableArray alloc]init];
     
-    NSLog(@"%@", tempArray);
-    NSLog(@"%@", self.calendarData);
+    //NSLog(@"%@", tempArray);
+    //NSLog(@"%@", self.calendarData);
     if(self.calendarData != (id)[NSNull null])
     {
         for(NSDictionary *calDic in self.calendarData)
@@ -350,157 +392,222 @@
             NSArray *dateArray = [self getDateArrayFromString:[calDic objectForKey:CAL_START_DATE]];
             
             
+            
             switch ([[dateArray objectAtIndex:1]integerValue])
             {
                 case JANUARY:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:JANUARY-1] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:JANUARY-1 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:JANUARY]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:JANUARY]])
+                    {
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
                     {
                         [monthsUsed addObject:[NSNumber numberWithInt:JANUARY]];
                         [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
-                    
                     break;
                 }
                 case FEBUARY:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:FEBUARY-1] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:FEBUARY-1 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:FEBUARY]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:FEBUARY]])
+                    {
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
                     {
                         [monthsUsed addObject:[NSNumber numberWithInt:FEBUARY]];
                         [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
-                    
                     break;
                 }
                 case MARCH:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:2] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:2 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:MARCH]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:MARCH]])
+                    {
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
                     {
                         [monthsUsed addObject:[NSNumber numberWithInt:MARCH]];
                         [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
-                    
                     break;
                 }
                 case APRIL:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:3] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:3 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:APRIL]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:APRIL]])
+                    {
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
                     {
                         [monthsUsed addObject:[NSNumber numberWithInt:APRIL]];
                         [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
-                    
                     break;
                 }
                 case MAY:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:4] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:4 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:MAY]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:MAY]])
+                    {
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
                     {
                         [monthsUsed addObject:[NSNumber numberWithInt:MAY]];
                         [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
-                    
                     break;
                 }
                 case JUNE:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:5] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:5 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:JUNE]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:JUNE]])
+                    {
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
                     {
                         [monthsUsed addObject:[NSNumber numberWithInt:JUNE]];
                         [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
-                    
                     break;
                 }
                 case JULY:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:6] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:6 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:JULY]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:JULY]])
                     {
-                        [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
+                    {
                         [monthsUsed addObject:[NSNumber numberWithInt:JULY]];
+                        [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
                     break;
                 }
                 case AUGUST:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:7] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:7 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:AUGUST]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:AUGUST]])
+                    {
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
                     {
                         [monthsUsed addObject:[NSNumber numberWithInt:AUGUST]];
                         [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
-                    
                     break;
                 }
                 case SEPTEMBER:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:SEPTEMBER -1] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:SEPTEMBER -1 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:SEPTEMBER]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:SEPTEMBER]])
+                    {
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
                     {
                         [monthsUsed addObject:[NSNumber numberWithInt:SEPTEMBER]];
                         [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
                     break;
                 }
                 case OCTOBER:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:9] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:9 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:OCTOBER]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:OCTOBER]])
+                    {
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
                     {
                         [monthsUsed addObject:[NSNumber numberWithInt:OCTOBER]];
                         [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
-                    
                     break;
                 }
                 case NOVEMBER:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:10] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:10 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:NOVEMBER]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:NOVEMBER]])
+                    {
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
                     {
                         [monthsUsed addObject:[NSNumber numberWithInt:NOVEMBER]];
                         [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
                     break;
                 }
                 case DECEMBER:
                 {
-                    NSInteger number = [[tempArray objectAtIndex:11] integerValue];
-                    number++;
-                    [tempArray replaceObjectAtIndex:11 withObject:[NSNumber numberWithLong:number]];
-                    if(![monthsUsed containsObject:[NSNumber numberWithInt:DECEMBER]])
+                    if([[monthsUsed lastObject] isEqualToNumber:[NSNumber numberWithInt:DECEMBER]])
+                    {
+                        NSUInteger count = [monthsUsed count];
+                        NSInteger number = [[tempArray lastObject] integerValue];
+                        number++;
+                        [tempArray replaceObjectAtIndex:count -1 withObject:[NSNumber numberWithLong:number]];
+                    }
+                    else
                     {
                         [monthsUsed addObject:[NSNumber numberWithInt:DECEMBER]];
                         [yearsUsed addObject:[dateArray objectAtIndex:0]];
+                        [tempArray addObject:[NSNumber numberWithLong:1]];
+                        
                     }
                     break;
                 }
@@ -514,7 +621,7 @@
         [alert show];
     }
     
-    NSLog(@"YEARS USED%@", yearsUsed);
+    //NSLog(@"YEARS USED%@", yearsUsed);
     
     
     self.monthArray = tempArray;
@@ -536,15 +643,195 @@
 
 #pragma mark View Lifecycle
 
+- (void)appWillEnterForeground
+{
+    
+
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
+   
+    [self startTimer];
+}
+
+- (void)appHasGoneInBackground
+{
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [self.timer invalidate];
+}
+
+- (void)adViewWillLeaveApplication:(GADBannerView *)adView {
+    //NSLog(@"adViewDidLeaveApplication");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [self.timer invalidate];
+}
+
 - (void)viewWillDisappear:(BOOL)animated
 {
+    
     [super viewWillDisappear:animated];
+     self.viewDisappeared = true;
+     [self.timer invalidate];
     [[NSNotificationCenter defaultCenter]removeObserver:self];
+   
+}
+
+
+- (void)adView:(GADBannerView *)bannerView
+didFailToReceiveAdWithError:(GADRequestError *)error
+{
+    NSLog(@"There was an error!");
+    if(!self.mainUserData.isAdTestMode)
+        [self.adModel updateMMAdFailedCountInDatabse:self.mainUserData.userID andSchoolID:self.mainUserData.schoolIDselected];
+}
+
+- (void)adViewWillPresentScreen:(GADBannerView *)adView {
+    //NSLog(@"adViewWillPresentScreen");
+    if(!self.mainUserData.isAdTestMode)
+        [self.adModel updateMMAdClickCountInDatabse:self.mainUserData.userID andSchoolID:self.mainUserData.schoolIDselected];
+}
+
+- (void)adViewDidReceiveAd:(GADBannerView *)bannerView {
+    //NSLog(@"adViewDidReceiveAd");
+    if(self.mainUserData.isTimerExpired)
+    {
+        [self.view addSubview:self.adView];
+        self.mainUserData.remainingCounts--;
+        [UIView animateWithDuration:1 animations:^{
+            bannerView.frame = CGRectMake(0.0,
+                                          self.view.frame.size.height -
+                                          bannerView.frame.size.height,
+                                          bannerView.frame.size.width,
+                                          bannerView.frame.size.height);
+            
+            
+        } completion:^(BOOL finished) {
+            if(finished)
+                [self startTimer];
+        }];
+        if(!self.mainUserData.isAdTestMode)
+            [self.adModel updateMMAdImpCountInDatabse:self.mainUserData.userID andSchoolID:self.mainUserData.schoolIDselected];
+        
+    }
+    
+}
+
+- (void)hideAd
+{
+    NSLog(@"Hide ad");
+    [UIView animateWithDuration:1 animations:^{
+        self.adView.frame = CGRectMake(0.0,
+                                       self.view.frame.size.height,
+                                       self.adView.frame.size.width,
+                                       self.adView.frame.size.height);
+        
+    }];
+    
+    
+    
+    
+}
+
+
+- (void)startTimer
+{
+    NSLog(@"Timer started");
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
+    
+    self.mainUserData.isTimerExpired = false;
+    
+    
+}
+
+
+- (void)loadNewAd
+{
+    NSLog(@"New Ad Loaded...");
+    
+    
+    GADRequest *request = [GADRequest request];
+    request.testDevices = @[ @"59c997e06ef957f5f6c866b6fed1bb25" ];
+    [self.adView loadRequest:request];
+    
+    
+    NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+    
+    [tempArray addObject:self.adView];
+    self.mainUserData.adViewArray = tempArray;
+    
+}
+
+- (void)countDown
+{
+    
+    if(--self.mainUserData.remainingCounts == 0)
+    {
+        [self.timer invalidate];
+        self.mainUserData.isTimerExpired = true;
+        self.mainUserData.remainingCounts = AD_REFRESH_RATE;
+        
+        [self loadNewAd];
+    }
+    
+    if(self.mainUserData.remainingCounts == AD_HIDE_TIME)
+        [self hideAd];
+    
+    NSLog(@"%i", self.mainUserData.remainingCounts);
+}
+
+- (void)setUnitID
+{
+    if(self.mainUserData.accountType.intValue == 0 || self.mainUserData.accountType.intValue == 8)
+    {
+        if(self.mainUserData.isAdTestMode)
+            self.adView.adUnitID = AD_MOB_TEST_UNIT_ID;
+        else if([[self.mainUserData.schoolData objectForKey:IPHONE_UNIT_ID]isEqualToString:@""])
+            self.adView.adUnitID = AD_MOB_TEST_UNIT_ID;
+        else
+            self.adView.adUnitID = [self.mainUserData.schoolData objectForKey:IPHONE_UNIT_ID];
+    }
+    else if(self.mainUserData.accountType.intValue > 0 && self.mainUserData.accountType.intValue < 5)
+    {
+        if(self.mainUserData.isAdTestMode)
+            self.adView.adUnitID = AD_MOB_TEST_UNIT_ID;
+        else
+            self.adView.adUnitID = AD_MOB_TEACHER_UNIT_ID;
+    }
+    else
+        self.adView.adUnitID = AD_MOB_TEST_UNIT_ID;
+    
+    
 }
 
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
+    self.adView = [[GADBannerView alloc]initWithAdSize:kGADAdSizeSmartBannerPortrait];
+    NSMutableArray *tempArray = [self.mainUserData getAd];
+    
+    NSLog(@"Check to see if get new ad or last user");
+    if([tempArray count] == 1)
+    {
+        NSLog(@"last ad used");
+        self.adView = (GADBannerView *)[tempArray objectAtIndex:0];
+        [self startTimer];
+        self.adView.rootViewController = self;
+        [self.view addSubview:self.adView];
+    }
+    else
+    {
+        self.adView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,60);
+        [self setUnitID];
+        self.adView.rootViewController = self;
+        
+        [self loadNewAd];
+    }
+    
+    
+    self.adView.delegate = self;
+    
     NSLocale *usLocale = [[NSLocale alloc]initWithLocaleIdentifier:@"en-US"];
     [self.dateFormatter setLocale:usLocale];
     [self.dateFormatter setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
@@ -554,7 +841,7 @@
 
     self.showDetailView = false;
     [self getSectionCount];
-    NSLog(@"%@", self.calendarData);
+    //NSLog(@"%@", self.calendarData);
 	self.title = NSLocalizedString(@"Month Grid", @"");
 	[self.monthView selectDate:[NSDate date]];
     CGRect rect = self.monthView.frame;
@@ -562,10 +849,12 @@
     self.monthView.frame = rect;
     CGRect viewRect = self.view.frame;
     rect = self.tableView.frame;
-    rect.size.height = viewRect.size.height - 128;
+    rect.size.height = viewRect.size.height - 124;
     
     rect.origin.y = viewRect.origin.y + 64;
     rect.origin.x = viewRect.origin.x;
+    
+    
     self.tableView.frame = rect;
     [self.monthView removeFromSuperview];
     
@@ -590,25 +879,52 @@
     self.overlay1 = [[UIView alloc]initWithFrame:CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height)];
     self.helpOverlay = [[UIView alloc]initWithFrame:CGRectMake(self.view.frame.origin.x, self.view.frame.origin.y, self.view.frame.size.width, self.view.frame.size.height)];
     
+    self.quickAddView   = [[UIView alloc] initWithFrame:CGRectMake(self.view.frame.size.width /2 - 90, self.view.frame.size.height/2 - 90, 180, 180)];
+    
+
+
+  
+    self.tempView =  [[AdminToolsQuickAddView alloc]init];
+    self.tempView.frame = CGRectMake(0,0,180,180);
+    
+    [self.quickAddView addSubview:self.tempView];
+    
+    
+
+    
     self.overlay1.alpha = 0;
     self.helpOverlay.alpha = 0;
     
     self.overlay1.backgroundColor = [UIColor blackColor];
     self.helpOverlay.backgroundColor = [UIColor clearColor];
+    self.quickAddView.backgroundColor = [UIColor whiteColor];
+    self.quickAddView.hidden = true;
     
     [self.view addSubview:self.overlay1];
     [self.view addSubview:self.helpOverlay];
+    [self.view addSubview:self.quickAddView];
+    
     
     UIButton *dismissButton = [[UIButton alloc]initWithFrame:CGRectMake((self.view.frame.size.width/2) - (118/2), self.view.frame.size.height-38, 118, 30)];
     [dismissButton setTitle:@"Dismiss Help" forState:UIControlStateNormal];
     [dismissButton addTarget:self action:@selector(hideHelpPressed) forControlEvents:UIControlEventTouchDown];
     [self.helpOverlay addSubview:dismissButton];
     
-    self.adImageButton = [[UIButton alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height - 60, self.view.frame.size.width, 60)];
-    [self.adImageButton addTarget:self action:@selector(adButtonclicked) forControlEvents:UIControlEventTouchDown];
-    [self.adImageButton setTitle:@"" forState:UIControlStateNormal];
+    //self.adImageButton = [[UIButton alloc]initWithFrame:CGRectMake(0, self.view.frame.size.height - 60, self.view.frame.size.width, 60)];
+    //[self.adImageButton addTarget:self action:@selector(adButtonclicked) forControlEvents:UIControlEventTouchDown];
+    //[self.adImageButton setTitle:@"" forState:UIControlStateNormal];
     
-    [self.view addSubview:self.adImageButton];
+    self.quickAddButton = [[UIButton alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 50, 13, 40, 40)];
+    
+    [self.quickAddButton addTarget:self action:@selector(quickAddButtonPressed) forControlEvents:UIControlEventTouchDown];
+    [self.quickAddButton setTitle:@"✐" forState:UIControlStateNormal];
+    self.quickAddButton.titleLabel.font = [UIFont systemFontOfSize:31.0];
+    self.quickAddButton.hidden = true;
+    
+    //[self.view addSubview:self.adImageButton];
+    [self.view addSubview:self.quickAddButton];
+    if(self.mainUserData.accountType.intValue > 0 && self.mainUserData.accountType.intValue < 8)
+        self.quickAddButton.hidden = false;
     
     /*
     UIView *detailViewControls = [[UIView alloc]initWithFrame:CGRectMake(self.tableView.frame.origin.x, self.tableView.frame.origin.y, self.tableView.frame.size.width, 40)];
@@ -631,14 +947,90 @@
     
     [self loadUsersCalendar];
 
+    [self.quickAddView.layer setCornerRadius:30.0f];
+    [self.quickAddView.layer setBorderColor:[UIColor lightGrayColor].CGColor];
+    [self.quickAddView.layer setBorderWidth:1.5f];
+    [self.quickAddView.layer setShadowColor:[UIColor blackColor].CGColor];
+    [self.quickAddView.layer setShadowOpacity:0.8];
+    [self.quickAddView.layer setShadowRadius:3.0];
+    [self.quickAddView.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
+    
+    UIButton *btnDisplay = (UIButton *)[self.tempView viewWithTag:128];
+    [btnDisplay  addTarget:self action:@selector(pressedBtnDisplay:) forControlEvents:UIControlEventTouchUpInside];
+    if(self.mainUserData.accountType.intValue > 0 & self.mainUserData.accountType.intValue < 5)
+    {
+    btnDisplay = (UIButton *)[self.tempView viewWithTag:129];
+    [btnDisplay  addTarget:self action:@selector(pressedBtnDisplay:) forControlEvents:UIControlEventTouchUpInside];
+    btnDisplay = (UIButton *)[self.tempView viewWithTag:130];
+    [btnDisplay  addTarget:self action:@selector(pressedBtnDisplay:) forControlEvents:UIControlEventTouchUpInside];
+    }
+}
+
+- (void)quickAddButtonPressed
+{
+    if(self.quickAddView.hidden)
+        self.quickAddView.hidden = false;
+    else
+        self.quickAddView.hidden = true;
+}
+
+
+- (void) pressedBtnDisplay:(id)sender
+{
+    self.quickAddView.hidden = true;
+    UIStoryboard *mainStoryboard = [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+    SendAlertViewController *SAVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"SendAlertViewController"];
+    ManageCalendarTableViewController *MCTVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"ManageCalendarTableViewController"];
+    ManagePostTableViewController *MPTVC = [mainStoryboard instantiateViewControllerWithIdentifier:@"ManagePostTableViewController"];
+    
+    UIButton *button = sender;
+    switch (button.tag) {
+        case 128:
+            
+            SAVC.mainUserData = self.mainUserData;
+            SAVC.isEditing = false;
+            SAVC.autoClose = true;
+            
+            [self.navigationController pushViewController:SAVC animated:YES];
+            break;
+        case 129:
+            MCTVC.mainUserData = self.mainUserData;
+            MCTVC.backgroundColor = self.view.backgroundColor;
+            MCTVC.isNewEvent = true;
+            [self.navigationController pushViewController:MCTVC animated:YES];
+            break;
+        case 130:
+            MPTVC.mainUserData = self.mainUserData;
+            
+            MPTVC.isNewPost = true;
+            
+            [self.navigationController pushViewController:MPTVC animated:YES];
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    if(![self.timer isValid] && self.viewDisappeared)
+    {
+        [self startTimer];
+        self.viewDisappeared = false;
+    }
+    
+
+        
+        
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"Calendar_Screen"];
+        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
     
     
-    [self getAdFromDatabase];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
+  
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -742,10 +1134,15 @@
         NSError *err = nil;
         [store saveEvent:event span:EKSpanThisEvent commit:YES error:&err];
         
-        NSLog(@"%@", event.eventIdentifier);
+        //NSLog(@"%@", event.eventIdentifier);
         dispatch_async(dispatch_get_main_queue(), ^{
             
-             [Flurry logEvent:@"Event_Added_To_Users_Calendar"];
+             //[Flurry logEvent:@"Event_Added_To_Users_Calendar"];
+             id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+            [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"Calendar"
+                                                                  action:@"Added_Event_To_Device_Calendar"
+                                                                   label:@"Calendar Add"
+                                                                   value:@1] build]];
             
             UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Calendar" message:@"Event added successfully" delegate:nil cancelButtonTitle:nil otherButtonTitles:@"OK", nil];
             [alert show];
@@ -771,8 +1168,8 @@
        
         NSString *tempDate = [self.dateFormatter stringFromDate:usersEvent.startDate];
         
-        NSLog(@"%@", [event objectForKey:CAL_START_DATE]);
-        NSLog(@"%@", tempDate);
+        //NSLog(@"%@", [event objectForKey:CAL_START_DATE]);
+        //NSLog(@"%@", tempDate);
       
        
         if ([usersEvent.title isEqualToString:[event objectForKey:CAL_TITLE]] && [tempDate isEqualToString:[event objectForKey:CAL_START_DATE]])
@@ -798,7 +1195,7 @@
     }
     else
     {
-        UIAlertView *suggestPurchase = [[UIAlertView alloc]initWithTitle:@"Premium Content" message:@"Adding Calendar Events requires the one time purchase of the School Fundraiser Pack, for more details select Fundraising." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Fundraising", nil];
+        UIAlertView *suggestPurchase = [[UIAlertView alloc]initWithTitle:@"Premium Content" message:@"Adding Calendar Events requires the one time purchase of the School Premium Pack, for more details select Premium Features." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Premium Features", nil];
         suggestPurchase.tag = zAlertSuggestPurchase;
         
         [suggestPurchase show];
@@ -822,12 +1219,17 @@
     {
         if(buttonIndex == 1)
         {
-            if([self.delegate respondsToSelector:@selector(segueToFundraising)])
+            if([self.delegate respondsToSelector:@selector(segueToOffer)])
             {
-                [Flurry logEvent:@"SEGUE_TO_FUNDRAISING_VIA_CALENDAR"];
+                //[Flurry logEvent:@"SEGUE_TO_OFFER_VIA_CALENDAR"];
+                id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+                [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"Calendar"
+                                                                      action:@"User_Sent_To_Offer_Screen"
+                                                                       label:@"No Premium Pack"
+                                                                       value:@1] build]];
                 [self.navigationController popViewControllerAnimated:NO];
                 
-                [self.delegate segueToFundraising];
+                [self.delegate segueToOffer];
             }
 
         }
@@ -845,7 +1247,7 @@
 	return self.dataArray;
 }
 - (void) calendarMonthView:(TKCalendarMonthView*)monthView didSelectDate:(NSDate*)date{
-	NSLog(@"Date Selected: %@",date);
+	//NSLog(@"Date Selected: %@",date);
     
     if(self.showDetailView)
     {
@@ -896,9 +1298,9 @@
     }
     else
     {
-        NSInteger num = [[self.monthsUsed objectAtIndex:section]integerValue];
+        //NSInteger num = [[self.monthsUsed objectAtIndex:section]integerValue];
     
-        return [[self.monthArray objectAtIndex:num-1]integerValue];
+        return [[self.monthArray objectAtIndex:section]integerValue];
     }
 }
 
@@ -1034,8 +1436,8 @@
         //UILabel *calLabel = (UILabel *)[cell.contentView viewWithTag:1];
         
         UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 1, 180, 40)];
-        UILabel *dateLabel = [[UILabel alloc]initWithFrame:CGRectMake(235, 2, 80, 40)];
-        UILabel *createdByLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 38, 150, 15)];
+        UILabel *dateLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 90, 2, 80, 40)];
+        UILabel *createdByLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 38, 175, 15)];
         
         dateLabel.textAlignment = NSTextAlignmentLeft;
         dateLabel.numberOfLines = 4;
@@ -1044,6 +1446,7 @@
         titleLabel.font = [UIFont systemFontOfSize:13.0];
         titleLabel.numberOfLines = 2;
         createdByLabel.font = [UIFont systemFontOfSize:10.0];
+        createdByLabel.adjustsFontSizeToFitWidth = true;
         
         UIButton *addButton = [[UIButton alloc]initWithFrame:CGRectMake(0, 7, 30, 30)];
 
@@ -1059,8 +1462,8 @@
         {
             for (int i = 0; i < section; i++)
             {
-                NSInteger num = [[self.monthsUsed objectAtIndex:i]integerValue];
-                row += [[self.monthArray objectAtIndex:num-1]integerValue];
+                //NSInteger num = [[self.monthsUsed objectAtIndex:i]integerValue];
+                row += [[self.monthArray objectAtIndex:i]integerValue];
             }
             row += indexPath.row;
         }
@@ -1085,7 +1488,7 @@
         if([[calendarDic objectForKey:CAL_IS_ALL_DAY]boolValue] && ![[HelperMethods dateToStringMMddyyyy:startDate] isEqualToString:[HelperMethods dateToStringMMddyyyy:endDate]])
         {
             
-            dateLabel.frame = CGRectMake(235, 8, 80, 40);
+            dateLabel.frame = CGRectMake(self.view.frame.size.width - 90, 8, 80, 40);
             NSString *dateString2 = [HelperMethods dateToStringEEEMMddyyyy:endDate];
             stringDate = [NSString stringWithFormat:@"%@\n          thru\n%@", [HelperMethods dateToStringEEEMMddyyyy:startDate],dateString2 ];
 
@@ -1109,14 +1512,31 @@
                           range:NSMakeRange(0, strLength)];
         [dateLabel setAttributedText:attDate];
         
-        
-        if([[calendarDic objectForKey:TEACHER_ID] length] > 3)
+        if([[calendarDic objectForKey:CLASS_ID]length] > 3)
+        {
+            if(self.mainUserData.accountType.intValue == 1)
+            {
+                createdByLabel.text = [NSString stringWithFormat:@"%@ %@ - %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME], [self.mainUserData getClassName:[calendarDic objectForKey:CLASS_ID]]];
+                
+            }
+            else
+            {
+                createdByLabel.text = [self.mainUserData getClassAndTeacherName:[calendarDic objectForKey:CLASS_ID]];
+            }
+            
+        }
+        else if([[calendarDic objectForKey:TEACHER_ID] length] > 3)
         {
             createdByLabel.text = [self.mainUserData getTeacherName:[calendarDic objectForKey:TEACHER_ID]];
         }
-        else
+        else if([[calendarDic objectForKey:CORP_ID] length] > 3)
+        {
+            createdByLabel.text = [self.mainUserData.schoolData objectForKey:@"name"];
+        }
+        else if([[calendarDic objectForKey:SCHOOL_ID] length] > 3)
         {
             createdByLabel.text = [self.mainUserData.schoolData objectForKey:SCHOOL_NAME];
+
         }
         
        
@@ -1349,5 +1769,7 @@
 	
 }
 */
+
+
 
 @end

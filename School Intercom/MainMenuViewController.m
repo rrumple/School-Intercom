@@ -8,6 +8,7 @@
 
 #import "MainMenuViewController.h"
 #import <QuartzCore/QuartzCore.h>
+#import "AdminModel.h"
 
 
 @interface MainMenuViewController ()
@@ -24,17 +25,63 @@
 @property (weak, nonatomic) IBOutlet UILabel *switchSchoolBadge;
 @property (nonatomic, strong) NSArray *calendarData;
 @property (weak, nonatomic) IBOutlet UIButton *adminToolsButton;
-@property (weak, nonatomic) IBOutlet UIButton *fundraisingButton;
+@property (weak, nonatomic) IBOutlet UIButton *offerButton;
 @property (weak, nonatomic) IBOutlet UIButton *logOutButton;
 @property (weak, nonatomic) IBOutlet UIButton *homeButton;
+
+@property (nonatomic, strong) AdminModel *adminData;
 @end
 
 @implementation MainMenuViewController
+
+- (AdminModel *)adminData
+{
+    if(!_adminData) _adminData = [[AdminModel alloc]init];
+    return _adminData;
+}
 
 - (IntroModel *)introData
 {
     if (!_introData) _introData = [[IntroModel alloc]init];
     return  _introData;
+}
+
+- (void)getTeacherClasses
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("getAppData", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.adminData getTeacherClasses:self.mainUserData.userID];
+        if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    
+                    
+                }
+                else
+                {
+                    if([tempDic objectForKey:@"classData"] != (id)[NSNull null])
+                    {
+                        if([self.mainUserData.accountType intValue] == 1)
+                        {
+                            self.mainUserData.classData = [tempDic objectForKey:@"classData"];
+                            //NSLog(@"%@", self.mainUserData.classData);
+                        }
+
+                    }
+                    
+                    
+                }
+            });
+            
+        }
+        
+    });
+
 }
 
 - (void)appHasGoneInBackground
@@ -52,6 +99,7 @@
 - (void)appWillEnterForeground
 {
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:@"LOAD_DATA" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getTeacherClasses) name:@"GET_TEACHER_CLASSES" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:ADLoadDataNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     
@@ -78,24 +126,30 @@
                 }
                 else
                 {
+                    [self.mainUserData resetTeacherNamesAndUserClasses];
                     
-                     //if([self.mainUserData.accountType intValue] > 0)
-                     [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];
-                     
+                    //if([self.mainUserData.accountType intValue] > 0)
+                    [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];
                     
                     
-                         for(NSDictionary *teacherData in [tempDic objectForKey:@"teacherNames"])
-                         {
-                         [self.mainUserData addTeacherName:teacherData];
-                         }
-                     
-
+                    
+                    for(NSDictionary *teacherData in [tempDic objectForKey:@"teacherNames"])
+                    {
+                        [self.mainUserData addTeacherName:teacherData];
+                    }
+                    
+                    for(NSDictionary *userClassData in [tempDic objectForKey:@"usersClassData"])
+                    {
+                        [self.mainUserData addUserClass:userClassData];
+                    }
+                    
+                    
                 }
             });
             
         }
     });
-
+    
 }
 
 - (void)viewDidLoad
@@ -110,6 +164,7 @@
     [super viewDidLoad];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:@"LOAD_DATA" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getTeacherClasses) name:@"GET_TEACHER_CLASSES" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(loadData) name:ADLoadDataNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
@@ -159,8 +214,8 @@
         case mv_AdminTools:
             [self performSegueWithIdentifier:SEGUE_TO_ADMIN_TOOLS sender:self];
             break;
-        case mv_Fundraising:
-            [self performSegueWithIdentifier:SEGUE_TO_FUNDRAISING sender:self];
+        case mv_Offer:
+            [self performSegueWithIdentifier:SEGUE_TO_OFFER sender:self];
             break;
             
     }
@@ -212,6 +267,7 @@
                          [[NSFileManager defaultManager] removeItemAtPath:oldFilePath error:&error];
                          [[NSURLCache sharedURLCache] removeAllCachedResponses];
                         
+                         [self updateTeacherNames];
                          
                         /* if([[NSFileManager defaultManager] fileExistsAtPath:pngFilePath])
                          {
@@ -219,7 +275,7 @@
                          }
                          else
                          {*/
-                             NSLog(@"New Image is Downloading");
+                            // NSLog(@"New Image is Downloading");
                              [HelperMethods downloadSingleImageFromBaseURL:SCHOOL_LOGO_PATH withFilename:[NSString stringWithFormat:@"%@",[self. mainUserData.schoolData objectForKey:SCHOOL_IMAGE_NAME]] saveToDisk:YES replaceExistingImage:NO];
                              
                             
@@ -227,7 +283,7 @@
 
                      }
                     
-                    NSLog(@"%@", self.mainUserData.schoolData);
+                   // NSLog(@"%@", self.mainUserData.schoolData);
                     
                     //self.isLoadDataComplete = YES;
                     self.reloadData = false;
@@ -278,6 +334,16 @@
             });
             
         }
+        else if([dataArray count] == 0)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Server Unreachable" message:@"Check your internet connection, and make sure Intercom is allowed a data connection on your device.  Close the app and try again, if the problem persists please contact support@myschoolintercom.com" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                alert.tag = zAlertFailedConnection;
+                [alert show];
+            
+            });
+        }
+
     });
     
 }
@@ -287,6 +353,12 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+        
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"Main_Menu_Screen"];
+        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+    
     
     if([self.mainUserData.accountType intValue] == utGrandparent)
     {
@@ -363,10 +435,24 @@
 
         [self loadData];
     }
+    
 
     if(!self.alertReceived)
     {
-        if(self.isFirstLoad)
+        if(self.mainUserData.alertReceived)
+        {
+            self.mainUserData.alertReceived = false;
+            
+            if(self.mainUserData.viewToLoad == mv_Home)
+                [self performSegueWithIdentifier:SEGUE_TO_HOME_VIEW sender:self];
+            else
+                [self performSegueWithIdentifier:SEGUE_TO_NEWS_VIEW sender:self];
+            self.mainUserData.viewToLoad = 999;
+            self.isFirstLoad = NO;
+            
+            
+        }
+        else if(self.isFirstLoad)
         {
             [self performSegueWithIdentifier:SEGUE_TO_HOME_VIEW sender:self];
             self.isFirstLoad = NO;
@@ -374,6 +460,8 @@
     }
     else
     {
+        self.mainUserData.alertReceived = self.alertReceived;
+        self.mainUserData.viewToLoad = self.viewToLoad;
         self.alertReceived = false;
         
         self.isFirstLoad = NO;
@@ -384,8 +472,23 @@
             [self performSegueWithIdentifier:SEGUE_TO_NEWS_VIEW sender:self];
         self.viewToLoad = 999;
         
+        if(![self.mainUserData.schoolIDselected isEqualToString:self.schoolIDtoLoad])
+        {
+            if([self.mainUserData checkForASchoolIDMatch:self.schoolIDtoLoad])
+            {
+                [self.mainUserData setActiveSchool:self.schoolIDtoLoad];
+            
+                [self exitOutOfSchool];
+            }
+            else
+            {
+                self.mainUserData.alertReceived = NO;
+                self.mainUserData.viewToLoad = 999;
+            }
+        }
     }
-   
+    
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -399,13 +502,13 @@
          self.screenShotView.center = point;
      }completion:^(BOOL finished)
      {
-         NSLog(@"Animation Completed");
+         //NSLog(@"Animation Completed");
      }];
     
     
    
     
-    NSLog(@"%@", self.navigationController.parentViewController);
+    //NSLog(@"%@", self.navigationController.parentViewController);
 
 }
 
@@ -424,9 +527,9 @@
     
 }
 
-- (void)segueToFundraising
+- (void)segueToOffer
 {
-    [self performSegueWithIdentifier:SEGUE_TO_FUNDRAISING sender:self];
+    [self performSegueWithIdentifier:SEGUE_TO_OFFER sender:self];
 }
 
 - (IBAction)logOutButtonPressed
@@ -487,7 +590,7 @@
         [self performSegueWithIdentifier:SEGUE_TO_LUNCH_MENU_VIEW sender:self];
     else
     {
-        UIAlertView *suggestPurchase = [[UIAlertView alloc]initWithTitle:@"Premium Content" message:@"Viewing the Lunch Menu requires the one time purchase of the School Fundraiser Pack, for more details select Fundraising." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Fundraising", nil];
+        UIAlertView *suggestPurchase = [[UIAlertView alloc]initWithTitle:@"Premium Content" message:@"Viewing the Lunch Menu requires the one time purchase of the School Premium Pack, for more details select Premium Features." delegate:self cancelButtonTitle:@"Cancel" otherButtonTitles:@"Premium Features", nil];
         suggestPurchase.tag = zAlertSuggestPurchase;
         
         [suggestPurchase show];
@@ -541,7 +644,7 @@
 - (IBAction)calendarPressed
 {
     self.screenShotView.hidden = true;
-     [Flurry logEvent:@"CALENDAR_VIEWED"];
+     //[Flurry logEvent:@"CALENDAR_VIEWED"];
     [self sortCalendar];
     self.lastViewSelected = mv_Calendar;
     CalendarMonthViewController *vc = [[CalendarMonthViewController alloc] initWithSunday:YES];
@@ -560,7 +663,7 @@
     self.screenShotView.hidden = true;
     if([segue.identifier isEqualToString:SEGUE_TO_HOME_VIEW])
     {
-        [Flurry logEvent:@"ALERT_SCREEN_VIEWED"];
+        //[Flurry logEvent:@"ALERT_SCREEN_VIEWED"];
         self.lastViewSelected = mv_Home;
         HomeViewController *HVC = segue.destinationViewController;
         HVC.delegate = self;
@@ -573,7 +676,7 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_NEWS_VIEW])
     {
-        [Flurry logEvent:@"NEWS_SCREEN_VIEWED"];
+        //[Flurry logEvent:@"NEWS_SCREEN_VIEWED"];
         self.lastViewSelected = mv_News;
         NewsViewController *VC = segue.destinationViewController;
         VC.userID = self.mainUserData.userID;
@@ -586,7 +689,7 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_CONTACT_VIEW])
     {
-         [Flurry logEvent:@"CONTACT_SCREEN_VIEWED"];
+         //[Flurry logEvent:@"CONTACT_SCREEN_VIEWED"];
         self.lastViewSelected = mv_Contact;
         ContactViewController *VC = segue.destinationViewController;
         VC.delegate = self;
@@ -602,7 +705,7 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_SETTINGS_VIEW])
     {
-         [Flurry logEvent:@"SETTINGS_SCREEN_VIEWED"];
+         //[Flurry logEvent:@"SETTINGS_SCREEN_VIEWED"];
         self.lastViewSelected = mv_Settings;
         SettingsTableViewController *STVC = segue.destinationViewController;
         STVC.delegate = self;
@@ -610,7 +713,7 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_LUNCH_MENU_VIEW])
     {
-         [Flurry logEvent:@"LUNCH_MENU_VIEWED"];
+         //[Flurry logEvent:@"LUNCH_MENU_VIEWED"];
         self.lastViewSelected = mv_LunchMenu;
         LunchMenuViewController *LMVC = segue.destinationViewController;
         LMVC.delegate = self;
@@ -618,17 +721,17 @@
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_ADMIN_TOOLS])
     {
-         [Flurry logEvent:@"ADMIN_TOOLS_VIEWED"];
+         //[Flurry logEvent:@"ADMIN_TOOLS_VIEWED"];
         self.lastViewSelected = mv_AdminTools;
         AdminToolsTableViewController *ATTVC = segue.destinationViewController;
         ATTVC.delegate = self;
         ATTVC.mainUserData = self.mainUserData;
     }
-    else if([segue.identifier isEqualToString:SEGUE_TO_FUNDRAISING])
+    else if([segue.identifier isEqualToString:SEGUE_TO_OFFER])
     {
-         [Flurry logEvent:@"FUNDRAISING_SCREEN_VIEWED"];
-        self.lastViewSelected = mv_Fundraising;
-        FundraisingViewController *FVC = segue.destinationViewController;
+         //[Flurry logEvent:@"OFFER_SCREEN_VIEWED"];
+        self.lastViewSelected = mv_Offer;
+        OfferViewController *FVC = segue.destinationViewController;
         FVC.delegate = self;
         FVC.mainUserData = self.mainUserData;
     }
@@ -640,8 +743,8 @@
     {
         if(buttonIndex == 1)
         {
-            [Flurry logEvent:@"SEGUE_TO_FUNDRAISING_VIA_LUNCH_MENU"];
-            [self performSegueWithIdentifier:SEGUE_TO_FUNDRAISING sender:self];
+            //[Flurry logEvent:@"SEGUE_TO_OFFER_VIA_LUNCH_MENU"];
+            [self performSegueWithIdentifier:SEGUE_TO_OFFER sender:self];
         }
     }
     

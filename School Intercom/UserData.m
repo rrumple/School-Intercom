@@ -9,6 +9,7 @@
 #import "UserData.h"
 
 
+
 @interface UserData ()
 
 
@@ -16,6 +17,8 @@
 @property (nonatomic, strong) NSArray *schoolDataArray;
 @property (nonatomic, strong) NSArray *schoolIDs;
 @property (nonatomic, strong) NSArray *tutorials;
+
+
 
 
 @end
@@ -31,6 +34,7 @@
 @synthesize appData = _appData;
 @synthesize teacherNames = _teacherNames;
 @synthesize classData = _classData;
+@synthesize usersClassData = _usersClassData;
 
 
 
@@ -40,13 +44,15 @@
     
     if(self)
     {
+        self.alertReceived = NO;
+        self.viewToLoad = 999;
         self.schoolIDselected = [[NSUserDefaults standardUserDefaults]objectForKey:WORKING_SCHOOL_ID];
         
         NSData *data = [[NSUserDefaults standardUserDefaults]objectForKey:SCHOOL_DATA_ARRAY];
         
         self.schoolDataArray = [NSKeyedUnarchiver unarchiveObjectWithData:data];
         
-        NSLog(@"SCHOOL DATA ARRAY: %@", self.schoolDataArray);
+        //NSLog(@"SCHOOL DATA ARRAY: %@", self.schoolDataArray);
         
         for (NSDictionary *dic in self.schoolDataArray)
         {
@@ -70,6 +76,7 @@
         self.accountType = [[NSUserDefaults standardUserDefaults] objectForKey:USER_ACCOUNT_TYPE];
         self.teacherNames = [[NSUserDefaults standardUserDefaults]objectForKey:@"teacherNames"];
         self.classData = [[NSUserDefaults standardUserDefaults]objectForKey:@"classData"];
+        self.usersClassData = [[NSUserDefaults standardUserDefaults]objectForKey:@"usersClassData"];
         if(![[NSUserDefaults standardUserDefaults]objectForKey:@"tutorials"])
         {
             NSMutableArray *tempArray = [[NSMutableArray alloc]init];
@@ -84,8 +91,12 @@
         else
             self.tutorials = [[NSUserDefaults standardUserDefaults]objectForKey:@"tutorials"];
                 
-        NSLog(@"%@", self.schoolDataArray);
-        NSLog(@"%@", self.schoolIDs);
+        //NSLog(@"%@", self.schoolDataArray);
+       // NSLog(@"%@", self.schoolIDs);
+        
+        self.isTimerExpired = true;
+        self.remainingCounts = AD_REFRESH_RATE;
+        self.isAdTestMode = [[[NSUserDefaults standardUserDefaults] objectForKey:@"isAdTestMode"]boolValue];
         
     }
     
@@ -96,6 +107,12 @@
 {
     if (!_classData) _classData = [[NSArray alloc]init];
     return _classData;
+}
+
+-(NSArray *)usersClassData
+{
+    if (!_usersClassData) _usersClassData = [[NSArray alloc]init];
+    return _usersClassData;
 }
 
 - (NSArray *)teacherNames
@@ -165,6 +182,13 @@
     [[NSUserDefaults standardUserDefaults]synchronize];
 }
 
+- (void)setUsersClassData:(NSArray *)usersClassData
+{
+    _usersClassData = usersClassData;
+    [[NSUserDefaults standardUserDefaults]setValue:usersClassData forKey:@"usersClassData"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
+}
+
 - (void)setTeacherNames:(NSArray *)teacherNames
 {
     _teacherNames = teacherNames;
@@ -197,7 +221,14 @@
     _isDemoInUse = isDemoInUse;
     [[NSUserDefaults standardUserDefaults]setValue:[NSString stringWithFormat:@"%d",isDemoInUse] forKey:IS_DEMO_IN_USE];
     [[NSUserDefaults standardUserDefaults]synchronize];
-    NSLog(@"isDemoInUse set to %d",isDemoInUse);
+    //NSLog(@"isDemoInUse set to %d",isDemoInUse);
+}
+
+- (void)setIsAdTestMode:(BOOL)isAdTestMode
+{
+    _isAdTestMode = isAdTestMode;
+    [[NSUserDefaults standardUserDefaults]setValue:[NSString stringWithFormat:@"%d",isAdTestMode] forKey:@"isAdTestMode"];
+    [[NSUserDefaults standardUserDefaults]synchronize];
 }
 
 
@@ -206,7 +237,7 @@
     _isAccountCreated = isAccountCreated;
     [[NSUserDefaults standardUserDefaults]setValue:[NSString stringWithFormat:@"%d",isAccountCreated] forKey:ACCOUNT_CREATED];
     [[NSUserDefaults standardUserDefaults]synchronize];
-    NSLog(@"isAccountCreated set to %d",isAccountCreated);
+    //NSLog(@"isAccountCreated set to %d",isAccountCreated);
 }
 
 - (void)setIsApproved:(BOOL)isApproved
@@ -224,7 +255,7 @@
     //[self updateSchoolDataInArray:tempdic];
     [[NSUserDefaults standardUserDefaults]setValue:[NSString stringWithFormat:@"%d",isPendingVerification] forKey:IS_PENDING_APPROVAL];
     [[NSUserDefaults standardUserDefaults]synchronize];
-    NSLog(@"isRegisterd is set to %d", isPendingVerification);
+   // NSLog(@"isRegisterd is set to %d", isPendingVerification);
 }
 
 - (void)setHasPurchased:(BOOL)hasPurchased
@@ -235,7 +266,7 @@
     [self updateSchoolDataInArray:tempDic];
     [[NSUserDefaults standardUserDefaults]setValue:[NSString stringWithFormat:@"%d", hasPurchased] forKey:USER_HAS_PURCHASED];
     [[NSUserDefaults standardUserDefaults]synchronize];
-    NSLog(@"hasPurchased is set to %d", hasPurchased);
+    //NSLog(@"hasPurchased is set to %d", hasPurchased);
 }
 
 - (void)setAccountType:(NSString *)accountType
@@ -371,7 +402,7 @@
         if([[school objectForKey:ID] isEqualToString:schoolID])
         {
             self.schoolData = school;
-            NSLog(@"%@", school);
+            //NSLog(@"%@", school);
             
             self.isApproved = [[school objectForKey:USER_APPROVED]boolValue];
             if(self.isApproved)
@@ -383,6 +414,23 @@
 
         }
     }
+}
+
+- (NSDictionary *)getSchoolDataForSchoolID:(NSString *)schoolID
+{
+    NSDictionary *tempDic;
+    for (NSDictionary *school in self.schoolDataArray)
+    {
+        if([[school objectForKey:ID] isEqualToString:schoolID])
+        {
+            tempDic = school;
+            
+        
+        }
+    }
+    
+    return tempDic;
+
 }
 
 - (void)showAllSchoolsInNSLOG
@@ -461,6 +509,9 @@
     self.accountType = @"";
     self.teacherNames = @[];
     self.classData = @[];
+    [self.adViewArray removeAllObjects];
+    self.isTimerExpired = true;
+    self.remainingCounts = AD_REFRESH_RATE;
     
     [self resetTutorials];
 }
@@ -488,6 +539,7 @@
                 if (![[schoolDic objectForKey:ID] isEqualToString:schoolID])
                 {
                     [self setActiveSchool:[schoolDic objectForKey:ID]];
+                    break;
 
                 }
             }
@@ -498,6 +550,7 @@
             if ([[schoolDic objectForKey:ID] isEqualToString:schoolID])
             {
                 [schoolDataCopy removeObject:schoolDic];
+                break;
             }
         }
         
@@ -506,6 +559,7 @@
             if ([schoolIDFromArray isEqualToString:schoolID])
             {
                 [schoolIDsCopy removeObject:schoolIDFromArray];
+                break;
             }
 
         }
@@ -586,6 +640,14 @@
     
 }
 
+- (void)resetTeacherNamesAndUserClasses
+{
+    NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+    NSMutableArray *tempArray2 = [[NSMutableArray alloc]init];
+    self.teacherNames = tempArray;
+    self.usersClassData = tempArray2;
+}
+
 - (void)addTeacherName:(NSDictionary *)teacher
 {
     BOOL match = false;
@@ -606,6 +668,25 @@
         self.teacherNames = tempArray;
     }
     
+}
+
+- (void)addUserClass:(NSDictionary *)classData
+{
+    BOOL match = false;
+    
+    for(NSDictionary *class in self.usersClassData)
+    {
+        if([[class objectForKey:ID] isEqualToString:[classData objectForKey:ID]])
+            match = true;
+    }
+    
+    if(!match)
+    {
+        NSMutableArray *tempArray = [self.usersClassData mutableCopy];
+        [tempArray addObject:classData];
+        
+        self.usersClassData = tempArray;
+    }
 }
 
 - (void)removeTeacher:(NSString *)teacherID
@@ -632,7 +713,7 @@
             return [tempDic objectForKey:TEACHER_NAME];
     }
     
-    return @"";
+    return @"School Intercom";
 }
 
 - (NSString *)getClassName:(NSString *)classID
@@ -646,6 +727,33 @@
     return @"";
 }
 
+- (NSString *)getClassAndTeacherName:(NSString *)classID
+{
+    NSString *data = @"";
+    
+    for(NSDictionary *tempDic in self.usersClassData)
+    {
+        if([[tempDic objectForKey:ID]isEqualToString:classID])
+            data = [NSString stringWithFormat:@"%@ - %@", [self getTeacherName:[tempDic objectForKey:TEACHER_ID]], [tempDic objectForKey:@"className"]];
+    }
+                    
+    return data;
+}
+
+- (NSMutableArray *)getAd
+{
+    
+    
+    if(self.isTimerExpired)
+    {
+        [self.adViewArray removeAllObjects];
+        return self.adViewArray;
+        
+    }
+    else{
+        return self.adViewArray;
+    }
+}
 
 
 @end

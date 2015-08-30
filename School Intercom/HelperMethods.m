@@ -71,7 +71,7 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
             
             
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:baseImageURL]];
-            NSLog(@"%@", baseImageURL);
+            //NSLog(@"%@", baseImageURL);
             NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
             NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
             NSURLSessionDownloadTask *task = [session downloadTaskWithRequest:request
@@ -96,7 +96,7 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
         {
             pngFilePath = [NSString stringWithFormat:@"%@/%@",docDir, fileName];
             NSURLRequest *request = [NSURLRequest requestWithURL:[NSURL URLWithString:baseImageURL]];
-            NSLog(@"%@", baseImageURL);
+           // NSLog(@"%@", baseImageURL);
             NSURLSessionConfiguration *config = [NSURLSessionConfiguration ephemeralSessionConfiguration];
             NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
             NSURLSessionDownloadTask *task = [session downloadTaskWithRequest:request
@@ -144,7 +144,7 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
     for(int i = 0;i < CC_SHA1_DIGEST_LENGTH;i++)
         [output appendFormat:@"%02x",digest[i]];
     
-    NSLog(@"%@", output);
+    //NSLog(@"%@", output);
     return output;
     
 }
@@ -169,15 +169,15 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
 +(NSArray *)listFileAtPath:(NSString *)path
 {
     //-----> LIST ALL FILES <-----//
-    NSLog(@"LISTING ALL FILES FOUND");
+    //NSLog(@"LISTING ALL FILES FOUND");
     
-    int count;
+    //int count;
     
     NSArray *directoryContent = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:path error:NULL];
-    for (count = 0; count < (int)[directoryContent count]; count++)
-    {
-        NSLog(@"File %d: %@", (count + 1), [directoryContent objectAtIndex:count]);
-    }
+    //for (count = 0; count < (int)[directoryContent count]; count++)
+    //{
+        //NSLog(@"File %d: %@", (count + 1), [directoryContent objectAtIndex:count]);
+    //}
     return directoryContent;
 }
 

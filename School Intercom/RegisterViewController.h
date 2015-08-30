@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RegistrationModel.h"
-
+#import "IntroModel.h"
 @protocol RegisterViewControllerDelegate;
 
 @interface RegisterViewController : UIViewController <UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, UIGestureRecognizerDelegate>

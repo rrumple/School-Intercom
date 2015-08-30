@@ -11,7 +11,14 @@
 
 @interface AdModel : NSObject
 
-- (NSArray *)getAdFromDatabase:(NSString *)schoolID;
+- (NSArray *)getAdFromDatabase:(NSString *)schoolID forUser:(NSString *)userID;
 
 - (NSArray *)updateAdClickCountInDatabse:(NSString *)adID fromSchool:(NSString *)schoolID;
+
+- (NSArray *)updateMMAdImpCountInDatabse:(NSString *)userID andSchoolID:(NSString *)schoolID;
+
+- (NSArray *)updateMMAdFailedCountInDatabse:(NSString *)userID andSchoolID:(NSString *)schoolID;
+
+- (NSArray *)updateMMAdClickCountInDatabse:(NSString *)userID andSchoolID:(NSString *)schoolID;
+
 @end

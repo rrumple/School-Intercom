@@ -8,6 +8,7 @@
 
 #import "ManageNewsViewController.h"
 #import "ManagePostTableViewController.h"
+ #import <Google/Analytics.h>
 
 @interface ManageNewsViewController () <UITableViewDataSource, UITableViewDelegate, UIAlertViewDelegate>
 
@@ -83,6 +84,14 @@
     [self getUserNewsPostsFromDatabase];
     
     self.newsPostSelected = nil;
+    
+ 
+        
+        
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"Add_Update_News_Screen"];
+        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+    
 }
 
 
@@ -152,7 +161,7 @@
     
     cell.textLabel.text = [NSString stringWithFormat:@"%@",[[self.newsData objectAtIndex:indexPath.row] objectForKey:NEWS_TITLE]];
     
-    NSLog(@"%@", [[self.newsData objectAtIndex:indexPath.row]objectForKey:NEWS_DATE]);
+   // NSLog(@"%@", [[self.newsData objectAtIndex:indexPath.row]objectForKey:NEWS_DATE]);
     
     NSArray *startTimeArray = [HelperMethods getDateArrayFromString:[[self.newsData objectAtIndex:indexPath.row ] objectForKey:NEWS_DATE]];
     startTimeArray = [HelperMethods ConvertHourUsingDateArray:startTimeArray];

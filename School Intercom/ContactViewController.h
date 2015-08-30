@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "ContactModel.h"
 #import "UserData.h"
+#import <Google/Analytics.h>
 
 @protocol ContactViewControllerDelegate;
 

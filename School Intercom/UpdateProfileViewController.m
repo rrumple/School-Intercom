@@ -10,7 +10,7 @@
 #import "SchoolIntercomIAPHelper.h"
 #import <StoreKit/StoreKit.h>
 
-@interface UpdateProfileViewController ()
+@interface UpdateProfileViewController ()<UIGestureRecognizerDelegate, UITextFieldDelegate>
 @property (weak, nonatomic) IBOutlet UITextField *firstNameTextfield;
 @property (weak, nonatomic) IBOutlet UITextField *lastNameTextfield;
 @property (weak, nonatomic) IBOutlet UITextField *emailTextField;
@@ -67,6 +67,13 @@
 {
     [super viewWillAppear:YES];
     
+        
+        
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"Update_Profile_Screen"];
+        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+
+    
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restorePurchasesFromDatabase:) name:IAPHelperProductRestoredPurchaseNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete) name:IAPHelperProductRestoreCompleted object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete:) name:IAPHelperProductRestoreCompletedWithNumber object:nil];
@@ -76,10 +83,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    [Flurry logEvent:@"UPDATE_PROFILE_SCREEN_VIEWED"];
+    //[Flurry logEvent:@"UPDATE_PROFILE_SCREEN_VIEWED"];
     self.firstNameTextfield.text = [self.mainUserData.userInfo objectForKey:USER_FIRST_NAME];
     self.lastNameTextfield.text = [self.mainUserData.userInfo objectForKey:USER_LAST_NAME];
     self.emailTextField.text = [self.mainUserData.userInfo objectForKey:USER_EMAIL];
+    self.firstNameTextfield.delegate = self;
+    self.lastNameTextfield.delegate = self;
     self.currentPasswordTextField.delegate = self;
     self.updatedPasswordTextField.delegate = self;
     self.confirmPasswordTextField.delegate = self;
@@ -129,10 +138,10 @@
     
     UITapGestureRecognizer *gestureRecgnizer = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hideKeyboard)];
     gestureRecgnizer.cancelsTouchesInView = NO;
-    
+    gestureRecgnizer.delegate = self;
     
     [self.view addGestureRecognizer:gestureRecgnizer];
-    [self.changePasswordView addGestureRecognizer:gestureRecgnizer];
+    //[self.changePasswordView addGestureRecognizer:gestureRecgnizer];
     
     
     
@@ -441,57 +450,75 @@
 
 -(void) textFieldDidBeginEditing:(UITextField *)textField
 {
-    
-    CGRect textFieldRect = [self.view.window convertRect:textField.bounds fromView:textField];
-    CGRect viewRect = [self.view.window convertRect:self.view.bounds fromView:self.view];
-    
-    CGFloat midline = textFieldRect.origin.y + 0.5 * textFieldRect.size.height;
-    CGFloat numerator = midline - viewRect.origin.y - MINIMUM_SCROLL_FRACTION * viewRect.size.height;
-    CGFloat denominator = (MAXIMUM_SCROLL_FRACTION - MINIMUM_SCROLL_FRACTION) * viewRect.size.height;
-    CGFloat heightFraction = numerator / denominator;
-    
-    if(heightFraction < 0.0){
+    if(textField.tag > 2)
+    {
+        CGRect textFieldRect = [self.view.window convertRect:textField.bounds fromView:textField];
+        CGRect viewRect = [self.view.window convertRect:self.view.bounds fromView:self.view];
         
-        heightFraction = 0.0;
+        CGFloat midline = textFieldRect.origin.y + 0.5 * textFieldRect.size.height;
+        CGFloat numerator = midline - viewRect.origin.y - MINIMUM_SCROLL_FRACTION * viewRect.size.height;
+        CGFloat denominator = (MAXIMUM_SCROLL_FRACTION - MINIMUM_SCROLL_FRACTION) * viewRect.size.height;
+        CGFloat heightFraction = numerator / denominator;
         
-    }else if(heightFraction > 1.0){
+        if(heightFraction < 0.0){
+            
+            heightFraction = 0.0;
+            
+        }else if(heightFraction > 1.0){
+            
+            heightFraction = 1.0;
+        }
         
-        heightFraction = 1.0;
+        UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+        
+        if(orientation == UIInterfaceOrientationPortrait || orientation == UIInterfaceOrientationPortraitUpsideDown){
+            
+            self.animatedDistance = floor(PORTRAIT_KEYBOARD_HEIGHT * heightFraction);
+            
+        }else{
+            
+            self.animatedDistance = floor(LANDSCAPE_KEYBOARD_HEIGHT * heightFraction);
+        }
+        
+        CGRect viewFrame = self.view.frame;
+        viewFrame.origin.y -= self.animatedDistance;
+        
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationBeginsFromCurrentState:YES];
+        [UIView setAnimationDuration:KEYBOARD_ANIMATION_DURATION];
+        
+        [self.view setFrame:viewFrame];
+        
+        [UIView commitAnimations];
     }
-    
-    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
-    
-    if(orientation == UIInterfaceOrientationPortrait || orientation == UIInterfaceOrientationPortraitUpsideDown){
-        
-        self.animatedDistance = floor(PORTRAIT_KEYBOARD_HEIGHT * heightFraction);
-        
-    }else{
-        
-        self.animatedDistance = floor(LANDSCAPE_KEYBOARD_HEIGHT * heightFraction);
-    }
-    
-    CGRect viewFrame = self.view.frame;
-    viewFrame.origin.y -= self.animatedDistance;
-    
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView setAnimationDuration:KEYBOARD_ANIMATION_DURATION];
-    
-    [self.view setFrame:viewFrame];
-    
-    [UIView commitAnimations];
 }
 
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    CGRect viewFrame = self.view.frame;
-    viewFrame.origin.y += self.animatedDistance;
-    [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationBeginsFromCurrentState:YES];
-    [UIView setAnimationDuration:KEYBOARD_ANIMATION_DURATION];
-    
-    [self.view setFrame:viewFrame];
-    [UIView commitAnimations];
+    if(textField.tag > 2)
+    {
+        CGRect viewFrame = self.view.frame;
+        viewFrame.origin.y += self.animatedDistance;
+        [UIView beginAnimations:nil context:NULL];
+        [UIView setAnimationBeginsFromCurrentState:YES];
+        [UIView setAnimationDuration:KEYBOARD_ANIMATION_DURATION];
+        
+        [self.view setFrame:viewFrame];
+        [UIView commitAnimations];
+    }
 }
+
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+    return TRUE;
+}
+
+-(BOOL)textFieldShouldReturn:(UITextField *)textField
+{
+    [self hideKeyboard];
+    
+    return YES;
+}
+
 
 @end

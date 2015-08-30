@@ -7,7 +7,8 @@
 //
 
 #import "RegisterViewController.h"
-#import "Flurry.h"
+//#import "Flurry.h"
+#import <Google/Analytics.h>
 
 @interface RegisterViewController ()
 
@@ -30,6 +31,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *emailAddressTextField;
 @property (weak, nonatomic) IBOutlet UITextField *passwordTextField;
 @property (weak, nonatomic) IBOutlet UITextField *numberOfChildrenTextField;
+@property (weak, nonatomic) IBOutlet UITextField *confirmPasswordTextField;
 @property (weak, nonatomic) IBOutlet UIButton *createButton;
 
 @property (weak, nonatomic) IBOutlet UIView *childInputView;
@@ -40,16 +42,21 @@
 @property (nonatomic) BOOL gradeTFready;
 @property (nonatomic) BOOL numberOfChildrenTFready;
 @property (weak, nonatomic) IBOutlet UIButton *finshedButton;
-@property (weak, nonatomic) IBOutlet UIButton *tryDemoSchoolButton;
-@property (weak, nonatomic) IBOutlet UILabel *addmySchoolLabel;
+
+
 @property (weak, nonatomic) IBOutlet UIButton *addMyschoolButton;
 @property (weak, nonatomic) IBOutlet UIButton *goBackButton;
+@property (weak, nonatomic) IBOutlet UILabel *step1Label;
+@property (weak, nonatomic) IBOutlet UILabel *step2Label;
+@property (weak, nonatomic) IBOutlet UILabel *step3Label;
+@property (weak, nonatomic) IBOutlet UILabel *step4Label;
 
 
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *addChildActivityView;
 
 //@property (nonatomic, strong) DatabaseRequest *databaseRequest;
 @property (nonatomic, strong) RegistrationModel *registerData;
+@property (nonatomic, strong) IntroModel *introData;
 @property (nonatomic, strong) NSString *schoolIDSelected;
 @property (nonatomic) NSInteger stateSelected;
 @property (nonatomic) NSInteger citySelected;
@@ -59,6 +66,7 @@
 @property (nonatomic, strong) NSArray *teachers;
 @property (nonatomic, strong) NSDictionary *teacherData;
 @property (nonatomic, strong) NSString *teacherSelected;
+@property (nonatomic) NSInteger teacherSelectedRow;
 @property (nonatomic, strong) NSString *classSelected;
 
 @property (nonatomic, strong) NSTimer *timer;
@@ -73,6 +81,11 @@
     return _databaseRequest;
 }
 */
+- (IntroModel *)introData
+{
+    if (!_introData) _introData = [[IntroModel alloc]init];
+    return  _introData;
+}
 -(RegistrationModel *)registerData
 {
     if(!_registerData) _registerData = [[RegistrationModel alloc]init];
@@ -89,12 +102,22 @@
     return UIInterfaceOrientationMaskPortrait;
 }
 
+- (void)viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+    
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Register_Screen"];
+    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+}
+
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
     
-    [Flurry logEvent:@"New_User_Screen_Accessed"];
+    //[Flurry logEvent:@"New_User_Screen_Accessed"];
     
     [self.stateTextField setDelegate:self];
     [self.cityTextField setDelegate:self];
@@ -107,9 +130,10 @@
     self.emailAddressTextField.delegate = self;
     self.passwordTextField.delegate =self;
     self.numberOfChildrenTextField.delegate = self;
+    self.confirmPasswordTextField.delegate = self;
     self.gradeTFready = NO;
     self.numberOfChildrenTFready = NO;
-    
+    self.teacherSelectedRow = 0;
     
     self.stateTextField.inputView = [self createPickerWithTag:zPickerState];
     self.cityTextField.inputView = [self createPickerWithTag:zPickerCity];
@@ -127,9 +151,9 @@
 
 - (void)checkToSeeIfAButtonShouldBeUnhidden
 {
-    if([[HelperMethods prepStringForValidation:self.firstNameTextField.text] length] > 0 && [[HelperMethods prepStringForValidation:self.lastNameTextField.text] length] > 0 && [self.emailAddressTextField.text length] > 0 && [self.passwordTextField.text length] > 0 && self.numberOfChildrenTFready && [HelperMethods isEmailValid:self.emailAddressTextField.text])
+    if([[HelperMethods prepStringForValidation:self.firstNameTextField.text] length] > 0 && [[HelperMethods prepStringForValidation:self.lastNameTextField.text] length] > 0 && [self.emailAddressTextField.text length] > 0 && [self.passwordTextField.text length] > 0 && [self.confirmPasswordTextField.text length] > 0 && self.numberOfChildrenTFready && [HelperMethods isEmailValid:self.emailAddressTextField.text])
     {
-       [self.createButton setEnabled:true];
+        [self.createButton setEnabled:true];
     }
     else
     {
@@ -220,11 +244,14 @@
         {
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.registerData.stateArray = statesArray;
-                NSLog(@"%@", self.registerData.stateArray);
+                //NSLog(@"%@", self.registerData.stateArray);
                 self.stateTextField.enabled = YES;
                 self.stateTextField.placeholder = @"Select State";
+                self.step2Label.hidden = YES;
+                self.step3Label.hidden = YES;
+
                 [self.stateIndicatorView stopAnimating];
-                UIPickerView *tempPicker = (UIPickerView *)self.stateTextField.inputView;
+                UIPickerView *tempPicker = (UIPickerView *)[self.stateTextField.inputView viewWithTag:zPickerState];
                 [tempPicker reloadAllComponents];
             });
 
@@ -249,11 +276,14 @@
             {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.registerData.cityArray = cityArray;
-                    NSLog(@"%@", self.registerData.cityArray);
+                    //NSLog(@"%@", self.registerData.cityArray);
                     self.cityTextField.enabled = YES;
+                    self.step2Label.hidden = NO;
+                    self.step3Label.hidden = YES;
+    
                     self.cityTextField.placeholder = @"Select City";
                     [self.cityIndicatorView stopAnimating];
-                    UIPickerView *tempPicker = (UIPickerView *)self.cityTextField.inputView;
+                    UIPickerView *tempPicker = (UIPickerView *)[self.cityTextField.inputView viewWithTag:zPickerCity];
                     [tempPicker reloadAllComponents];
                 });
                 
@@ -284,11 +314,13 @@
             {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.registerData.schoolArray = schoolArray;
-                    NSLog(@"%@", self.registerData.schoolArray);
+                    //NSLog(@"%@", self.registerData.schoolArray);
                     self.schoolTextField.enabled = YES;
+                    self.step3Label.hidden = NO;
+             
                     self.schoolTextField.placeholder = @"Select School";
                     [self.schoolIndicatorView stopAnimating];
-                    UIPickerView *tempPicker = (UIPickerView *)self.schoolTextField.inputView;
+                    UIPickerView *tempPicker = (UIPickerView *)[self.schoolTextField.inputView viewWithTag:zPickerSchool];
                     [tempPicker reloadAllComponents];
                 });
                 
@@ -377,7 +409,7 @@
     self.headerLabel.text = [NSString stringWithFormat:@"%@",self.schoolTextField.text];
 }
 
--(UIPickerView *)createPickerWithTag:(NSInteger)tag
+-(UIView *)createPickerWithTag:(NSInteger)tag
 {
     UIPickerView *pickerView = [[UIPickerView alloc]init];
     pickerView.tag = tag;
@@ -386,7 +418,21 @@
     
     [pickerView setShowsSelectionIndicator:YES];
     
- 
+    UIToolbar *toolBar= [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];
+    [toolBar setBarStyle:UIBarStyleBlackOpaque];
+    UIBarButtonItem *barButtonDone = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                                      style:UIBarButtonItemStyleBordered target:self action:@selector(hideKeyboard)];
+    
+    toolBar.barTintColor = [UIColor colorWithRed:0.820f green:0.835f blue:0.859f alpha:1.00f];
+    
+    toolBar.items = [[NSArray alloc] initWithObjects:barButtonDone,nil];
+    barButtonDone.tintColor=[UIColor blackColor];
+    
+    
+    UIView *pickerParentView = [[UIView alloc]initWithFrame:CGRectMake(0, 60, 320, 216)];
+    [pickerParentView addSubview:pickerView];
+    [pickerParentView addSubview:toolBar];
+/*
     
     
     UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
@@ -394,8 +440,9 @@
     [tapGR setNumberOfTapsRequired:1];
     [tapGR setDelegate:self];
     [pickerView addGestureRecognizer:tapGR];
+ */
     
-    return pickerView;
+    return pickerParentView;
 }
 
 - (void)didReceiveMemoryWarning
@@ -516,8 +563,8 @@
 {
     self.userInputView.hidden = YES;
     self.childInputView.hidden = NO;
-    self.tryDemoSchoolButton.hidden = YES;
-    self.addmySchoolLabel.hidden = YES;
+
+    //self.addmySchoolLabel.hidden = YES;
     self.addMyschoolButton.hidden = YES;
     self.goBackButton.hidden = YES;
     
@@ -540,8 +587,9 @@
         self.finshedButton.hidden = NO;
     self.classSelected = @"0";
     self.teacherSelected = @"0";
+    self.teacherSelectedRow = 0;
     
-    UIPickerView *tempPicker = (UIPickerView *)self.childGradeLevel.inputView;
+    UIPickerView *tempPicker = (UIPickerView *)[self.childGradeLevel.inputView viewWithTag:zPickerTeacher];
     [tempPicker selectRow:0 inComponent:0 animated:false];
     [tempPicker reloadAllComponents];
     [self addChildToDatabase];
@@ -582,6 +630,7 @@
                     else
                     {
                         
+                        [self updateTeacherNames];
                         //-- Set Notification
                         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
                         {
@@ -606,6 +655,52 @@
 
 }
 
+- (void)updateTeacherNames
+{
+    dispatch_queue_t createQueue = dispatch_queue_create("updateTeacherNames", NULL);
+    dispatch_async(createQueue, ^{
+        NSArray *dataArray;
+        dataArray = [self.introData updateTeacherNamesForUser:self.mainUserData.userID];
+        if ([dataArray count] == 1)
+        {
+            dispatch_async(dispatch_get_main_queue(), ^{
+                NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                
+                if([[tempDic objectForKey:@"error"] boolValue])
+                {
+                    [HelperMethods displayErrorUsingDictionary:tempDic withTag:zAlertExistingUserIncorrectPassword andDelegate:self];
+                    
+                    
+                }
+                else
+                {
+                    [self.mainUserData resetTeacherNamesAndUserClasses];
+                    
+                    //if([self.mainUserData.accountType intValue] > 0)
+                    [self.mainUserData addTeacherName:@{ID:self.mainUserData.userID, TEACHER_NAME:[NSString stringWithFormat:@"%@ %@",[self.mainUserData.userInfo objectForKey:@"prefix"], [self.mainUserData.userInfo objectForKey:USER_LAST_NAME]]}];
+                    
+                    
+                    
+                    for(NSDictionary *teacherData in [tempDic objectForKey:@"teacherNames"])
+                    {
+                        [self.mainUserData addTeacherName:teacherData];
+                    }
+                    
+                    for(NSDictionary *userClassData in [tempDic objectForKey:@"usersClassData"])
+                    {
+                        [self.mainUserData addUserClass:userClassData];
+                    }
+                    
+                    
+                }
+            });
+            
+        }
+    });
+    
+}
+
+
 - (IBAction)privacyPolicyButtonPressed
 {
     
@@ -617,7 +712,7 @@
 
 - (IBAction)tryDemoPressed
 {
-    [Flurry logEvent:@"Demo_School_Loaded"];
+    //[Flurry logEvent:@"Demo_School_Loaded"];
     if([self.delegate respondsToSelector:@selector(loginToDemoAccount)])
     {
         self.mainUserData.isAccountCreated = YES;
@@ -632,24 +727,43 @@
 
 - (IBAction)createAccountButtonPressed
 {
-    [Flurry logEvent:@"Create_Account_Button_Pressed"];
+    //[Flurry logEvent:@"Create_Account_Button_Pressed"];
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"New User"
+                                                          action:@"Create_Account_Button_Pressed"
+                                                           label:@"New User"
+                                                           value:@1] build]];
+    
     
     [self.createButton setEnabled:false];
-    self.registerData.userFirstName = self.firstNameTextField.text;
-    self.registerData.userLastName = self.lastNameTextField.text;
-    self.registerData.userEmailAddress = self.emailAddressTextField.text;
-    self.registerData.userPassword = self.passwordTextField.text;
-    self.registerData.numberOfChildren = self.numberOfChildrenTextField.text;
-    
-    self.mainUserData.userInfo = [self.registerData getUserInfoAsDictionary];
-    
-    [self addUserToDatabase];
-    
+    if([self.passwordTextField.text isEqualToString:self.confirmPasswordTextField.text])
+    {
+        self.registerData.userFirstName = self.firstNameTextField.text;
+        self.registerData.userLastName = self.lastNameTextField.text;
+        self.registerData.userEmailAddress = self.emailAddressTextField.text;
+        self.registerData.userPassword = self.passwordTextField.text;
+        self.registerData.numberOfChildren = self.numberOfChildrenTextField.text;
         
+        self.mainUserData.userInfo = [self.registerData getUserInfoAsDictionary];
+        
+        [self addUserToDatabase];
+    }
+    else
+    {
+        self.confirmPasswordTextField.text = @"";
+        UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Password Error!" message:@"The confirm password does not match the password!" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+        [alert show];
+    }
+   
+    
+    
 }
 
 - (IBAction)signUpButttonPressed
 {
+    self.addMyschoolButton.hidden = true;
+    //self.addmySchoolLabel.hidden = true;
     [self getTeachersFromDatabase];
     [self getUserData];
    
@@ -757,7 +871,8 @@
             }
             else
             {
-                return [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME]];
+                
+                return [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:row] objectForKey:@"teacherName"]];
                 /*if([[[self.teachers objectAtIndex:row]objectForKey:@"className"]isEqualToString:@""])
                 {
                     return [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME]];
@@ -776,6 +891,53 @@
     
     return nil;
 }
+
+- (UIView *)pickerView:(UIPickerView *)pickerView viewForRow:(NSInteger)row forComponent:(NSInteger)component reusingView:(UIView *)view {
+    UILabel *retval = (id)view;
+    if (!retval) {
+        retval= [[UILabel alloc] initWithFrame:CGRectMake(0.0f, 0.0f, [pickerView rowSizeForComponent:component].width, [pickerView rowSizeForComponent:component].height)];
+    }
+    
+    if(pickerView.tag == zPickerState)
+        retval.text = [self.registerData.stateArray objectAtIndex:row];
+    else if(pickerView.tag == zPickerCity)
+        retval.text = [self.registerData.cityArray objectAtIndex:row];
+    else if(pickerView.tag == zPickerSchool)
+        retval.text = [self.registerData.schoolArray objectAtIndex:row];
+    else if(pickerView.tag == zPickerTeacher)
+    {
+        if(component == 0)
+        {
+            if (row == 0)
+            {
+                retval.text = @"Don't Know";
+            }
+            else
+            {
+                retval.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:row] objectForKey:@"teacherName"]];
+                /*if([[[self.teachers objectAtIndex:row]objectForKey:@"className"]isEqualToString:@""])
+                 {
+                 return [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME]];
+                 }
+                 else
+                 {
+                 return [NSString stringWithFormat:@"%@ %@ - %@", [[self.teachers objectAtIndex:row] objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row] objectForKey:TEACHER_LAST_NAME], [HelperMethods convertGradeLevel:[[self.teachers objectAtIndex:row] objectForKey:@"grade"] appendGrade:YES]];
+                 }*/
+            }
+        }
+        else
+        {
+            retval.text = [NSString stringWithFormat:@"%@", [[[self.teacherData objectForKey:self.teacherSelected]objectAtIndex:row] objectForKey:@"className"]];
+        }
+    }
+
+    
+    retval.textAlignment = NSTextAlignmentCenter;
+    retval.font = [UIFont systemFontOfSize:22];
+    retval.adjustsFontSizeToFitWidth = YES;
+    return retval;
+}
+
 
 
 
@@ -825,13 +987,26 @@
             if(row == 0)
             {
                 self.teacherSelected = @"0";
+                self.teacherSelectedRow = 0;
                 self.classSelected = @"0";
                 self.childGradeLevel.text = @"Don't Know";
             }
             else
             {
+                //self.childGradeLevel.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:row]objectForKey:@"teacherName"]];
+               
+                
                 self.teacherSelected = [[self.teachers objectAtIndex:row] objectForKey:ID];
-                self.childGradeLevel.text = [NSString stringWithFormat:@"%@ %@", [[self.teachers objectAtIndex:row]objectForKey:TEACHER_PREFIX], [[self.teachers objectAtIndex:row]objectForKey:TEACHER_LAST_NAME]];
+                self.teacherSelectedRow = row;
+                if([[self.teacherData objectForKey:self.teacherSelected]count] > 1)
+                {
+                    self.childGradeLevel.text = [NSString stringWithFormat:@"%@ - %@", [[self.teachers objectAtIndex:self.teacherSelectedRow]objectForKey:@"teacherName"],
+                                                 [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:0]objectForKey:@"className"]];
+                }
+                else
+                    self.childGradeLevel.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:row]objectForKey:@"teacherName"]] ;
+
+            
                 [pickerView reloadAllComponents];
 
             }
@@ -841,6 +1016,11 @@
     else
     {
         self.classSelected = [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:row]objectForKey:ID];
+        //self.childGradeLevel.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:row]objectForKey:@"teacherName"]];
+        self.childGradeLevel.text = [NSString stringWithFormat:@"%@ - %@", [[self.teachers objectAtIndex:self.teacherSelectedRow]objectForKey:@"teacherName"],
+                             [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:row]objectForKey:@"className"]];
+        [pickerView reloadAllComponents];
+
     }
 }
 
@@ -849,6 +1029,8 @@
     
     if(self.schoolTextField.isFirstResponder)
     {
+        self.addMyschoolButton.hidden = NO;
+        //self.addmySchoolLabel.hidden = NO;
         if([self.registerData.schoolArray count] > 0)
         {
             self.schoolIDSelected = [[self.registerData.schoolDicsArray objectAtIndex:self.schoolSelected] objectForKey:ID];
@@ -867,6 +1049,10 @@
     {
         self.cityTextField.text = @"";
         self.schoolTextField.text = @"";
+        self.step2Label.hidden = YES;
+        self.step3Label.hidden = YES;
+        self.signUpButton.hidden = YES;
+        self.step4Label.hidden = YES;
         [self.cityTextField setEnabled:false];
         [self.schoolTextField setEnabled:false];
         
@@ -885,6 +1071,9 @@
     {
         self.schoolTextField.text = @"";
         [self.schoolTextField setEnabled:false];
+        self.step3Label.hidden = YES;
+        self.signUpButton.hidden = YES;
+        self.step4Label.hidden = YES;
         if([self.registerData.cityArray count] > 0)
         {
             self.cityTextField.text = [self.registerData.cityArray objectAtIndex:self.citySelected];
@@ -900,6 +1089,7 @@
     else if(self.childGradeLevel.isFirstResponder && [self.childGradeLevel.text isEqualToString:@""])
     {
         self.teacherSelected = @"0";
+        self.teacherSelectedRow = 0;
         self.classSelected = @"0";
         self.childGradeLevel.text = @"Don't Know";
     }
@@ -985,7 +1175,23 @@
             break;
         case 3:
             if ([textField.text length] > 0)
+            {
                 [self.signUpButton setHidden:false];
+                self.step4Label.hidden = NO;
+            }
+            break;
+        case 4:
+                if(self.passwordTextField.text.length > 0)
+                {
+                    if(![self.passwordTextField.text isEqualToString:self.confirmPasswordTextField.text])
+                    {
+                            self.confirmPasswordTextField.text = @"";
+                            UIAlertView *alert = [[UIAlertView alloc]initWithTitle:@"Password Error!" message:@"The confirm password does not match the password!" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles: nil];
+                            [alert show];
+                    }
+                    
+
+                }
             break;
     }
     

@@ -44,7 +44,7 @@
                 }
                 
                 
-                NSLog(@"%@", tempSet);
+                //NSLog(@"%@", tempSet);
                 // });
 
             }

@@ -9,6 +9,7 @@
 #import "ManageAlertsViewController.h"
 #import "SendAlertViewController.h"
 #import "AdminModel.h"
+#import <Google/Analytics.h>
 
 @interface ManageAlertsViewController () <UITableViewDataSource, UITableViewDelegate>
 @property (weak, nonatomic) IBOutlet UITableView *alertsTableView;
@@ -37,6 +38,10 @@
     [super viewWillAppear:animated];
     
     [self getAlertsFromDatabase];
+    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker set:kGAIScreenName value:@"Manage_Alert_Screen"];
+    [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -94,11 +99,13 @@
     if([segue.identifier isEqualToString:SEGUE_TO_SEND_ALERTS_VIEW])
     {
         SAVC.isEditing = false;
+        SAVC.autoClose = false;
     }
     else if([segue.identifier isEqualToString:SEGUE_TO_EDIT_ALERT])
     {
         SAVC.isEditing = true;
         SAVC.alertToEdit = self.alertSelected;
+        SAVC.autoClose = false;
     }
 }
 - (IBAction)backButtonPressed

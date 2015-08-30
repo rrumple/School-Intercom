@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "RegistrationModel.h"
 #import "IntroModel.h"
+#import <Google/Analytics.h>
 
 @interface AddSchoolViewController : UIViewController <UIPickerViewDataSource, UIPickerViewDelegate, UITextFieldDelegate, UIAlertViewDelegate, UIGestureRecognizerDelegate>
 

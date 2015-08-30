@@ -11,6 +11,7 @@
 #import "UpdateKidsViewController.h"
 #import "AddSchoolViewController.h"
 #import "AddGrandparentViewController.h"
+#import <Google/Analytics.h>
 
 @protocol SettingsTableViewControllerDelegate;
 

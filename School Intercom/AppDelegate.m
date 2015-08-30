@@ -12,7 +12,9 @@
 #import "NewsViewController.h"
 #import "MainMenuViewController.h"
 #import "MainNavigationController.h"
-#import "Flurry.h"
+//#import "Flurry.h"
+#import <Google/Analytics.h>
+
 
 NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
 
@@ -75,7 +77,7 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
             NSString *schoolID = [[userInfo valueForKey:@"aps"]valueForKey:@"schoolID"];
             
             [HelperMethods CreateAndDisplayOverHeadAlertInView: (UIView *)navigationController.visibleViewController.view withMessage:message andSchoolID:schoolID];
-            NSLog(@"%@", navigationController.viewControllers);
+            //NSLog(@"%@", navigationController.viewControllers);
             
             
         }
@@ -115,13 +117,18 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
         NSString *newStr = [messageID substringToIndex:3];
         if([newStr isEqualToString:@"NS-"])
         {
-            
+            NSString *schoolID = [messageID substringToIndex:35];
+            schoolID = [schoolID substringFromIndex:3];
+
             MMVC.viewToLoad = mv_News;
+            MMVC.schoolIDtoLoad = schoolID;
             
         }
         else
         {
+            NSString *schoolID = [messageID substringToIndex:32];
             MMVC.viewToLoad = mv_Home;
+            MMVC.schoolIDtoLoad = schoolID;
             
             
         }
@@ -131,6 +138,10 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
             UIAlertView *pushPinChangeAlert = [[UIAlertView alloc]initWithTitle:@"Account Alert!" message:@"Your account was logged into on another device, you will no longer receive push notifications on this device. To receive alerts on more than one device please create one account per device" delegate:self cancelButtonTitle:@"Ignore" otherButtonTitles:@"Create Account", nil];
             pushPinChangeAlert.tag = zAlertPushPinChange;
             [pushPinChangeAlert show];
+            
+            NSString *schoolID = [messageID substringToIndex:32];
+            MMVC.viewToLoad = mv_Home;
+            MMVC.schoolIDtoLoad = schoolID;
 
         }
         
@@ -162,12 +173,29 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    [Flurry setBackgroundSessionEnabled:NO];
-    //[Flurry setDebugLogEnabled:YES];
-    [Flurry startSession:@"GFDSFZZRN6HZDCCQTMR9"];
+    //[Flurry setBackgroundSessionEnabled:NO];
+    ////[Flurry setDebugLogEnabled:YES];
+    //[Flurry startSession:@"GFDSFZZRN6HZDCCQTMR9"];
+    
+    
+    // Configure tracker from GoogleService-Info.plist.
+    NSError *configureError;
+    [[GGLContext sharedInstance] configureWithError:&configureError];
+    NSAssert(!configureError, @"Error configuring Google services: %@", configureError);
+    
+    // Optional: configure GAI options.
+    GAI *gai = [GAI sharedInstance];
+    gai.trackUncaughtExceptions = YES;  // report uncaught exceptions
+    gai.logger.logLevel = kGAILogLevelVerbose;  // remove before app release
+     
+    
         
     //NSString *appDomain = [[NSBundle mainBundle] bundleIdentifier];
     //[[NSUserDefaults standardUserDefaults] removePersistentDomainForName:appDomain];
+    
+    //Possible fix for black pdf boarder when using ios 8
+    //[[NSUserDefaults standardUserDefaults] setBool:NO forKey:@"WebKitDiskImageCacheEnabled"];
+    //[[NSUserDefaults standardUserDefaults] synchronize];
     
     [SchoolIntercomIAPHelper sharedInstance];
     [[NSURLCache sharedURLCache] removeAllCachedResponses];
@@ -176,9 +204,9 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
     NSLog(@"%@", navigationController.viewControllers);
     
     NSString *iosVersion = [[UIDevice currentDevice] systemVersion];
-    NSLog(@"%@", iosVersion);
+    //NSLog(@"%@", iosVersion);
     NSString *deviceModel = [HelperMethods getDeviceModel];
-    NSLog(@"%@", deviceModel);
+    //NSLog(@"%@", deviceModel);
     if ([[[NSUserDefaults standardUserDefaults]objectForKey:ACCOUNT_CREATED]boolValue])
     {
         RegistrationModel *registerData = [[RegistrationModel alloc]init];

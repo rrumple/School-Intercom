@@ -9,19 +9,29 @@
 #import "HomeViewController.h"
 @import AVFoundation;
 #import "UIColor+TKCategory.h"
+#import "AdminToolsQuickAddView.h"
+#import "SendAlertViewController.h"
+#import "ManageCalendarTableViewController.h"
+#import "ManagePostTableViewController.h"
+@import GoogleMobileAds;
 
 
-@interface HomeViewController ()
+@interface HomeViewController () <GADBannerViewDelegate>
 @property (weak, nonatomic) IBOutlet UILabel *schoolNameLabel;
 @property (weak, nonatomic) IBOutlet UITableView *alertTableView;
 @property (nonatomic, strong) NSArray *alertData;
 @property (nonatomic, strong) UpdateProfileModel *databaseData;
-@property (weak, nonatomic) IBOutlet UIButton *adImageButton;
 @property (nonatomic, strong) NSDictionary *adData;
 @property (nonatomic, strong) AdModel *adModel;
 @property (weak, nonatomic) IBOutlet UIView *overlay1;
 @property (weak, nonatomic) IBOutlet UIView *helpOverlay;
 @property (nonatomic, strong) UIRefreshControl *refreshControl;
+@property (weak, nonatomic) IBOutlet AdminToolsQuickAddView *quickAddView;
+@property (weak, nonatomic) IBOutlet UIButton *quickAddButton;
+@property (strong, nonatomic)  GADBannerView *adView;
+@property (nonatomic, strong) NSTimer *timer;
+@property (nonatomic) BOOL viewDisappeared;
+
 
 
 
@@ -109,7 +119,7 @@
         {
             
             dispatch_async(dispatch_get_main_queue(), ^{
-                NSLog(@"%@", [dataArray objectAtIndex:0]);
+                //NSLog(@"%@", [dataArray objectAtIndex:0]);
                 
                 
                 if([[[dataArray objectAtIndex:0]objectForKey:@"error"] boolValue])
@@ -141,6 +151,7 @@
 
 - (IBAction)adImageClicked
 {
+    /*
     NSString *urlString;
     
     switch ([[self.adData objectForKey:AD_TYPE]intValue])
@@ -176,12 +187,12 @@
                     NSLog(@"%@", tempDic);
                 }
                 else
-                    [self loadAdImage];
+                    //[self loadAdImage];
             });
             
         }
     });
-
+*/
 }
 
 
@@ -191,7 +202,7 @@
     
     NSString *baseImageURL = [NSString stringWithFormat:@"%@%@%@", AD_IMAGE_URL, AD_DIRECTORY, fileName];
     
-    NSLog(@"%@", baseImageURL);
+    //NSLog(@"%@", baseImageURL);
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("get Image", NULL);
     dispatch_async(downloadQueue, ^{
@@ -201,7 +212,7 @@
         NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:baseImageURL]];
         dispatch_async(dispatch_get_main_queue(),^{
             UIImage *image = [UIImage imageWithData:data];
-            [self.adImageButton setImage:image forState:UIControlStateNormal];
+            //[self.adImageButton setImage:image forState:UIControlStateNormal];
             //[spinner stopAnimating];
             NSLog(@"%f, %f", image.size.width, image.size.height);
         });
@@ -213,12 +224,13 @@
 
 - (void)getAdFromDatabase
 {
+    /*
     NSDictionary *schoolData = self.mainUserData.schoolData;
     NSLog(@"%@", schoolData);
     dispatch_queue_t createQueue = dispatch_queue_create("getLocalAd", NULL);
     dispatch_async(createQueue, ^{
         NSArray *adDataArray;
-        adDataArray = [self.adModel getAdFromDatabase:[schoolData objectForKey:ID]];
+        adDataArray = [self.adModel getAdFromDatabase:[schoolData objectForKey:ID] forUser:self.mainUserData.userID];
         
         if ([adDataArray count] == 1)
         {
@@ -226,15 +238,15 @@
                 NSDictionary *tempDic = [[adDataArray objectAtIndex:0] objectForKey:@"adData"];
                 self.adData = tempDic;
                 if(self.adData != (id)[NSNull null])
-                    [self loadAdImage];
+                    //[self loadAdImage];
                 else
-                    self.adImageButton.enabled = false;
+                    //self.adImageButton.enabled = false;
                 
             });
             
         }
     });
-
+*/
 }
 
 
@@ -244,9 +256,21 @@
     
     [super viewWillAppear:animated];
     
+        
+        
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"Alert_Screen"];
+        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+    
     [self.schoolNameLabel setFont:FONT_CHARCOAL_CY(17.0f)];
     
-    [self getAdFromDatabase];
+    if(![self.timer isValid] && self.viewDisappeared)
+    {
+        [self startTimer];
+        self.viewDisappeared = false;
+    }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     
     
 }
@@ -256,6 +280,167 @@
     [self.refreshControl endRefreshing];
 }
 
+- (void)appWillEnterForeground
+{
+    
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    
+    
+    [self startTimer];
+}
+
+- (void)appHasGoneInBackground
+{
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+    [self.timer invalidate];
+}
+
+- (void)adView:(GADBannerView *)bannerView
+didFailToReceiveAdWithError:(GADRequestError *)error
+{
+    NSLog(@"There was an error!");
+    if(!self.mainUserData.isAdTestMode)
+        [self.adModel updateMMAdFailedCountInDatabse:self.mainUserData.userID andSchoolID:self.mainUserData.schoolIDselected];
+}
+
+- (void)adViewWillPresentScreen:(GADBannerView *)adView {
+    NSLog(@"adViewWillPresentScreen");
+    if(!self.mainUserData.isAdTestMode)
+        [self.adModel updateMMAdClickCountInDatabse:self.mainUserData.userID andSchoolID:self.mainUserData.schoolIDselected];
+}
+
+- (void)adViewDidReceiveAd:(GADBannerView *)bannerView {
+    NSLog(@"adViewDidReceiveAd");
+    if(self.mainUserData.isTimerExpired)
+    {
+          [self.view addSubview:self.adView];
+        self.mainUserData.remainingCounts--;
+    [UIView animateWithDuration:1 animations:^{
+        bannerView.frame = CGRectMake(0.0,
+                                      self.view.frame.size.height -
+                                      bannerView.frame.size.height,
+                                      bannerView.frame.size.width,
+                                      bannerView.frame.size.height);
+        
+    } completion:^(BOOL finished) {
+        if(finished)
+            [self startTimer];
+    }];
+        if(!self.mainUserData.isAdTestMode)
+            [self.adModel updateMMAdImpCountInDatabse:self.mainUserData.userID andSchoolID:self.mainUserData.schoolIDselected];
+    
+    }
+    
+}
+
+- (void)hideAd
+{
+    NSLog(@"Hide ad");
+    [UIView animateWithDuration:1 animations:^{
+    self.adView.frame = CGRectMake(0.0,
+                                   self.view.frame.size.height,
+                                   self.adView.frame.size.width,
+                                   self.adView.frame.size.height);
+    
+}];
+    
+   
+
+    
+}
+
+
+
+- (void)startTimer
+{
+    NSLog(@"Timer started");
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown) userInfo:nil repeats:YES];
+    
+    self.mainUserData.isTimerExpired = false;
+    
+    
+}
+
+- (void)adViewWillLeaveApplication:(GADBannerView *)adView {
+    NSLog(@"adViewDidLeaveApplication");
+    [self.timer invalidate];
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appWillEnterForeground) name:UIApplicationWillEnterForegroundNotification object:nil];
+}
+
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    self.viewDisappeared = true;
+    NSLog(@"viewDisappearing");
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+    [self.timer invalidate];
+}
+
+- (void)loadNewAd
+{
+    NSLog(@"New Ad Loaded...");
+    
+    
+    GADRequest *request = [GADRequest request];
+    request.testDevices = @[ @"59c997e06ef957f5f6c866b6fed1bb25" ];
+
+    [self.adView loadRequest:request];
+
+    
+    NSMutableArray *tempArray = [[NSMutableArray alloc]init];
+    
+    [tempArray addObject:self.adView];
+    self.mainUserData.adViewArray = tempArray;
+
+}
+
+- (void)countDown
+{
+    
+    if(--self.mainUserData.remainingCounts == 0)
+    {
+        [self.timer invalidate];
+        self.mainUserData.isTimerExpired = true;
+        self.mainUserData.remainingCounts = AD_REFRESH_RATE;
+        
+        [self loadNewAd];
+    }
+    
+    if(self.mainUserData.remainingCounts == AD_HIDE_TIME)
+       [self hideAd];
+    
+    NSLog(@"%i", self.mainUserData.remainingCounts);
+}
+
+- (void)setUnitID
+{
+    if(self.mainUserData.accountType.intValue == 0 || self.mainUserData.accountType.intValue == 8)
+    {
+        if(self.mainUserData.isAdTestMode)
+            self.adView.adUnitID = AD_MOB_TEST_UNIT_ID;
+        else if([[self.mainUserData.schoolData objectForKey:IPHONE_UNIT_ID]isEqualToString:@""])
+            self.adView.adUnitID = AD_MOB_TEST_UNIT_ID;
+        else
+            self.adView.adUnitID = [self.mainUserData.schoolData objectForKey:IPHONE_UNIT_ID];
+    }
+    else if(self.mainUserData.accountType.intValue > 0 && self.mainUserData.accountType.intValue < 5)
+    {
+        if(self.mainUserData.isAdTestMode)
+            self.adView.adUnitID = AD_MOB_TEST_UNIT_ID;
+        else
+            self.adView.adUnitID = AD_MOB_TEACHER_UNIT_ID;
+    }
+    else
+        self.adView.adUnitID = AD_MOB_TEST_UNIT_ID;
+    
+    
+}
+
 - (void)viewDidLoad
 {
     [super viewDidLoad];
@@ -263,6 +448,35 @@
     self.alertTableView.dataSource = self;
     self.alertTableView.delegate = self;
     
+    self.adView = [[GADBannerView alloc]initWithAdSize:kGADAdSizeSmartBannerPortrait];
+    NSMutableArray *tempArray = [self.mainUserData getAd];
+   
+    NSLog(@"Check to see if get new ad or last used ad");
+    if([tempArray count] == 1)
+    {
+        NSLog(@"last ad used");
+        self.adView = (GADBannerView *)[tempArray objectAtIndex:0];
+        [self startTimer];
+        self.adView.rootViewController = self;
+        self.alertTableView.frame = CGRectMake(self.alertTableView.frame.origin.x, self.alertTableView.frame.origin.y, self.view.frame.size.width, self.alertTableView.frame.size.height - self.adView.frame.size.height);
+        [self.view addSubview:self.adView];
+    }
+    else
+    {
+        self.adView.frame = CGRectMake(0, self.view.frame.size.height , self.view.frame.size.width,60);
+        
+        [self setUnitID];
+        self.adView.rootViewController = self;
+        
+        [self loadNewAd];
+    }
+
+    
+    self.adView.delegate = self;
+    
+    
+    
+        
     /*
     self.refreshControl = [[UIRefreshControl alloc]init];
     self.refreshControl.backgroundColor = [UIColor greenColor];
@@ -273,7 +487,7 @@
     [self.alertTableView addSubview:self.refreshControl];
     */
     
-    NSLog(@"HOME PAGE DATA RECIEVED: %@", self.mainUserData.appData);
+    //NSLog(@"HOME PAGE DATA RECIEVED: %@", self.mainUserData.appData);
     
     [self sortAlerts];
     
@@ -286,8 +500,50 @@
     
     self.schoolNameLabel.text = [NSString stringWithFormat:@"My %@ Alerts!",[schoolData objectForKey:SCHOOL_NAME]];
     
+    if(self.mainUserData.accountType.intValue > 0 && self.mainUserData.accountType.intValue < 8)
+        self.quickAddButton.hidden = false;
+    
+    [self.quickAddView.layer setCornerRadius:30.0f];
+    [self.quickAddView.layer setBorderColor:[UIColor lightGrayColor].CGColor];
+    [self.quickAddView.layer setBorderWidth:1.5f];
+    [self.quickAddView.layer setShadowColor:[UIColor blackColor].CGColor];
+    [self.quickAddView.layer setShadowOpacity:0.8];
+    [self.quickAddView.layer setShadowRadius:3.0];
+    [self.quickAddView.layer setShadowOffset:CGSizeMake(2.0, 2.0)];
+    
+    UIButton *btnDisplay = (UIButton *)[self.quickAddView viewWithTag:128];
+    [btnDisplay  addTarget:self action:@selector(pressedBtnDisplay:) forControlEvents:UIControlEventTouchUpInside];
+    if(self.mainUserData.accountType.intValue > 0 & self.mainUserData.accountType.intValue < 5)
+    {
+        btnDisplay = (UIButton *)[self.quickAddView viewWithTag:129];
+        [btnDisplay  addTarget:self action:@selector(pressedBtnDisplay:) forControlEvents:UIControlEventTouchUpInside];
+        btnDisplay = (UIButton *)[self.quickAddView viewWithTag:130];
+        [btnDisplay  addTarget:self action:@selector(pressedBtnDisplay:) forControlEvents:UIControlEventTouchUpInside];
+    }
+    
+    
+    
 
     
+}
+
+- (void) pressedBtnDisplay:(id)sender
+{
+    self.quickAddView.hidden = true;
+    UIButton *button = sender;
+    switch (button.tag) {
+        case 128:
+            [self performSegueWithIdentifier:SEGUE_TO_SEND_ALERTS_VIEW sender:self];
+            break;
+        case 129:
+            [self performSegueWithIdentifier:SEGUE_TO_MANAGE_EVENT sender:self];
+            break;
+        case 130:
+            [self performSegueWithIdentifier:SEGUE_TO_MANAGE_POST sender:self];
+            break;
+        default:
+            break;
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -350,6 +606,13 @@
     [self.navigationController popToRootViewControllerAnimated:NO];
 }
 
+- (IBAction)quickAddButtonPressed
+{
+    if(self.quickAddView.hidden)
+        self.quickAddView.hidden = false;
+    else
+        self.quickAddView.hidden = true;
+}
 #pragma mark - Table view data source
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -433,16 +696,19 @@
             fromLabel.text = @"";
         */
         
-        if([[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromSchoolID"] length] > 1)
-        {
-
-            switch([[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"alertType"] intValue])
+                   switch([[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"alertType"] intValue])
             {
-                case 1: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getTeacherName:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromUserID"]]];
+                    
+                case 1:
+                case 2:
+                case 3:
+                case 10: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getTeacherName:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromUserID"]]];
+                    break;
+                /*case 2:  fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData.schoolData objectForKey:@"name"]];
                     break;
                 case 3: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getSchoolNameFromID:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromSchoolID"]]];
-                    break;
-                case 4: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getTeacherName:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromUserID"]]];
+                    break;*/
+                case 4: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getClassAndTeacherName:[[self.alertData objectAtIndex:indexPath.row]objectForKey:CLASS_ID]]];
                     break;
                 default:
                     fromLabel.text = @"";
@@ -450,9 +716,7 @@
                     
                     
             }
-        }
-        else
-            fromLabel.text = @"";
+      
 
         
         [backdrop setBackgroundColor:[UIColor clearColor]];
@@ -486,6 +750,37 @@
     
     return cell;
 }
+
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
+{
+   
+    
+    if([segue.identifier isEqualToString:SEGUE_TO_SEND_ALERTS_VIEW])
+    {
+        SendAlertViewController *SAVC = segue.destinationViewController;
+        SAVC.mainUserData = self.mainUserData;
+        SAVC.isEditing = false;
+        SAVC.autoClose = true;
+    }
+    else if([segue.identifier isEqualToString:SEGUE_TO_MANAGE_EVENT])
+    {
+        ManageCalendarTableViewController *MCTVC = segue.destinationViewController;
+        MCTVC.mainUserData = self.mainUserData;
+        MCTVC.backgroundColor = self.view.backgroundColor;
+        MCTVC.isNewEvent = true;
+    }
+    else if([segue.identifier isEqualToString:SEGUE_TO_MANAGE_POST])
+    {
+        ManagePostTableViewController *MPTVC = segue.destinationViewController;
+        MPTVC.mainUserData = self.mainUserData;
+        
+        MPTVC.isNewPost = true;
+    }
+   
+}
+
+
+
 
 
 

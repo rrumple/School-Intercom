@@ -27,6 +27,8 @@
 @property (nonatomic, strong) AdminModel *adminData;
 @property (nonatomic, strong) NSCalendar *calendar;
 @property (nonatomic, strong) NSString *classSelected;
+@property (weak, nonatomic) IBOutlet UITableViewCell *classSelectRow;
+@property (nonatomic, strong) NSMutableArray *classRoomArray;
 
 @end
 
@@ -42,7 +44,12 @@
 {
     [super viewWillAppear:animated];
     
-    [Flurry logEvent:@"ADD_UPDATE_CALENDAR_EVENT_ACCESSED"];
+        
+        
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"Add_Update_Calendar_Screen"];
+        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+    
     
     if(self.isNewEvent)
     {
@@ -150,7 +157,7 @@
     
     NSDateComponents *difference = [calendar components:NSDayCalendarUnit
                                                fromDate:fromDate toDate:toDate options:0];
-    NSLog(@"%ld", (long)[difference day]);
+    //NSLog(@"%ld", (long)[difference day]);
     return [difference day];
 }
 
@@ -194,7 +201,7 @@
     [self.classRoomTextfield resignFirstResponder];
 }
 
--(UIPickerView *)createPickerWithTag:(NSInteger)tag
+-(UIView *)createPickerWithTag:(NSInteger)tag
 {
     UIPickerView *pickerView = [[UIPickerView alloc]init];
     pickerView.tag = tag;
@@ -203,15 +210,30 @@
     
     [pickerView setShowsSelectionIndicator:YES];
     
+    UIToolbar *toolBar= [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];
+    [toolBar setBarStyle:UIBarStyleBlackOpaque];
+    UIBarButtonItem *barButtonDone = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                                      style:UIBarButtonItemStyleBordered target:self action:@selector(hideKeyboard)];
+    
+    toolBar.barTintColor = [UIColor colorWithRed:0.820f green:0.835f blue:0.859f alpha:1.00f];
+    
+    toolBar.items = [[NSArray alloc] initWithObjects:barButtonDone,nil];
+    barButtonDone.tintColor=[UIColor blackColor];
     
     
+    UIView *pickerParentView = [[UIView alloc]initWithFrame:CGRectMake(0, 60, 320, 216)];
+    [pickerParentView addSubview:pickerView];
+    [pickerParentView addSubview:toolBar];
+
+    /*
     UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
     
     [tapGR setNumberOfTapsRequired:1];
     [tapGR setDelegate:self];
     [pickerView addGestureRecognizer:tapGR];
+     */
     
-    return pickerView;
+    return pickerParentView;
 }
 
 - (void)pickerViewTapped
@@ -226,6 +248,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    self.classRoomArray = [self.mainUserData.classData mutableCopy];
+    [self.classRoomArray insertObject:@{@"className":@"All Classes", @"id":@"999"} atIndex:0];
     self.calendar = [NSCalendar currentCalendar];
     NSLocale *usLocale = [[NSLocale alloc]initWithLocaleIdentifier:@"en-US"];
     self.dateFormatter = [[NSDateFormatter alloc]init];
@@ -237,10 +262,15 @@
     
     NSLocale *locale = [NSLocale currentLocale];
     
-    if([self.mainUserData.classData count] > 0)
+    if(self.mainUserData.accountType.intValue == 1)
+        self.classSelectRow.hidden = false;
+    else
+        self.classSelectRow.hidden = true;
+    
+    if([self.classRoomArray count] > 0)
     {
-        self.classRoomTextfield.text = [[self.mainUserData.classData objectAtIndex:0] objectForKey:@"className"];
-        self.classSelected = [[self.mainUserData.classData objectAtIndex:0]objectForKey:ID];
+        self.classRoomTextfield.text = [[self.classRoomArray objectAtIndex:0] objectForKey:@"className"];
+        self.classSelected = [[self.classRoomArray objectAtIndex:0]objectForKey:ID];
     }
     else
     {
@@ -265,7 +295,7 @@
     toolBar.barTintColor = [UIColor colorWithRed:0.820f green:0.835f blue:0.859f alpha:1.00f];
     
     toolBar.items = [[NSArray alloc] initWithObjects:barButtonDone,nil];
-    barButtonDone.tintColor=[UIColor whiteColor];
+    barButtonDone.tintColor=[UIColor blackColor];
     
 
     UIView *pickerParentView = [[UIView alloc]initWithFrame:CGRectMake(0, 60, 320, 216)];
@@ -289,7 +319,7 @@
     toolBar2.barTintColor = [UIColor colorWithRed:0.820f green:0.835f blue:0.859f alpha:1.00f];
     
     toolBar2.items = [[NSArray alloc] initWithObjects:barButtonDone2,nil];
-    barButtonDone2.tintColor=[UIColor whiteColor];
+    barButtonDone2.tintColor=[UIColor blackColor];
     
     
     UIView *pickerParentView2 = [[UIView alloc]initWithFrame:CGRectMake(0, 60, 320, 216)];
@@ -298,17 +328,19 @@
     self.endDateTextField.inputView = pickerParentView2;
     
     
-    self.eventTitleTextField.text = [self.eventData objectForKey:CAL_TITLE];
-    self.locationTextField.text = [self.eventData objectForKey:CAL_LOCATION];
-    [self.allDaySwitch setOn:[[self.eventData objectForKey:CAL_IS_ALL_DAY]boolValue]];
+
     if(!self.isNewEvent)
     {
+        self.eventTitleTextField.text = [self.eventData objectForKey:CAL_TITLE];
+        self.locationTextField.text = [self.eventData objectForKey:CAL_LOCATION];
+        [self.allDaySwitch setOn:[[self.eventData objectForKey:CAL_IS_ALL_DAY]boolValue]];
         self.startDateTextField.text = [self convertDate:[self.eventData objectForKey:CAL_START_DATE]];
         self.endDateTextField.text = [self convertDate:[self.eventData objectForKey:CAL_END_DATE]];
         self.startDateUnaltered = [self.eventData objectForKey:CAL_START_DATE];
         self.endDateUnaltered =[self.eventData objectForKey:CAL_END_DATE];
+        self.moreInfoTextView.text = [self.eventData objectForKey:CAL_MORE_INFO];
+
     }
-    self.moreInfoTextView.text = [self.eventData objectForKey:CAL_MORE_INFO];
     
     
     
@@ -333,6 +365,8 @@
     if([[HelperMethods prepStringForValidation:self.eventTitleTextField.text] length] > 0 && self.startDateUnaltered && self.endDateUnaltered && [[self.dateFormatter dateFromString:self.endDateUnaltered]timeIntervalSinceDate:[self.dateFormatter dateFromString:self.startDateUnaltered]] >
        0.0)
     {
+        sender.enabled = NO;
+        
         if([sender.titleLabel.text isEqualToString:@"Add"])
         {
             [self addNewEventInDatabase];
@@ -450,7 +484,7 @@
 {
     
     if(pickerView.tag == zPickerClassRoom)
-        return [self.mainUserData.classData count];
+        return [self.classRoomArray count];
     
     
     return 0;
@@ -466,7 +500,7 @@
     
     if(pickerView.tag == zPickerClassRoom)
     {
-        return [[self.mainUserData.classData objectAtIndex:row] objectForKey:@"className"];
+        return [[self.classRoomArray objectAtIndex:row] objectForKey:@"className"];
         
     }
     
@@ -479,8 +513,8 @@
 {
     if(pickerView.tag == zPickerClassRoom)
     {
-        self.classSelected = [[self.mainUserData.classData objectAtIndex:row] objectForKey:ID];
-        self.classRoomTextfield.text = [[self.mainUserData.classData objectAtIndex:row] objectForKey:@"className"];
+        self.classSelected = [[self.classRoomArray objectAtIndex:row] objectForKey:ID];
+        self.classRoomTextfield.text = [[self.classRoomArray objectAtIndex:row] objectForKey:@"className"];
        
         
     }

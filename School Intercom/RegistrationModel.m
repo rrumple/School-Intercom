@@ -44,7 +44,7 @@
 - (void)setUserPassword:(NSString *)userPassword
 {
     _userPassword = [HelperMethods encryptText:userPassword];
-    NSLog(@"%lul", (unsigned long)[_userPassword length]);
+    //NSLog(@"%lul", (unsigned long)[_userPassword length]);
 }
 
 - (NSArray *)queryDatabaseForStates

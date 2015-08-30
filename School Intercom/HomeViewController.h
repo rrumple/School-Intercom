@@ -11,8 +11,12 @@
 #import "UserData.h"
 #import "AdModel.h"
 #import "UpdateProfileModel.h"
+@import GoogleMobileAds;
+#import <Google/Analytics.h>
 
 @protocol HomeViewControllerDelegate;
+
+
 
 @interface HomeViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
 

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "RegistrationModel.h"
+#import <Google/Analytics.h>
 
 @interface RequestSchoolViewController : UIViewController
 

@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UpdateProfileModel.h"
+#import <Google/Analytics.h>
 
 
 @interface UpdateKidViewController : UIViewController <UIAlertViewDelegate, UITextFieldDelegate>

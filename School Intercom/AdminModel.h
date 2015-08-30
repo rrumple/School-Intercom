@@ -65,6 +65,10 @@
 
 - (NSArray *)getParentsOfClass:(NSString *)classID;
 
+- (NSArray *)getTeachersOfPrincipal:(NSString *)userID;
+
+- (NSArray *)getPrincipalsOfSuperintendent:(NSString *)userID;
+
 - (NSArray *)getSchoolStats:(NSString *)schoolID forUserID:(NSString *)userID;
 
 
@@ -74,5 +78,12 @@
 
 - (NSArray *)updateAlert:(NSString *)alertID withText:(NSString *)text userMakingChange:(NSString *)userID;
 
+- (NSArray *)addClassForUser:(NSString *)userID withClassName:(NSString *)className andPeriod:(NSString *)period andGradeLevel:(NSString *)gradeLevel;
+
+- (NSArray *)updateClass:(NSString *)classID withClassName:(NSString *)className andPeriod:(NSString *)period andGradeLevel:(NSString *)gradeLevel;
+
+-(NSArray *)getTeacherClasses:(NSString *)userID;
+
+- (NSArray *)deleteClass:(NSString *)classID;
 
 @end

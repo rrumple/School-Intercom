@@ -13,6 +13,8 @@
 @interface SendAlertViewController : UIViewController
 @property (nonatomic, strong) UserData* mainUserData;
 @property (nonatomic) BOOL isEditing;
+@property (nonatomic) BOOL isUserAlert;
 @property (nonatomic, strong) NSDictionary *alertToEdit;
-
+@property (nonatomic) BOOL autoClose;
+@property (nonatomic, strong) NSDictionary *userAlertData;
 @end

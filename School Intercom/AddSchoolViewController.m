@@ -69,6 +69,13 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restorePurchasesFromDatabase:) name:IAPHelperProductRestoredPurchaseNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete) name:IAPHelperProductRestoreCompleted object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(restoreComplete:) name:IAPHelperProductRestoreCompletedWithNumber object:nil];
+
+        
+        
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"Add_A_School_Screen"];
+        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+
     
 }
 
@@ -199,7 +206,7 @@
                     [self.mainUserData addschoolDataToArray:[[tempDic objectForKey:SCHOOL_DATA] objectAtIndex:0]];
                     
                     
-                    UIAlertView *addSchoolSuccess = [[UIAlertView alloc]initWithTitle:@"School Added" message:@"Goto the Main Menu and select Switch to login to this school" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
+                    UIAlertView *addSchoolSuccess = [[UIAlertView alloc]initWithTitle:@"School Added" message:@"Goto the Main Menu and select Switch Schools to login to this school" delegate:self cancelButtonTitle:@"Ok" otherButtonTitles:nil];
                     [addSchoolSuccess show];
                     
                     self.stateTextField.text = @"";
@@ -210,7 +217,7 @@
                     self.addSchoolButton.enabled = NO;
                 }
 
-                NSLog(@"%@", dataArray);
+                //NSLog(@"%@", dataArray);
                 
                
             });
@@ -264,11 +271,11 @@
         {
             dispatch_async(dispatch_get_main_queue(), ^{
                 self.registerData.stateArray = statesArray;
-                NSLog(@"%@", self.registerData.stateArray);
+                //NSLog(@"%@", self.registerData.stateArray);
                 self.stateTextField.enabled = YES;
                 self.stateTextField.placeholder = @"Select State";
                 [self.stateIndicatorView stopAnimating];
-                UIPickerView *tempPicker = (UIPickerView *)self.stateTextField.inputView;
+                UIPickerView *tempPicker = (UIPickerView *) [self.stateTextField.inputView viewWithTag:zPickerState];
                 [tempPicker reloadAllComponents];
             });
             
@@ -292,11 +299,11 @@
             {
                 dispatch_async(dispatch_get_main_queue(), ^{
                     self.registerData.cityArray = cityArray;
-                    NSLog(@"%@", self.registerData.cityArray);
+                    //NSLog(@"%@", self.registerData.cityArray);
                     self.cityTextField.enabled = YES;
                     self.cityTextField.placeholder = @"Select City";
                     [self.cityIndicatorView stopAnimating];
-                    UIPickerView *tempPicker = (UIPickerView *)self.cityTextField.inputView;
+                    UIPickerView *tempPicker = (UIPickerView *) [self.cityTextField.inputView viewWithTag:zPickerCity];
                     [tempPicker reloadAllComponents];
                 });
                 
@@ -342,7 +349,7 @@
                     }
                     self.registerData.schoolArray = newArray;
                     self.registerData.schoolDicsArray = newArray2;
-                    NSLog(@"%@", self.registerData.schoolArray);
+                    //NSLog(@"%@", self.registerData.schoolArray);
 
                     if ([self.registerData.schoolArray count] > 0)
                     {
@@ -350,7 +357,7 @@
                         self.schoolTextField.enabled = YES;
                         self.schoolTextField.placeholder = @"Select School";
                         [self.schoolIndicatorView stopAnimating];
-                        UIPickerView *tempPicker = (UIPickerView *)self.schoolTextField.inputView;
+                        UIPickerView *tempPicker = (UIPickerView *) [self.schoolTextField.inputView viewWithTag:zPickerSchool];
                         [tempPicker reloadAllComponents];
                     }
                     else
@@ -418,7 +425,7 @@
     }
 }
 
--(UIPickerView *)createPickerWithTag:(NSInteger)tag
+-(UIView *)createPickerWithTag:(NSInteger)tag
 {
     UIPickerView *pickerView = [[UIPickerView alloc]init];
     pickerView.tag = tag;
@@ -427,15 +434,31 @@
     
     [pickerView setShowsSelectionIndicator:YES];
     
+    UIToolbar *toolBar= [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];
+    [toolBar setBarStyle:UIBarStyleBlackOpaque];
+    UIBarButtonItem *barButtonDone = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                                      style:UIBarButtonItemStyleBordered target:self action:@selector(hideKeyboard)];
     
+    toolBar.barTintColor = [UIColor colorWithRed:0.820f green:0.835f blue:0.859f alpha:1.00f];
+    
+    toolBar.items = [[NSArray alloc] initWithObjects:barButtonDone,nil];
+    barButtonDone.tintColor=[UIColor blackColor];
+    
+    
+    UIView *pickerParentView = [[UIView alloc]initWithFrame:CGRectMake(0, 60, 320, 216)];
+    [pickerParentView addSubview:pickerView];
+    [pickerParentView addSubview:toolBar];
+
+    /*
     
     UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
     
     [tapGR setNumberOfTapsRequired:1];
     [tapGR setDelegate:self];
     [pickerView addGestureRecognizer:tapGR];
+     */
     
-    return pickerView;
+    return pickerParentView;
 }
 
 

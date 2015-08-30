@@ -7,6 +7,29 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0524E27F1B7ED54700CCD5C0 /* ClassesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0524E27E1B7ED54700CCD5C0 /* ClassesTableViewController.m */; };
+		0524E2821B7EE7BA00CCD5C0 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 0524E2811B7EE7BA00CCD5C0 /* Reachability.m */; };
+		0524E2891B7F27D400CCD5C0 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0524E2881B7F27D400CCD5C0 /* CoreData.framework */; };
+		0524E28B1B7F28DA00CCD5C0 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0524E28A1B7F28DA00CCD5C0 /* libsqlite3.0.dylib */; };
+		0524E28D1B7F291900CCD5C0 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0524E28C1B7F291900CCD5C0 /* libz.dylib */; };
+		0524E28F1B7F295200CCD5C0 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0524E28E1B7F295200CCD5C0 /* CoreMotion.framework */; };
+		0524E2911B7F2E2F00CCD5C0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0524E2901B7F2E2F00CCD5C0 /* libsqlite3.dylib */; };
+		0524E2A21B7F84BB00CCD5C0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0524E2A11B7F84BB00CCD5C0 /* GoogleService-Info.plist */; };
+		05622E321B7FFAC800563671 /* AddUpdateClassTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 05622E311B7FFAC800563671 /* AddUpdateClassTableViewController.m */; };
+		058E66141B738B8C00488144 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 058E66131B738B8C00488144 /* GoogleMobileAds.framework */; };
+		05992D451B6B1DF400DB6A57 /* ShowLoginScreenViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 05992D441B6B1DF400DB6A57 /* ShowLoginScreenViewController.m */; };
+		05A1174E1B706D56004C6A62 /* AdSupport.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A1174D1B706D56004C6A62 /* AdSupport.framework */; };
+		05A117501B706D60004C6A62 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A1174F1B706D60004C6A62 /* AudioToolbox.framework */; };
+		05A117521B706D75004C6A62 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A117511B706D75004C6A62 /* CoreBluetooth.framework */; };
+		05A117541B706D85004C6A62 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A117531B706D85004C6A62 /* CoreLocation.framework */; };
+		05A117561B706D8D004C6A62 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A117551B706D8D004C6A62 /* CoreTelephony.framework */; };
+		05A117581B706D9E004C6A62 /* EventKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A117571B706D9E004C6A62 /* EventKitUI.framework */; };
+		05A1175A1B706DB0004C6A62 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A117591B706DB0004C6A62 /* libxml2.dylib */; };
+		05A1175C1B706DB9004C6A62 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A1175B1B706DB9004C6A62 /* MediaPlayer.framework */; };
+		05A117601B731044004C6A62 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A1175F1B731044004C6A62 /* CoreMedia.framework */; };
+		05ED85521B607444006D5714 /* AdminToolsQuickAddView.m in Sources */ = {isa = PBXBuildFile; fileRef = 05ED85511B607444006D5714 /* AdminToolsQuickAddView.m */; };
+		05ED85541B60746B006D5714 /* AdminToolsQuickAddView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 05ED85531B60746B006D5714 /* AdminToolsQuickAddView.xib */; };
+		7876F68D6093095497A50517 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E0E406A4C80C7006893BCA59 /* libPods.a */; };
 		940296F41A32A3C8007E0E89 /* AdminToolsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940296F31A32A3C8007E0E89 /* AdminToolsTableViewController.m */; };
 		940296F71A32A668007E0E89 /* SendAlertViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940296F61A32A668007E0E89 /* SendAlertViewController.m */; };
 		940296FB1A32BC50007E0E89 /* AdminModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 940296FA1A32BC50007E0E89 /* AdminModel.m */; };
@@ -24,8 +47,8 @@
 		940D6AA71847D2F20013EA7B /* UIView+AddOns.m in Sources */ = {isa = PBXBuildFile; fileRef = 940D6AA61847D2F20013EA7B /* UIView+AddOns.m */; };
 		940E81571A50633F00F12ADA /* ManageUsersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 940E81561A50633F00F12ADA /* ManageUsersViewController.m */; };
 		9412DE80184ECED60046D297 /* HelperMethods.m in Sources */ = {isa = PBXBuildFile; fileRef = 9412DE7F184ECED60046D297 /* HelperMethods.m */; };
-		9415694E1A870529003E2853 /* FundraisingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9415694D1A870529003E2853 /* FundraisingViewController.m */; };
-		941569511A872AFE003E2853 /* FundraiserModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 941569501A872AFE003E2853 /* FundraiserModel.m */; };
+		9415694E1A870529003E2853 /* OfferViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9415694D1A870529003E2853 /* OfferViewController.m */; };
+		941569511A872AFE003E2853 /* OfferModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 941569501A872AFE003E2853 /* OfferModel.m */; };
 		9427379919874431002CEA3F /* UpdateKidViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9427379819874431002CEA3F /* UpdateKidViewController.m */; };
 		942CC9611A93D149002C45DF /* libFlurry_6.0.0.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 942CC9601A93D148002C45DF /* libFlurry_6.0.0.a */; };
 		942DD8511870D21600FB8F71 /* UpdateProfileViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 942DD8501870D21600FB8F71 /* UpdateProfileViewController.m */; };
@@ -69,7 +92,6 @@
 		94BD73CE183DA63D009E1129 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 94BD73CD183DA63D009E1129 /* AppDelegate.m */; };
 		94BD73D1183DA63D009E1129 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 94BD73CF183DA63D009E1129 /* Main.storyboard */; };
 		94BD73D6183DA63D009E1129 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94BD73D5183DA63D009E1129 /* Images.xcassets */; };
-		94BD73DD183DA63D009E1129 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94BD73DC183DA63D009E1129 /* XCTest.framework */; };
 		94BD73DE183DA63D009E1129 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94BD73BD183DA63D009E1129 /* Foundation.framework */; };
 		94BD73DF183DA63D009E1129 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 94BD73C1183DA63D009E1129 /* UIKit.framework */; };
 		94BD73E7183DA63D009E1129 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 94BD73E5183DA63D009E1129 /* InfoPlist.strings */; };
@@ -151,6 +173,34 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0524E27D1B7ED54700CCD5C0 /* ClassesTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClassesTableViewController.h; sourceTree = "<group>"; };
+		0524E27E1B7ED54700CCD5C0 /* ClassesTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClassesTableViewController.m; sourceTree = "<group>"; };
+		0524E2801B7EE7BA00CCD5C0 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		0524E2811B7EE7BA00CCD5C0 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		0524E2881B7F27D400CCD5C0 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		0524E28A1B7F28DA00CCD5C0 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+		0524E28C1B7F291900CCD5C0 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
+		0524E28E1B7F295200CCD5C0 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		0524E2901B7F2E2F00CCD5C0 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
+		0524E2A11B7F84BB00CCD5C0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		05622E301B7FFAC800563671 /* AddUpdateClassTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddUpdateClassTableViewController.h; sourceTree = "<group>"; };
+		05622E311B7FFAC800563671 /* AddUpdateClassTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddUpdateClassTableViewController.m; sourceTree = "<group>"; };
+		058E66131B738B8C00488144 /* GoogleMobileAds.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = GoogleMobileAds.framework; sourceTree = "<group>"; };
+		05992D431B6B1DF400DB6A57 /* ShowLoginScreenViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShowLoginScreenViewController.h; sourceTree = "<group>"; };
+		05992D441B6B1DF400DB6A57 /* ShowLoginScreenViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ShowLoginScreenViewController.m; sourceTree = "<group>"; };
+		05A1174D1B706D56004C6A62 /* AdSupport.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AdSupport.framework; path = System/Library/Frameworks/AdSupport.framework; sourceTree = SDKROOT; };
+		05A1174F1B706D60004C6A62 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		05A117511B706D75004C6A62 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		05A117531B706D85004C6A62 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
+		05A117551B706D8D004C6A62 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		05A117571B706D9E004C6A62 /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
+		05A117591B706DB0004C6A62 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
+		05A1175B1B706DB9004C6A62 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
+		05A1175F1B731044004C6A62 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		05ED85501B607444006D5714 /* AdminToolsQuickAddView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdminToolsQuickAddView.h; sourceTree = "<group>"; };
+		05ED85511B607444006D5714 /* AdminToolsQuickAddView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdminToolsQuickAddView.m; sourceTree = "<group>"; };
+		05ED85531B60746B006D5714 /* AdminToolsQuickAddView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AdminToolsQuickAddView.xib; sourceTree = "<group>"; };
+		1C0CDB387048F98667052BC4 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		940296F21A32A3C8007E0E89 /* AdminToolsTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdminToolsTableViewController.h; sourceTree = "<group>"; };
 		940296F31A32A3C8007E0E89 /* AdminToolsTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdminToolsTableViewController.m; sourceTree = "<group>"; };
 		940296F51A32A668007E0E89 /* SendAlertViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SendAlertViewController.h; sourceTree = "<group>"; };
@@ -175,7 +225,7 @@
 		940D6A98184797BB0013EA7B /* SwitchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SwitchViewController.h; sourceTree = "<group>"; };
 		940D6A99184797BB0013EA7B /* SwitchViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SwitchViewController.m; sourceTree = "<group>"; };
 		940D6A9C18479F740013EA7B /* MainMenuViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainMenuViewController.h; sourceTree = "<group>"; };
-		940D6A9D18479F740013EA7B /* MainMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainMenuViewController.m; sourceTree = "<group>"; };
+		940D6A9D18479F740013EA7B /* MainMenuViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = MainMenuViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		940D6A9F1847A1F80013EA7B /* MainNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MainNavigationController.h; sourceTree = "<group>"; };
 		940D6AA01847A1F80013EA7B /* MainNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainNavigationController.m; sourceTree = "<group>"; };
 		940D6AA51847D2F20013EA7B /* UIView+AddOns.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+AddOns.h"; sourceTree = "<group>"; };
@@ -184,10 +234,10 @@
 		940E81561A50633F00F12ADA /* ManageUsersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageUsersViewController.m; sourceTree = "<group>"; };
 		9412DE7E184ECED60046D297 /* HelperMethods.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HelperMethods.h; sourceTree = "<group>"; };
 		9412DE7F184ECED60046D297 /* HelperMethods.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HelperMethods.m; sourceTree = "<group>"; };
-		9415694C1A870529003E2853 /* FundraisingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FundraisingViewController.h; sourceTree = "<group>"; };
-		9415694D1A870529003E2853 /* FundraisingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FundraisingViewController.m; sourceTree = "<group>"; };
-		9415694F1A872AFE003E2853 /* FundraiserModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FundraiserModel.h; sourceTree = "<group>"; };
-		941569501A872AFE003E2853 /* FundraiserModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FundraiserModel.m; sourceTree = "<group>"; };
+		9415694C1A870529003E2853 /* OfferViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OfferViewController.h; sourceTree = "<group>"; };
+		9415694D1A870529003E2853 /* OfferViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = OfferViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
+		9415694F1A872AFE003E2853 /* OfferModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OfferModel.h; sourceTree = "<group>"; };
+		941569501A872AFE003E2853 /* OfferModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OfferModel.m; sourceTree = "<group>"; };
 		9427379719874431002CEA3F /* UpdateKidViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UpdateKidViewController.h; sourceTree = "<group>"; };
 		9427379819874431002CEA3F /* UpdateKidViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UpdateKidViewController.m; sourceTree = "<group>"; };
 		942CC95F1A93D148002C45DF /* Flurry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Flurry.h; path = Flurry/Flurry.h; sourceTree = "<group>"; };
@@ -206,7 +256,7 @@
 		94441B4E1A8FE16300124C74 /* FirstNavViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FirstNavViewController.h; sourceTree = "<group>"; };
 		94441B4F1A8FE16300124C74 /* FirstNavViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FirstNavViewController.m; sourceTree = "<group>"; };
 		94441B531A8FE5AC00124C74 /* SchoolStatsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SchoolStatsViewController.h; sourceTree = "<group>"; };
-		94441B541A8FE5AC00124C74 /* SchoolStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SchoolStatsViewController.m; sourceTree = "<group>"; };
+		94441B541A8FE5AC00124C74 /* SchoolStatsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = SchoolStatsViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		94451F571866EA1100136ED2 /* IntroModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntroModel.h; sourceTree = "<group>"; };
 		94451F581866EA1100136ED2 /* IntroModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntroModel.m; sourceTree = "<group>"; };
 		9447E51319152A9A0002C556 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -263,14 +313,13 @@
 		94BD73CD183DA63D009E1129 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		94BD73D5183DA63D009E1129 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		94BD73DB183DA63D009E1129 /* School IntercomTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "School IntercomTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		94BD73DC183DA63D009E1129 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		94BD73E4183DA63D009E1129 /* School IntercomTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "School IntercomTests-Info.plist"; sourceTree = "<group>"; };
 		94BD73E6183DA63D009E1129 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		94BD73E8183DA63D009E1129 /* School_IntercomTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = School_IntercomTests.m; sourceTree = "<group>"; };
 		94BD73F2183DA686009E1129 /* EventKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKit.framework; path = System/Library/Frameworks/EventKit.framework; sourceTree = SDKROOT; };
 		94BD73F4183DA722009E1129 /* IntroViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IntroViewController.h; sourceTree = "<group>"; };
 		94BD73F5183DA722009E1129 /* IntroViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IntroViewController.m; sourceTree = "<group>"; };
-		94BD73F9183DAAB7009E1129 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
+		94BD73F9183DAAB7009E1129 /* Constants.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; lineEnding = 0; path = Constants.h; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objcpp; };
 		94BD73FA183DAC12009E1129 /* UserData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserData.h; sourceTree = "<group>"; };
 		94BD73FB183DAC12009E1129 /* UserData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserData.m; sourceTree = "<group>"; };
 		94BD73FE183DCF16009E1129 /* RegisterViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RegisterViewController.h; sourceTree = "<group>"; };
@@ -285,7 +334,7 @@
 		94C8EC761847EF0A002EF4FE /* DatabaseRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DatabaseRequest.h; sourceTree = "<group>"; };
 		94C8EC771847EF0A002EF4FE /* DatabaseRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DatabaseRequest.m; sourceTree = "<group>"; };
 		94E33BF71869E0A900DB9A82 /* CalendarMonthViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CalendarMonthViewController.h; sourceTree = "<group>"; };
-		94E33BF81869E0A900DB9A82 /* CalendarMonthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CalendarMonthViewController.m; sourceTree = "<group>"; };
+		94E33BF81869E0A900DB9A82 /* CalendarMonthViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; path = CalendarMonthViewController.m; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.objc; };
 		94E33C001869E3E600DB9A82 /* NSArray+TKCategory.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+TKCategory.h"; sourceTree = "<group>"; };
 		94E33C011869E3E600DB9A82 /* NSArray+TKCategory.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+TKCategory.m"; sourceTree = "<group>"; };
 		94E33C021869E3E600DB9A82 /* NSDate+CalendarGrid.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDate+CalendarGrid.h"; sourceTree = "<group>"; };
@@ -397,6 +446,8 @@
 		94EB65F21A96E041004D1226 /* ManageAlertsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ManageAlertsViewController.m; sourceTree = "<group>"; };
 		94EB65F41A984C3D004D1226 /* AddGrandparentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddGrandparentViewController.h; sourceTree = "<group>"; };
 		94EB65F51A984C3D004D1226 /* AddGrandparentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddGrandparentViewController.m; sourceTree = "<group>"; };
+		DFDB8C0D614A29A37BEA2320 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		E0E406A4C80C7006893BCA59 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -404,9 +455,24 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				946893041A8320C50047C111 /* Security.framework in Frameworks */,
+				0524E2911B7F2E2F00CCD5C0 /* libsqlite3.dylib in Frameworks */,
+				0524E28F1B7F295200CCD5C0 /* CoreMotion.framework in Frameworks */,
+				0524E28D1B7F291900CCD5C0 /* libz.dylib in Frameworks */,
+				0524E28B1B7F28DA00CCD5C0 /* libsqlite3.0.dylib in Frameworks */,
+				0524E2891B7F27D400CCD5C0 /* CoreData.framework in Frameworks */,
+				05A117601B731044004C6A62 /* CoreMedia.framework in Frameworks */,
 				946893021A8320BD0047C111 /* SystemConfiguration.framework in Frameworks */,
 				9402977A1A43F4B1007E0E89 /* MessageUI.framework in Frameworks */,
+				05A1175C1B706DB9004C6A62 /* MediaPlayer.framework in Frameworks */,
+				05A1175A1B706DB0004C6A62 /* libxml2.dylib in Frameworks */,
+				05A117581B706D9E004C6A62 /* EventKitUI.framework in Frameworks */,
+				05A117561B706D8D004C6A62 /* CoreTelephony.framework in Frameworks */,
+				05A117541B706D85004C6A62 /* CoreLocation.framework in Frameworks */,
+				05A117521B706D75004C6A62 /* CoreBluetooth.framework in Frameworks */,
+				05A117501B706D60004C6A62 /* AudioToolbox.framework in Frameworks */,
+				05A1174E1B706D56004C6A62 /* AdSupport.framework in Frameworks */,
+				946893041A8320C50047C111 /* Security.framework in Frameworks */,
+				058E66141B738B8C00488144 /* GoogleMobileAds.framework in Frameworks */,
 				9447E51E192460CE0002C556 /* QuartzCore.framework in Frameworks */,
 				9447E51C1921BF3B0002C556 /* AVFoundation.framework in Frameworks */,
 				9447E51419152A9A0002C556 /* StoreKit.framework in Frameworks */,
@@ -415,6 +481,7 @@
 				94BD73C0183DA63D009E1129 /* CoreGraphics.framework in Frameworks */,
 				94BD73C2183DA63D009E1129 /* UIKit.framework in Frameworks */,
 				94BD73BE183DA63D009E1129 /* Foundation.framework in Frameworks */,
+				7876F68D6093095497A50517 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,7 +489,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				94BD73DD183DA63D009E1129 /* XCTest.framework in Frameworks */,
 				94BD73DF183DA63D009E1129 /* UIKit.framework in Frameworks */,
 				94BD73DE183DA63D009E1129 /* Foundation.framework in Frameworks */,
 			);
@@ -431,6 +497,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		58D2B2DD57E1A28DBBDDD370 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				1C0CDB387048F98667052BC4 /* Pods.debug.xcconfig */,
+				DFDB8C0D614A29A37BEA2320 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		940296F81A32A670007E0E89 /* Admin views */ = {
 			isa = PBXGroup;
 			children = (
@@ -447,8 +522,8 @@
 		940D6A9B184797E70013EA7B /* Main Views */ = {
 			isa = PBXGroup;
 			children = (
-				9415694C1A870529003E2853 /* FundraisingViewController.h */,
-				9415694D1A870529003E2853 /* FundraisingViewController.m */,
+				9415694C1A870529003E2853 /* OfferViewController.h */,
+				9415694D1A870529003E2853 /* OfferViewController.m */,
 				947AB4E0196A489C00C4AD80 /* LunchMenuViewController.h */,
 				947AB4E1196A489C00C4AD80 /* LunchMenuViewController.m */,
 				94E33BF71869E0A900DB9A82 /* CalendarMonthViewController.h */,
@@ -500,6 +575,8 @@
 		94441B511A8FE4DA00124C74 /* Teacher/Principal/Secretary Views */ = {
 			isa = PBXGroup;
 			children = (
+				0524E27D1B7ED54700CCD5C0 /* ClassesTableViewController.h */,
+				0524E27E1B7ED54700CCD5C0 /* ClassesTableViewController.m */,
 				940297361A3DB9B4007E0E89 /* ApproveUsersTableViewController.h */,
 				940297371A3DB9B4007E0E89 /* ApproveUsersTableViewController.m */,
 				940296F51A32A668007E0E89 /* SendAlertViewController.h */,
@@ -514,6 +591,8 @@
 				948686811A7EF510004882EE /* ManagePostTableViewController.m */,
 				9486867D1A7EF20F004882EE /* ManageNewsViewController.h */,
 				9486867E1A7EF20F004882EE /* ManageNewsViewController.m */,
+				05622E301B7FFAC800563671 /* AddUpdateClassTableViewController.h */,
+				05622E311B7FFAC800563671 /* AddUpdateClassTableViewController.m */,
 			);
 			name = "Teacher/Principal/Secretary Views";
 			sourceTree = "<group>";
@@ -521,6 +600,8 @@
 		94441B521A8FE52800124C74 /* App Admin Views */ = {
 			isa = PBXGroup;
 			children = (
+				05992D431B6B1DF400DB6A57 /* ShowLoginScreenViewController.h */,
+				05992D441B6B1DF400DB6A57 /* ShowLoginScreenViewController.m */,
 				94642FBC1A5926E000BE290F /* AllSchoolsTableViewController.h */,
 				94642FBD1A5926E000BE290F /* AllSchoolsTableViewController.m */,
 				94502C7B1A525CDA00F1E775 /* UsersSchoolsTableViewController.h */,
@@ -548,12 +629,14 @@
 		94BD73B1183DA63C009E1129 = {
 			isa = PBXGroup;
 			children = (
+				0524E2A11B7F84BB00CCD5C0 /* GoogleService-Info.plist */,
 				942CC95F1A93D148002C45DF /* Flurry.h */,
 				942CC9601A93D148002C45DF /* libFlurry_6.0.0.a */,
 				94BD73C3183DA63D009E1129 /* School Intercom */,
 				94BD73E2183DA63D009E1129 /* School IntercomTests */,
 				94BD73BC183DA63D009E1129 /* Frameworks */,
 				94BD73BB183DA63D009E1129 /* Products */,
+				58D2B2DD57E1A28DBBDDD370 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -569,6 +652,21 @@
 		94BD73BC183DA63D009E1129 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0524E2901B7F2E2F00CCD5C0 /* libsqlite3.dylib */,
+				0524E28E1B7F295200CCD5C0 /* CoreMotion.framework */,
+				0524E28C1B7F291900CCD5C0 /* libz.dylib */,
+				0524E28A1B7F28DA00CCD5C0 /* libsqlite3.0.dylib */,
+				0524E2881B7F27D400CCD5C0 /* CoreData.framework */,
+				058E66131B738B8C00488144 /* GoogleMobileAds.framework */,
+				05A1175F1B731044004C6A62 /* CoreMedia.framework */,
+				05A1175B1B706DB9004C6A62 /* MediaPlayer.framework */,
+				05A117591B706DB0004C6A62 /* libxml2.dylib */,
+				05A117571B706D9E004C6A62 /* EventKitUI.framework */,
+				05A117551B706D8D004C6A62 /* CoreTelephony.framework */,
+				05A117531B706D85004C6A62 /* CoreLocation.framework */,
+				05A117511B706D75004C6A62 /* CoreBluetooth.framework */,
+				05A1174F1B706D60004C6A62 /* AudioToolbox.framework */,
+				05A1174D1B706D56004C6A62 /* AdSupport.framework */,
 				946893031A8320C50047C111 /* Security.framework */,
 				946893011A8320BD0047C111 /* SystemConfiguration.framework */,
 				940297791A43F4B1007E0E89 /* MessageUI.framework */,
@@ -579,7 +677,7 @@
 				94BD73BD183DA63D009E1129 /* Foundation.framework */,
 				94BD73BF183DA63D009E1129 /* CoreGraphics.framework */,
 				94BD73C1183DA63D009E1129 /* UIKit.framework */,
-				94BD73DC183DA63D009E1129 /* XCTest.framework */,
+				E0E406A4C80C7006893BCA59 /* libPods.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -605,6 +703,8 @@
 		94BD73C4183DA63D009E1129 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				0524E2801B7EE7BA00CCD5C0 /* Reachability.h */,
+				0524E2811B7EE7BA00CCD5C0 /* Reachability.m */,
 				940297761A3FEC84007E0E89 /* GraphView.h */,
 				940297771A3FEC84007E0E89 /* GraphView.m */,
 				94BD73D5183DA63D009E1129 /* Images.xcassets */,
@@ -619,6 +719,9 @@
 				94BD73C5183DA63D009E1129 /* School Intercom-Info.plist */,
 				94BD73C6183DA63D009E1129 /* InfoPlist.strings */,
 				94BD73CB183DA63D009E1129 /* School Intercom-Prefix.pch */,
+				05ED85501B607444006D5714 /* AdminToolsQuickAddView.h */,
+				05ED85511B607444006D5714 /* AdminToolsQuickAddView.m */,
+				05ED85531B60746B006D5714 /* AdminToolsQuickAddView.xib */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -651,9 +754,9 @@
 				94C8EC761847EF0A002EF4FE /* DatabaseRequest.h */,
 				94C8EC771847EF0A002EF4FE /* DatabaseRequest.m */,
 				94C8EC731847ED7E002EF4FE /* RegistrationModel.h */,
-				9415694F1A872AFE003E2853 /* FundraiserModel.h */,
-				941569501A872AFE003E2853 /* FundraiserModel.m */,
 				94C8EC741847ED7E002EF4FE /* RegistrationModel.m */,
+				9415694F1A872AFE003E2853 /* OfferModel.h */,
+				941569501A872AFE003E2853 /* OfferModel.m */,
 				943A0CF71876538C00D0910F /* ContactModel.h */,
 				943A0CF81876538C00D0910F /* ContactModel.m */,
 				948E084F18B082E800B3A854 /* AdModel.h */,
@@ -818,9 +921,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 94BD73EC183DA63D009E1129 /* Build configuration list for PBXNativeTarget "School Intercom" */;
 			buildPhases = (
+				B8D418A4647461B6490249A6 /* Check Pods Manifest.lock */,
 				94BD73B6183DA63D009E1129 /* Sources */,
 				94BD73B7183DA63D009E1129 /* Frameworks */,
 				94BD73B8183DA63D009E1129 /* Resources */,
+				CE9D8514FC06E35A0B4594EB /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -899,7 +1004,9 @@
 				94BD73D6183DA63D009E1129 /* Images.xcassets in Resources */,
 				94E33CBF186A068B00DB9A82 /* TapkuLibrary.bundle in Resources */,
 				94BD73C8183DA63D009E1129 /* InfoPlist.strings in Resources */,
+				05ED85541B60746B006D5714 /* AdminToolsQuickAddView.xib in Resources */,
 				94BD73D1183DA63D009E1129 /* Main.storyboard in Resources */,
+				0524E2A21B7F84BB00CCD5C0 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -912,6 +1019,39 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		B8D418A4647461B6490249A6 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		CE9D8514FC06E35A0B4594EB /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		94BD73B6183DA63D009E1129 /* Sources */ = {
@@ -928,10 +1068,12 @@
 				94E33CBB1869E3E700DB9A82 /* UITextField+TKCategory.m in Sources */,
 				94AB780E186A9CC500F5A56F /* TKCalendarMonthView.m in Sources */,
 				94E33CB81869E3E700DB9A82 /* UIImageView+TKCategory.m in Sources */,
+				0524E2821B7EE7BA00CCD5C0 /* Reachability.m in Sources */,
 				94E33C9B1869E3E700DB9A82 /* TKLoadingView.m in Sources */,
-				941569511A872AFE003E2853 /* FundraiserModel.m in Sources */,
+				941569511A872AFE003E2853 /* OfferModel.m in Sources */,
 				94E33CAF1869E3E700DB9A82 /* UIAlertView+TKCategory.m in Sources */,
 				948E085118B082E800B3A854 /* AdModel.m in Sources */,
+				05622E321B7FFAC800563671 /* AddUpdateClassTableViewController.m in Sources */,
 				94E33C921869E3E700DB9A82 /* TKGradientView.m in Sources */,
 				94E33CA11869E3E700DB9A82 /* TKRetroButton.m in Sources */,
 				940D6AA11847A1F80013EA7B /* MainNavigationController.m in Sources */,
@@ -970,7 +1112,7 @@
 				940E81571A50633F00F12ADA /* ManageUsersViewController.m in Sources */,
 				940297381A3DB9B4007E0E89 /* ApproveUsersTableViewController.m in Sources */,
 				940D6AA71847D2F20013EA7B /* UIView+AddOns.m in Sources */,
-				9415694E1A870529003E2853 /* FundraisingViewController.m in Sources */,
+				9415694E1A870529003E2853 /* OfferViewController.m in Sources */,
 				94BD73CA183DA63D009E1129 /* main.m in Sources */,
 				94EB65F31A96E041004D1226 /* ManageAlertsViewController.m in Sources */,
 				947AB4E2196A489C00C4AD80 /* LunchMenuViewController.m in Sources */,
@@ -985,10 +1127,12 @@
 				94E33CA31869E3E700DB9A82 /* TKShimmerLabel.m in Sources */,
 				94E33CA21869E3E700DB9A82 /* TKShapeView.m in Sources */,
 				94451F591866EA1100136ED2 /* IntroModel.m in Sources */,
+				05992D451B6B1DF400DB6A57 /* ShowLoginScreenViewController.m in Sources */,
 				94E33CB91869E3E700DB9A82 /* UIScreen+TKCategory.m in Sources */,
 				94642FBE1A5926E000BE290F /* AllSchoolsTableViewController.m in Sources */,
 				94E33CA01869E3E700DB9A82 /* TKReorderTableView.m in Sources */,
 				94C8EC781847EF0A002EF4FE /* DatabaseRequest.m in Sources */,
+				0524E27F1B7ED54700CCD5C0 /* ClassesTableViewController.m in Sources */,
 				94E33CB41869E3E700DB9A82 /* UIFont+TKCategory.m in Sources */,
 				94E33C8B1869E3E700DB9A82 /* TKCalendarMonthTableViewController.m in Sources */,
 				947620361A7C837800C8DB35 /* ManageCalendarTableViewController.m in Sources */,
@@ -1010,6 +1154,7 @@
 				945D61831A20D12300FEFEA2 /* RequestSchoolViewController.m in Sources */,
 				94E33C9F1869E3E700DB9A82 /* TKProgressCircleView.m in Sources */,
 				940296FB1A32BC50007E0E89 /* AdminModel.m in Sources */,
+				05ED85521B607444006D5714 /* AdminToolsQuickAddView.m in Sources */,
 				9427379919874431002CEA3F /* UpdateKidViewController.m in Sources */,
 				94E33C891869E3E700DB9A82 /* TKCalendarDayView.m in Sources */,
 				94E33C8D1869E3E700DB9A82 /* TKCalendarMonthViewController.m in Sources */,
@@ -1149,12 +1294,15 @@
 		};
 		94BD73ED183DA63D009E1129 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 1C0CDB387048F98667052BC4 /* Pods.debug.xcconfig */;
 			buildSettings = {
+				"ARCHS[sdk=*]" = "$(ARCHS_STANDARD)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution: School Intercom Inc. (4QR8727ADF)";
+				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School Intercom/School Intercom-Info.plist";
@@ -1162,22 +1310,27 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
+					"$(PROJECT_DIR)",
 				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = "arm64 armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
 		94BD73EE183DA63D009E1129 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = DFDB8C0D614A29A37BEA2320 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution: School Intercom Inc. (4QR8727ADF)";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution: School Intercom Inc. (4QR8727ADF)";
+				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School Intercom/School Intercom-Info.plist";
@@ -1185,10 +1338,13 @@
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/Flurry",
+					"$(PROJECT_DIR)",
 				);
+				OTHER_LDFLAGS = "$(inherited)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
+				VALID_ARCHS = "arm64 armv7 armv7s";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

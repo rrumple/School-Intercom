@@ -11,6 +11,7 @@
 #import "AddNewUserTableViewController.h"
 #import "UsersSchoolsTableViewController.h"
 #import "SchoolStatsViewController.h"
+#import <Google/Analytics.h>
 
 @interface AllSchoolsTableViewController ()
 

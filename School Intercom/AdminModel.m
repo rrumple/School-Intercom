@@ -326,6 +326,28 @@
     
 }
 
+- (NSArray *)getTeachersOfPrincipal:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_TEACHERS_OF_PRINCIPAL withKeys:@[@"userID"] andData:@[userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)getPrincipalsOfSuperintendent:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_PRINCIPALS_OF_SUPER withKeys:@[@"userID"] andData:@[userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
 - (NSArray *)getSchoolStats:(NSString *)schoolID forUserID:(NSString *)userID
 {
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_SCHOOL_STATS withKeys:@[SCHOOL_ID, USER_ID] andData:@[schoolID, userID]];
@@ -369,6 +391,50 @@
     return dataArray;
 
 }
+
+- (NSArray *)addClassForUser:(NSString *)userID withClassName:(NSString *)className andPeriod:(NSString *)period andGradeLevel:(NSString *)gradeLevel
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_ADD_CLASS withKeys:@[USER_ID, @"className", @"periodNumber", @"gradeLevel"] andData:@[userID, className, period, gradeLevel]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+- (NSArray *)updateClass:(NSString *)classID withClassName:(NSString *)className andPeriod:(NSString *)period andGradeLevel:(NSString *)gradeLevel
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_CLASS withKeys:@[@"classID", @"className", @"periodNumber", @"gradeLevel"] andData:@[classID, className, period, gradeLevel]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
+-(NSArray *)getTeacherClasses:(NSString *)userID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_GET_TEACHER_CLASSES withKeys:@[USER_ID] andData:@[userID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+}
+
+- (NSArray *)deleteClass:(NSString *)classID
+{
+    NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_DELETE_CLASS withKeys:@[@"classID"] andData:@[classID]];
+    NSArray *dataArray;
+    dataArray = [self.databaseRequest performRequestToDatabaseWithURLasString:urlString];
+    
+    
+    return dataArray;
+    
+}
+
 
 
 

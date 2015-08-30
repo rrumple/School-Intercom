@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "UserData.h"
+#import <Google/Analytics.h>
 
 @protocol AdminToolsTableViewControllerDelegate;
 

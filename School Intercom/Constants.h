@@ -116,7 +116,9 @@ typedef enum
     zAlertSuggestPurchase,
     zAlertPushPinChange,
     zAlertAddGrandparentSuccess,
-    zAlertConfirmRemoveGrandparent
+    zAlertConfirmRemoveGrandparent,
+    zAlertProductPurchaseError,
+    zAlertFailedConnection
 } AlertTypes;
 
 typedef enum
@@ -137,7 +139,7 @@ typedef enum
     mv_Calendar,
     mv_LunchMenu,
     mv_AdminTools,
-    mv_Fundraising,
+    mv_Offer,
     sv_UpdateKids,
     sv_UpdateKid,
     sv_UpdateProfile,
@@ -173,11 +175,37 @@ typedef enum
     NOVEMBER,
     DECEMBER
 } Months;
+
+
+
+
+#define IS_IPAD (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+#define IS_IPHONE (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+#define IS_RETINA ([[UIScreen mainScreen] scale] >= 2.0)
+
+#define SCREEN_WIDTH ([[UIScreen mainScreen] bounds].size.width)
+#define SCREEN_HEIGHT ([[UIScreen mainScreen] bounds].size.height)
+#define SCREEN_MAX_LENGTH (MAX(SCREEN_WIDTH, SCREEN_HEIGHT))
+#define SCREEN_MIN_LENGTH (MIN(SCREEN_WIDTH, SCREEN_HEIGHT))
+
+#define IS_IPHONE_4_OR_LESS (IS_IPHONE && SCREEN_MAX_LENGTH < 568.0)
+#define IS_IPHONE_5 (IS_IPHONE && SCREEN_MAX_LENGTH == 568.0)
+#define IS_IPHONE_6 (IS_IPHONE && SCREEN_MAX_LENGTH == 667.0)
+#define IS_IPHONE_6P (IS_IPHONE && SCREEN_MAX_LENGTH == 736.0)
+
+#define AD_MOB_TEST_UNIT_ID @"ca-app-pub-3940256099942544/2934735716"
+#define AD_MOB_TEACHER_UNIT_ID @"ca-app-pub-4977472569676567/1916133132"
+#define AD_REFRESH_RATE 45
+#define AD_HIDE_TIME 1
+#define IPHONE_UNIT_ID @"iphoneUnitID"
+
+
 //Database Constants
 //base url
 #define BASE_URL @"http://www.myschoolintercom.com/iPhone_php/"
 #define IMAGE_URL @"http://www.myschoolintercom.com/school_images/"
 #define NEWS_IMAGE_URL @"http://www.myschoolintercom.com/admin/_schoolNews/"
+#define NEWS_ATTACHMENT_URL @"http://www.myschoolintercom.com/admin/_schoolNews/attachments/"
 #define AD_IMAGE_URL @"http://www.myschoolintercom.com/admin/"
 #define AD_DIRECTORY @"_schoolAdv/"
 #define SCHOOL_NEWS_DIRECTORY @"_schoolNews/"
@@ -202,6 +230,8 @@ typedef enum
 #define CELL_MANAGE_CALENDAR @"manageCalendarCell"
 #define CELL_MANAGE_NEWS @"manageNewsCell"
 #define CELL_PARENT_LIST @"parentListCell"
+#define CELL_TEACHER_LIST @"teacherListCell"
+#define CELL_PRINCIPAL_LIST @"principalListCell"
 
 #define CELL_FIRST_NAME @"firstNameCell"
 #define CELL_LAST_NAME @"lastNameCell"
@@ -214,6 +244,7 @@ typedef enum
 #define CELL_DEVICE_MODEL @"deviceModelCell"
 #define CELL_DEVICE_VERSION @"deviceVersionCell"
 #define CELL_MANAGE_SCHOOLS @"manageSchoolsCell"
+#define CELL_MANAGE_CLASSES @"manageClassesCell"
 
 #define CELL_UPDATE_PROFILE @"updateProfileCell"
 #define CELL_UPDATE_KIDS @"updateKidsCell"
@@ -221,10 +252,11 @@ typedef enum
 #define CELL_ADD_GRANDPARENT @"addGrandparentCell"
 #define CELL_RESET_TUTORIAL @"resetTutorialCell"
 #define CELL_EMPTY @"emptyCell"
+#define CELL_ADD_CLASS @"addClassCell"
 
 //php file defines
 
-#define PHP_LOGIN_USER @"login_user_122.php"
+#define PHP_LOGIN_USER @"login_user_124.php"
 
 
 #define PHP_GET_STATES @"get_states.php"
@@ -233,8 +265,8 @@ typedef enum
 #define PHP_ADD_USER @"add_user.php"
 #define PHP_ADD_KID @"add_kid_122.php"
 #define PHP_CHECK_STATUS @"verify_check.php"
-#define PHP_LOAD_DATA @"load_data_122.php"
-#define PHP_LOAD_LOCAL_AD @"load_local_ad.php"
+#define PHP_LOAD_DATA @"load_data_124.php"
+#define PHP_LOAD_LOCAL_AD @"load_local_ad_122.php"
 #define PHP_ADD_SCHOOL @"add_school.php"
 #define PHP_SEND_EMAIL @"send_email.php"
 #define PHP_UPDATE_USER_PUSH_PIN @"update_push_pin.php"
@@ -242,6 +274,9 @@ typedef enum
 #define PHP_UPDATE_PROFILE @"update_profile.php"
 #define PHP_UPDATE_DEVICE_VERSION @"update_device_version.php"
 #define PHP_UPDATE_AD_CLICKED @"update_ad_clicked.php"
+#define PHP_UPDATE_MM_AD_CLICKED @"mm_update_ad_clicked.php"
+#define PHP_UPDATE_MM_AD_FAILED @"mm_update_ad_failed.php"
+#define PHP_UPDATE_MM_AD_IMP_COUNT @"mm_update_ad_imp.php"
 #define PHP_UPDATE_HAS_PURCHASED @"update_has_purchased.php"
 #define PHP_GET_KIDS @"get_kids.php"
 #define PHP_UPDATE_KID @"update_kid_122.php"
@@ -254,13 +289,13 @@ typedef enum
 #define PHP_CHANGE_SCHOOL_STATUS @"change_school_status.php"
 #define PHP_RESTORE_PURCHASE @"restore_purchase.php"
 #define PHP_GET_EMAIL @"get_email.php"
-#define PHP_GET_TEACHERS @"get_teachers_122.php"
-#define PHP_GET_KID_TEACHERS @"get_kid_teachers_122.php"
+#define PHP_GET_TEACHERS @"get_teachers_124.php"
+#define PHP_GET_KID_TEACHERS @"get_kid_teachers_124.php"
 #define PHP_ADD_TEACHER @"add_teacher_122.php"
 #define PHP_DELETE_TEACHER_FROM_KID @"delete_teacher_from_kid_122.php"
 #define PHP_GET_ALERT_GROUPS @"get_alert_groups.php"
 #define PHP_GET_SECONDARY_ALERT_GROUP @"get_secondary_alert_groups.php"
-#define PHP_INSERT_ALERT @"insert_alert.php"
+#define PHP_INSERT_ALERT @"insert_alert_122.php"
 #define PHP_GET_ADS @"get_ads.php"
 #define PHP_GET_AD_STATS @"get_ad_stats.php"
 #define PHP_APNS_RESPONSE @"apns_response.php"
@@ -287,8 +322,10 @@ typedef enum
 #define PHP_DELETE_NEWS_POST @"delete_news.php"
 #define PHP_GET_PARENTS_OF_TEACHER @"get_parents.php"
 #define PHP_GET_PARENTS_OF_CLASS @"get_parents_class.php"
-#define PHP_GET_FUNDRAISER_DATA @"get_fundraiser_data.php"
-#define PHP_UPDATE_TEACHER_NAMES @"update_teacher_names.php"
+#define PHP_GET_TEACHERS_OF_PRINCIPAL @"get_teachers_principal.php"
+#define PHP_GET_PRINCIPALS_OF_SUPER @"get_principals_super.php"
+#define PHP_GET_OFFER_DATA @"get_fundraiser_data.php"
+#define PHP_UPDATE_TEACHER_NAMES @"update_teacher_names_124.php"
 #define PHP_LOG_OUT_USER @"log_out_user.php"
 #define PHP_GET_SCHOOL_STATS @"get_school_stats.php"
 #define PHP_GET_ALERTS_SUBMITTED_BY_USER @"get_alerts_for_user.php"
@@ -297,9 +334,14 @@ typedef enum
 #define PHP_ADD_GRANDPARENT @"add_grandparent.php"
 #define PHP_GET_GRANDPARENTS @"get_grandparents.php"
 #define PHP_DELETE_SYSTEM_MESSAGE @"delete_system_message.php"
+#define PHP_ADD_CLASS @"add_class.php"
+#define PHP_UPDATE_CLASS @"update_class.php"
+#define PHP_GET_TEACHER_CLASSES @"get_teacher_classes.php"
+#define PHP_DELETE_CLASS @"delete_class.php"
 
 
 //common fields
+#define CLASS_ID @"classID"
 #define MESSAGE_ID @"messageID"
 #define SCHOOL_ID @"schoolID"
 #define USER_ID @"userID"
@@ -431,17 +473,19 @@ typedef enum
 #define TEACHER_SUBJECT @"subject"
 #define TEACHER_NAME @"teacherName"
 
-//Fundraiser table
-#define FUNDRAISER_TITLE @"mainTitle"
-#define FUNDRAISER_DETAIL_TEXT @"detailText"
-#define FUNDRAISER_PRICE @"price"
-#define FUNDRAISER_BUY_BUTTON_TEXT @"buyButtonText"
-#define FUNDRAISER_BUY_BUTTON_LINK @"buyButtonLink"
-#define FUNDRAISER_MORE_INFO_LINK @"moreInfoLink"
-#define FUNDRAISER_IS_IN_APP_PURCHASE @"isInAppPurchase"
+//Offer table
+#define OFFER_TITLE @"mainTitle"
+#define OFFER_DETAIL_TEXT @"detailText"
+#define OFFER_PRICE @"price"
+#define OFFER_BUY_BUTTON_TEXT @"buyButtonText"
+#define OFFER_BUY_BUTTON_LINK @"buyButtonLink"
+#define OFFER_MORE_INFO_LINK @"moreInfoLink"
+#define OFFER_IS_IN_APP_PURCHASE @"isInAppPurchase"
 
 
 //Segues
+#define SEGUE_TO_CLASS_LIST @"classListSegue"
+#define SEGUE_TO_SEND_USER_ALERT @"sendUserAlertSegue"
 #define SEGUE_TO_MAIN_MENU @"mainmenu"
 #define SEGUE_TO_HOME_VIEW  @"homeview"
 #define SEGUE_TO_CALENDAR_VIEW @"calendarview"
@@ -472,12 +516,15 @@ typedef enum
 #define SEGUE_TO_MANAGE_NEWS @"manageNewsSegue"
 #define SEGUE_TO_MANAGE_POST @"managePostSegue"
 #define SEGUE_TO_PARENT_LIST @"parentListSegue"
-#define SEGUE_TO_FUNDRAISING @"segueToFundraising"
+#define SEGUE_TO_TEACHER_LIST @"teacherListSegue"
+#define SEGUE_TO_PRINCIPAL_LIST @"principalListSegue"
+#define SEGUE_TO_OFFER @"segueToOffer"
 #define SEGUE_TO_MANAGE_SCHOOLS @"manageSchoolsSegue"
 #define SEGUE_TO_SCHOOL_STATS @"schoolStatsSegue"
 #define SEGUE_TO_MANAGE_ALERTS @"manageAlertsSegue"
 #define SEGUE_TO_EDIT_ALERT @"editAlertSegue"
 #define SEGUE_TO_ADD_GRANDPARENT @"addGrandParentSegue"
+#define SEGUE_TO_ADD_UPDATE_CLASS @"addUpdateClassSegue"
 
 //Dictionary keys
 #define DIC_CALENDAR_DATA @"calendarData"

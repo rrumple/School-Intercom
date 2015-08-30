@@ -32,6 +32,9 @@
 #import "TapkuLibrary.h"
 #import "AdModel.h"
 #import "UserData.h"
+#import <Google/Analytics.h>
+
+
 
 @import UIKit;
 
@@ -56,6 +59,6 @@
 @protocol CalendarMonthViewControllerDelegate <NSObject>
 
 - (void)snapshotOfViewAsImage:(UIImage *)image;
-- (void)segueToFundraising;
+- (void)segueToOffer;
 
 @end

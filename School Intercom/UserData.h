@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "Constants.h"
 
+
 @interface UserData : NSObject
 
 @property (nonatomic) BOOL isPendingVerification;
@@ -27,6 +28,13 @@
 @property (nonatomic, strong) NSArray *newsData;
 @property (nonatomic, strong) NSArray *teacherNames;
 @property (nonatomic, strong) NSArray *classData;
+@property (nonatomic, strong) NSArray *usersClassData;
+@property (nonatomic, strong) NSMutableArray *adViewArray;
+@property (nonatomic) int remainingCounts;
+@property (nonatomic) BOOL isTimerExpired;
+@property (nonatomic) BOOL isAdTestMode;
+@property (nonatomic) BOOL alertReceived;
+@property (nonatomic) int viewToLoad;
 
 
 
@@ -71,5 +79,15 @@
 - (NSString *)getTeacherName:(NSString *)teacherID;
 
 - (NSString *)getClassName:(NSString *)classID;
+
+- (void)addUserClass:(NSDictionary *)classData;
+
+- (NSString *)getClassAndTeacherName:(NSString *)classID;
+
+- (NSDictionary *)getSchoolDataForSchoolID:(NSString *)schoolID;
+
+- (NSMutableArray *)getAd;
+
+- (void)resetTeacherNamesAndUserClasses;
 
 @end

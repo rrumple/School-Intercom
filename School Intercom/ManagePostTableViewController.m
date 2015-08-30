@@ -28,7 +28,9 @@
 @property (nonatomic, strong) NSString *textViewDesignView;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *spinner;
 @property (nonatomic, strong) NSString *classSelected;
+@property (weak, nonatomic) IBOutlet UITableViewCell *classSelectRow;
 @property (weak, nonatomic) IBOutlet UITextField *classRoomTextfield;
+@property (nonatomic, strong) NSMutableArray *classRoomArray;
 
 @end
 
@@ -42,7 +44,7 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [Flurry logEvent:@"ADD_UPDATE_NEWS_POST_ACCESSED"];
+    //[Flurry logEvent:@"ADD_UPDATE_NEWS_POST_ACCESSED"];
     [super viewWillAppear:animated];
     
     if(self.isNewPost)
@@ -50,6 +52,14 @@
         self.titleLabel.text = @"Add News Item";
         [self.addUpdateButton setTitle:@"Add" forState:UIControlStateNormal];
     }
+    
+
+        
+        
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"Manage_News_Screen"];
+        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+
 }
 
 - (void)updatePostInDatabase
@@ -77,6 +87,8 @@
 
 - (void)addNewPostInDatabase
 {
+    
+    
     dispatch_queue_t createQueue = dispatch_queue_create("addPost", NULL);
     dispatch_async(createQueue, ^{
         NSArray *databaseData;
@@ -143,7 +155,7 @@
     [self.classRoomTextfield resignFirstResponder];
 }
 
--(UIPickerView *)createPickerWithTag:(NSInteger)tag
+-(UIView *)createPickerWithTag:(NSInteger)tag
 {
     UIPickerView *pickerView = [[UIPickerView alloc]init];
     pickerView.tag = tag;
@@ -152,15 +164,31 @@
     
     [pickerView setShowsSelectionIndicator:YES];
     
+    UIToolbar *toolBar= [[UIToolbar alloc] initWithFrame:CGRectMake(0,0,320,44)];
+    [toolBar setBarStyle:UIBarStyleBlackOpaque];
+    UIBarButtonItem *barButtonDone = [[UIBarButtonItem alloc] initWithTitle:@"Done"
+                                                                      style:UIBarButtonItemStyleBordered target:self action:@selector(hideKeyboard)];
     
+    toolBar.barTintColor = [UIColor colorWithRed:0.820f green:0.835f blue:0.859f alpha:1.00f];
+    
+    toolBar.items = [[NSArray alloc] initWithObjects:barButtonDone,nil];
+    barButtonDone.tintColor=[UIColor blackColor];
+    
+    
+    UIView *pickerParentView = [[UIView alloc]initWithFrame:CGRectMake(0, 60, 320, 216)];
+    [pickerParentView addSubview:pickerView];
+    [pickerParentView addSubview:toolBar];
+
+    /*
     
     UITapGestureRecognizer *tapGR = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(pickerViewTapped)];
     
     [tapGR setNumberOfTapsRequired:1];
     [tapGR setDelegate:self];
     [pickerView addGestureRecognizer:tapGR];
+     */
     
-    return pickerView;
+    return pickerParentView;
 }
 
 - (void)pickerViewTapped
@@ -179,6 +207,9 @@
     
     self.newsImageFileName = @"NULL";
     
+    self.classRoomArray = [self.mainUserData.classData mutableCopy];
+    
+    [self.classRoomArray insertObject:@{@"className":@"All Classes", @"id":@"999"} atIndex:0];
     
     self.calendar = [NSCalendar currentCalendar];
     NSLocale *usLocale = [[NSLocale alloc]initWithLocaleIdentifier:@"en-US"];
@@ -191,10 +222,15 @@
     
     NSLocale *locale = [NSLocale currentLocale];
     
-    if([self.mainUserData.classData count] > 0)
+    if(self.mainUserData.accountType.intValue == 1)
+        self.classSelectRow.hidden = false;
+    else
+        self.classSelectRow.hidden = true;
+    
+    if([self.classRoomArray count] > 0)
     {
-        self.classRoomTextfield.text = [[self.mainUserData.classData objectAtIndex:0] objectForKey:@"className"];
-        self.classSelected = [[self.mainUserData.classData objectAtIndex:0]objectForKey:ID];
+        self.classRoomTextfield.text = [[self.classRoomArray objectAtIndex:0] objectForKey:@"className"];
+        self.classSelected = [[self.classRoomArray objectAtIndex:0]objectForKey:ID];
     }
     else
     {
@@ -267,15 +303,20 @@
 
 - (IBAction)addUpdateButtonPressed:(UIButton *)sender
 {
-    if([[HelperMethods prepStringForValidation:self.postTitleTextField.text] length] > 0 && self.dateUnaltered && [[HelperMethods prepStringForValidation:self.newsTextView.text] length] > 0)
+    //NSLog(@"%@", self.newsTextView.text);
+    UISimpleTextPrintFormatter *textFormatter = [[UISimpleTextPrintFormatter alloc] initWithText:[self.newsTextView.text stringByReplacingOccurrencesOfString:@"\n" withString:@"</br>"]];
+    
+    
+    
+    if([[HelperMethods prepStringForValidation:self.postTitleTextField.text] length] > 0 && self.dateUnaltered && [textFormatter.text length] > 0)
     {
-        
+        sender.enabled = NO;
         if(self.postImage.image)
            [self uploadImage];
         
         if([self.textViewDesignView length] < 1)
         {
-            self.textViewDesignView = self.newsTextView.text;
+            self.textViewDesignView = textFormatter.text;
         }
         
         if([sender.titleLabel.text isEqualToString:@"Add"])
@@ -335,6 +376,7 @@
 
 - (IBAction)deleteImageButtonPressed
 {
+    
     self.postImage.image = nil;
     self.newsImageFileName = @"NULL";
     self.deleteImageButton.enabled = false;
@@ -414,7 +456,7 @@
     
     NSString *baseImageURL = [NEWS_IMAGE_URL stringByAppendingString:fileName];
     
-    NSLog(@"%@", baseImageURL);
+  //  NSLog(@"%@", baseImageURL);
     
     dispatch_queue_t downloadQueue = dispatch_queue_create("get Image", NULL);
     dispatch_async(downloadQueue, ^{
@@ -450,7 +492,7 @@
             self.deleteImageButton.enabled = true;
             [self.InsertUpdateImageButton setTitle:@"Update Image" forState:UIControlStateNormal];
             [spinner stopAnimating];
-            NSLog(@"%f, %f", image.size.width, image.size.height);
+            //NSLog(@"%f, %f", image.size.width, image.size.height);
         });
         
         
@@ -516,7 +558,7 @@
 {
     
     if(pickerView.tag == zPickerClassRoom)
-        return [self.mainUserData.classData count];
+        return [self.classRoomArray count];
     
     
     return 0;
@@ -532,7 +574,7 @@
     
     if(pickerView.tag == zPickerClassRoom)
     {
-        return [[self.mainUserData.classData objectAtIndex:row] objectForKey:@"className"];
+        return [[self.classRoomArray objectAtIndex:row] objectForKey:@"className"];
         
     }
     
@@ -545,8 +587,8 @@
 {
     if(pickerView.tag == zPickerClassRoom)
     {
-        self.classSelected = [[self.mainUserData.classData objectAtIndex:row] objectForKey:ID];
-        self.classRoomTextfield.text = [[self.mainUserData.classData objectAtIndex:row] objectForKey:@"className"];
+        self.classSelected = [[self.classRoomArray objectAtIndex:row] objectForKey:ID];
+        self.classRoomTextfield.text = [[self.classRoomArray objectAtIndex:row] objectForKey:@"className"];
         
         
     }

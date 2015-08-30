@@ -79,6 +79,14 @@
 {
     [super viewWillAppear:animated];
     [self getUsersCalendarEventsFromDatabase];
+    
+
+        
+        
+        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+        [tracker set:kGAIScreenName value:@"Manage_Calendar_Screen"];
+        [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+
 
     self.eventSelected = nil;
 }
@@ -160,7 +168,7 @@
     
     cell.textLabel.text = [NSString stringWithFormat:@"%@",[[self.calendarData objectAtIndex:indexPath.row] objectForKey:CAL_TITLE]];
     
-    NSLog(@"%@", [[self.calendarData objectAtIndex:indexPath.row]objectForKey:CAL_START_DATE]);
+    //NSLog(@"%@", [[self.calendarData objectAtIndex:indexPath.row]objectForKey:CAL_START_DATE]);
     
     NSArray *startTimeArray = [HelperMethods getDateArrayFromString:[[self.calendarData objectAtIndex:indexPath.row ] objectForKey:CAL_START_DATE]];
     startTimeArray = [HelperMethods ConvertHourUsingDateArray:startTimeArray];

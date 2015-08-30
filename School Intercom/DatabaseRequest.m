@@ -58,21 +58,28 @@
     
     
         NSArray *dataArray;
-        NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
-        
+        //NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
+    
+    NSMutableURLRequest * urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
+    urlRequest.timeoutInterval = 10.0;
+    NSURLResponse * response = nil;
+    NSError * error = nil;
+    NSData * data = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:&error];
+    
         if(data)
         {
             
                 
-                NSError *error;
+                NSError *error1;
             
-                dataArray = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+                dataArray = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error1];
                 NSLog(@"%@", dataArray);
                 
             
         }
         else
         {
+            dataArray = [[NSArray alloc]init];
             NSLog(@"Database connection failed");
         }
     
