@@ -41,11 +41,16 @@
 
 - (void)getPendingNewUsersFromDatabase
 {
+    NSString *schoolID;
+    if(self.mainUserData.accountType.intValue == 6)
+        schoolID = @"999";
+    else
+        schoolID = [self.mainUserData.userInfo objectForKey:@"worksAtSchoolID"];
     
     dispatch_queue_t createQueue = dispatch_queue_create("getPendingNewUsers", NULL);
     dispatch_async(createQueue, ^{
         NSArray *pendingUserData;
-        pendingUserData = [self.adminData getPendingNewUsersFromDatabaseForUser:self.mainUserData.userID withSchoolID:self.mainUserData.schoolIDselected];
+        pendingUserData = [self.adminData getPendingNewUsersFromDatabaseForUser:self.mainUserData.userID withSchoolID:schoolID];
         
         if (pendingUserData)
         {

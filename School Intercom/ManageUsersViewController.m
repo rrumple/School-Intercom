@@ -147,7 +147,7 @@
         {
             case utParent://needs all parents of one school
             case utTeacher:
-                self.idToQuery = self.mainUserData.schoolIDselected;
+                self.idToQuery = [self.mainUserData.userInfo objectForKey:@"worksAtSchoolID"];
                 break;
         }
             break;
@@ -157,7 +157,7 @@
             case utParent:
             case utTeacher:
             case utSecretary:
-                self.idToQuery = self.mainUserData.schoolIDselected;
+                self.idToQuery = [self.mainUserData.userInfo objectForKey:@"worksAtSchoolID"];
                 break;
         }
 

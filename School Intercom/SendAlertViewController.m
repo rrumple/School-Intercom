@@ -151,6 +151,23 @@
     id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
     [tracker set:kGAIScreenName value:@"Send_Alert_Screen"];
     [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPushAlert:) name:@"DisplayAlert" object:nil];
+    
+    
+}
+
+- (void)showPushAlert:(NSNotification *)notification
+{
+    NSDictionary *data = [notification userInfo];
+    
+    [HelperMethods CreateAndDisplayOverHeadAlertInView:self.view withMessage:[data objectForKey:@"message"] andSchoolID:[data objectForKey:SCHOOL_ID]];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 }
 
 - (void)viewDidLoad {
@@ -344,7 +361,7 @@
 
 - (void)sendAlertOfType:(NSString *)alertType
 {
-    NSString *schoolID = self.mainUserData.schoolIDselected;
+    NSString *schoolID = [self.mainUserData.userInfo objectForKey:@"worksAtSchoolID"];
     if(self.mainUserData.accountType.intValue > 0 && self.mainUserData.accountType.intValue < 4)
         schoolID = [self.mainUserData.userInfo objectForKey:@"worksAtSchoolID"];
     
@@ -435,7 +452,7 @@
             case utSecretary:
             case utPrincipal://enable send alert button
                 self.sendAlertButton.hidden = false;
-                self.alertIDToInsert = self.mainUserData.schoolIDselected;
+                self.alertIDToInsert = [self.mainUserData.userInfo objectForKey:@"worksAtSchoolID"];
                 break;
             case utSuperintendent:
                 switch([self.destinationPicker intValue])

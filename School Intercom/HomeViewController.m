@@ -271,8 +271,16 @@
     }
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPushAlert:) name:@"DisplayAlert" object:nil];
     
     
+}
+
+- (void)showPushAlert:(NSNotification *)notification
+{
+    NSDictionary *data = [notification userInfo];
+    
+    [HelperMethods CreateAndDisplayOverHeadAlertInView:self.view withMessage:[data objectForKey:@"message"] andSchoolID:[data objectForKey:SCHOOL_ID]];
 }
 
 - (void)refresh
@@ -285,7 +293,7 @@
     
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPushAlert:) name:@"DisplayAlert" object:nil];
     
     [self startTimer];
 }
@@ -319,7 +327,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
           [self.view addSubview:self.adView];
         self.mainUserData.remainingCounts--;
     [UIView animateWithDuration:1 animations:^{
-        bannerView.frame = CGRectMake(0.0,
+        bannerView.frame = CGRectMake(self.view.frame.size.width /2 - 160,
                                       self.view.frame.size.height -
                                       bannerView.frame.size.height,
                                       bannerView.frame.size.width,
@@ -340,7 +348,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
 {
     NSLog(@"Hide ad");
     [UIView animateWithDuration:1 animations:^{
-    self.adView.frame = CGRectMake(0.0,
+    self.adView.frame = CGRectMake(self.view.frame.size.width /2 - 160,
                                    self.view.frame.size.height,
                                    self.adView.frame.size.width,
                                    self.adView.frame.size.height);
@@ -387,7 +395,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     
     
     GADRequest *request = [GADRequest request];
-    request.testDevices = @[ @"59c997e06ef957f5f6c866b6fed1bb25" ];
+    request.testDevices = @[ @"59c997e06ef957f5f6c866b6fed1bb25", kGADSimulatorID ];
 
     [self.adView loadRequest:request];
 
@@ -448,7 +456,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     self.alertTableView.dataSource = self;
     self.alertTableView.delegate = self;
     
-    self.adView = [[GADBannerView alloc]initWithAdSize:kGADAdSizeSmartBannerPortrait];
+    self.adView = [[GADBannerView alloc]initWithAdSize:kGADAdSizeBanner];
     NSMutableArray *tempArray = [self.mainUserData getAd];
    
     NSLog(@"Check to see if get new ad or last used ad");
@@ -463,7 +471,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     }
     else
     {
-        self.adView.frame = CGRectMake(0, self.view.frame.size.height , self.view.frame.size.width,60);
+         self.adView.frame = CGRectMake(self.view.frame.size.width/2 - 160, self.view.frame.size.height , 320,50);
         
         [self setUnitID];
         self.adView.rootViewController = self;
@@ -558,6 +566,8 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     
     if([self.mainUserData getTutorialStatusOfView:mv_Home])
         [self showHelp];
+    
+    //[HelperMethods CreateAndDisplayOverHeadAlertInView:self.view withMessage:@"We will have a 2-Hour delay tomorrow, it's Cold so don't forget your jacket!" andSchoolID:self.mainUserData.schoolIDselected];
 }
 
 - (void)showHelp
@@ -702,7 +712,9 @@ didFailToReceiveAdWithError:(GADRequestError *)error
                 case 1:
                 case 2:
                 case 3:
-                case 10: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getTeacherName:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromUserID"]]];
+                case 10:
+                case 11:
+                case 12: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getTeacherName:[[self.alertData objectAtIndex:indexPath.row]objectForKey:@"fromUserID"]]];
                     break;
                 /*case 2:  fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData.schoolData objectForKey:@"name"]];
                     break;
@@ -711,7 +723,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
                 case 4: fromLabel.text = [NSString stringWithFormat:@"From: %@", [self.mainUserData getClassAndTeacherName:[[self.alertData objectAtIndex:indexPath.row]objectForKey:CLASS_ID]]];
                     break;
                 default:
-                    fromLabel.text = @"";
+                    fromLabel.text = @"From: School Intercom";
                     break;
                     
                     

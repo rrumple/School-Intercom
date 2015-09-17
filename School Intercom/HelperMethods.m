@@ -315,12 +315,12 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
 
 + (void)CreateAndDisplayOverHeadAlertInView:(UIView *)view withMessage:(NSString *)message andSchoolID:(NSString *)schoolID
 {
-    UIView *overlay1 = [[UIView alloc]initWithFrame:CGRectMake(view.frame.origin.x, -115, view.frame.size.width, 100)];
+    UIView *overlay1 = [[UIView alloc]initWithFrame:CGRectMake(view.frame.origin.x + 10, -115, view.frame.size.width - 20, 60)];
     UIView *alertOverlay = [[UIView alloc]initWithFrame:overlay1.frame];
     
     overlay1.tag = 10;
     alertOverlay.tag = 11;
-    overlay1.alpha = .7;
+    overlay1.alpha = .9;
     
     
     overlay1.backgroundColor = [UIColor blackColor];
@@ -374,9 +374,6 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
         
         UIImage *image = [UIImage imageWithContentsOfFile:pngFilePath];
         
-        
-        
-        
         schoolImage .image = image;
         
     }
@@ -390,11 +387,12 @@ NSString *const HelperMethodsImageDownloadCompleted = @"HelperMethodsImageDownlo
     label.font = [UIFont systemFontOfSize:17.0];
     label.numberOfLines = 3;
     label.tag = 12;
+    label.adjustsFontSizeToFitWidth = true;
     [alertOverlay addSubview:label];
     
     [UIView animateWithDuration:1.0 animations:^{
         CGRect rect = overlay1.frame;
-        rect.origin.y = -20;
+        rect.origin.y = 15;
         overlay1.frame = rect;
         alertOverlay.frame = rect;
         

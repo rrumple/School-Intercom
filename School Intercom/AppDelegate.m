@@ -71,28 +71,38 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
         }
         else
         {
-            UINavigationController *navigationController = (UINavigationController*)_window.rootViewController;
+            //UINavigationController *navigationController = (UINavigationController*)_window.rootViewController;
+            NSString *messageID = [[userInfo valueForKey:@"aps"]valueForKey:@"messageID"];
+            NSString *newStr = [messageID substringToIndex:3];
+            NSString *schoolID = @"";
+            if([newStr isEqualToString:@"NS-"])
+            {
+                schoolID = [messageID substringToIndex:35];
+                schoolID = [schoolID substringFromIndex:3];
+                
+
+                
+            }
+            else
+            {
+                schoolID = [messageID substringToIndex:32];
+              
+            }
+
             
             NSString *message = [[userInfo valueForKey:@"aps"]valueForKey:@"alert"];
-            NSString *schoolID = [[userInfo valueForKey:@"aps"]valueForKey:@"schoolID"];
-            
-            [HelperMethods CreateAndDisplayOverHeadAlertInView: (UIView *)navigationController.visibleViewController.view withMessage:message andSchoolID:schoolID];
+            //NSString *schoolID = [[userInfo valueForKey:@"aps"]valueForKey:@"schoolID"];
+            NSDictionary *messageDic = [[NSDictionary alloc]initWithObjectsAndKeys:message, @"message",schoolID, @"schoolID", nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"DisplayAlert" object:nil userInfo:messageDic];
+            //[HelperMethods CreateAndDisplayOverHeadAlertInView: (UIView *)navigationController.visibleViewController.view withMessage:message andSchoolID:schoolID];
             //NSLog(@"%@", navigationController.viewControllers);
             
             
         }
-
-        
-        
-
-        
         
     }
     else
     {
-        
-        
-    
         
         UINavigationController *navController = (UINavigationController *)self.window.rootViewController;
         

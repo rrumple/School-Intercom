@@ -630,7 +630,7 @@
                     else
                     {
                         
-                        [self updateTeacherNames];
+                        //[self updateTeacherNames];
                         //-- Set Notification
                         if ([[[UIDevice currentDevice] systemVersion] floatValue] >= 8.0)
                         {
@@ -994,7 +994,10 @@
             else
             {
                 //self.childGradeLevel.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:row]objectForKey:@"teacherName"]];
-               
+                if(pickerView.numberOfComponents == 2)
+                {
+                    [pickerView selectRow:0 inComponent:1 animated:NO];
+                }
                 
                 self.teacherSelected = [[self.teachers objectAtIndex:row] objectForKey:ID];
                 self.teacherSelectedRow = row;
@@ -1007,9 +1010,10 @@
                     self.childGradeLevel.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:row]objectForKey:@"teacherName"]] ;
 
             
-                [pickerView reloadAllComponents];
+                
 
             }
+            [pickerView reloadAllComponents];
             
         }
     }
@@ -1019,7 +1023,7 @@
         //self.childGradeLevel.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:row]objectForKey:@"teacherName"]];
         self.childGradeLevel.text = [NSString stringWithFormat:@"%@ - %@", [[self.teachers objectAtIndex:self.teacherSelectedRow]objectForKey:@"teacherName"],
                              [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:row]objectForKey:@"className"]];
-        [pickerView reloadAllComponents];
+        //[pickerView reloadAllComponents];
 
     }
 }

@@ -648,7 +648,7 @@
     
 
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPushAlert:) name:@"DisplayAlert" object:nil];
    
     [self startTimer];
 }
@@ -700,7 +700,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
         [self.view addSubview:self.adView];
         self.mainUserData.remainingCounts--;
         [UIView animateWithDuration:1 animations:^{
-            bannerView.frame = CGRectMake(0.0,
+            bannerView.frame = CGRectMake(self.view.frame.size.width /2 - 160,
                                           self.view.frame.size.height -
                                           bannerView.frame.size.height,
                                           bannerView.frame.size.width,
@@ -722,7 +722,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
 {
     NSLog(@"Hide ad");
     [UIView animateWithDuration:1 animations:^{
-        self.adView.frame = CGRectMake(0.0,
+        self.adView.frame = CGRectMake(self.view.frame.size.width /2 - 160,
                                        self.view.frame.size.height,
                                        self.adView.frame.size.width,
                                        self.adView.frame.size.height);
@@ -752,7 +752,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     
     
     GADRequest *request = [GADRequest request];
-    request.testDevices = @[ @"59c997e06ef957f5f6c866b6fed1bb25" ];
+    request.testDevices = @[ @"59c997e06ef957f5f6c866b6fed1bb25", kGADSimulatorID ];
     [self.adView loadRequest:request];
     
     
@@ -808,7 +808,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
 - (void) viewDidLoad
 {
 	[super viewDidLoad];
-    self.adView = [[GADBannerView alloc]initWithAdSize:kGADAdSizeSmartBannerPortrait];
+    self.adView = [[GADBannerView alloc]initWithAdSize:kGADAdSizeBanner];
     NSMutableArray *tempArray = [self.mainUserData getAd];
     
     NSLog(@"Check to see if get new ad or last user");
@@ -822,7 +822,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     }
     else
     {
-        self.adView.frame = CGRectMake(0, self.view.frame.size.height, self.view.frame.size.width,60);
+        self.adView.frame = CGRectMake(self.view.frame.size.width/2 - 160, self.view.frame.size.height , 320,50);
         [self setUnitID];
         self.adView.rootViewController = self;
         
@@ -849,7 +849,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     self.monthView.frame = rect;
     CGRect viewRect = self.view.frame;
     rect = self.tableView.frame;
-    rect.size.height = viewRect.size.height - 124;
+    rect.size.height = viewRect.size.height - 114;
     
     rect.origin.y = viewRect.origin.y + 64;
     rect.origin.x = viewRect.origin.x;
@@ -1029,8 +1029,16 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     
     
      [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPushAlert:) name:@"DisplayAlert" object:nil];
     
-  
+    
+}
+
+- (void)showPushAlert:(NSNotification *)notification
+{
+    NSDictionary *data = [notification userInfo];
+    
+    [HelperMethods CreateAndDisplayOverHeadAlertInView:self.view withMessage:[data objectForKey:@"message"] andSchoolID:[data objectForKey:SCHOOL_ID]];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -1307,6 +1315,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+   // NSDictionary *calendarDic = [self.calendarData objectAtIndex:indexPath.row];
     if(self.showDetailView && indexPath.row == 0)
     {
         return 105.0;
@@ -1320,7 +1329,10 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     }
     else if (self.showDetailView && indexPath.row == 2)
         return 172.0;
-    return 54.0f;
+    //else if([[calendarDic objectForKey:CAL_LOCATION]length] > 1)
+        //return 69.0;
+    else
+    return 69.0f;
 }
 
 - (NSArray *)ConvertHourUsingDateArray:(NSArray *)dateArray
@@ -1438,6 +1450,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
         UILabel *titleLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 1, 180, 40)];
         UILabel *dateLabel = [[UILabel alloc]initWithFrame:CGRectMake(self.view.frame.size.width - 90, 2, 80, 40)];
         UILabel *createdByLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 38, 175, 15)];
+       
         
         dateLabel.textAlignment = NSTextAlignmentLeft;
         dateLabel.numberOfLines = 4;
@@ -1471,6 +1484,23 @@ didFailToReceiveAdWithError:(GADRequestError *)error
         NSDictionary *calendarDic = [self.calendarData objectAtIndex:row];
         addButton.tag = row;
         [addButton addTarget:self action:@selector(addEventToCalendar:) forControlEvents:UIControlEventTouchDown];
+        
+        UILabel *locationLabel;
+        CGRect frame = addButton.frame;
+        frame.origin.y = 19;
+        addButton.frame = frame;
+        frame = dateLabel.frame;
+        frame.origin.y = 14;
+        dateLabel.frame = frame;
+        locationLabel = [[UILabel alloc]initWithFrame:CGRectMake(45, 52, 175, 15)];
+        locationLabel.font = [UIFont systemFontOfSize:10.0];
+        locationLabel.adjustsFontSizeToFitWidth = true;
+        if([[calendarDic objectForKey:CAL_LOCATION]length] > 1)
+        {
+           
+            locationLabel.text = [NSString stringWithFormat:@"Location: %@", [calendarDic objectForKey:CAL_LOCATION]];
+            [cell addSubview:locationLabel];
+        }
         
         titleLabel.text = [calendarDic objectForKey:CAL_TITLE];
         
@@ -1547,7 +1577,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
         
         if([self isEventAlreadyInUsersCalendar:calendarDic])
         {
-            UILabel *addLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 7, 30, 30)];
+            UILabel *addLabel = [[UILabel alloc]initWithFrame:CGRectMake(10, 14, 30, 30)];
             
             addLabel.font = [UIFont fontWithName:@"system" size:40.0];
             addLabel.textColor = [UIColor greenColor];

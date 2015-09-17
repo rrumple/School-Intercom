@@ -287,6 +287,7 @@
     */
      
     self.isLoadDataComplete = NO;
+    self.isUpdateTeachersComplete = NO;
     self.isLoadImageComplete = NO;
     self.imageDownloading = NO;
     [self.introLabel setFont:FONT_CHARCOAL_CY(26.0f)];
@@ -567,6 +568,7 @@
         
         self.switchSchoolsButton.hidden = YES;
         [self loadData];
+        [self updateTeacherNames];
         
         self.timer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(showHomeScreen) userInfo:nil repeats:NO];
 
@@ -655,11 +657,11 @@
     self.loginViaRestore = false;
     self.bypassToCreateAccount = false;
     self.bypassNoAccountAlert = false;
-    self.isUpdateTeachersComplete = true;
+    
     
     
     //put ADs in Test mode
-    self.mainUserData.isAdTestMode = true;
+    self.mainUserData.isAdTestMode = false;
     
     //hash tester
     //NSLog(@"%@", [HelperMethods encryptText:@"tester"]);
@@ -1004,7 +1006,7 @@
     self.mainUserData.userInfo = userInfo;
     
     self.mainUserData.userID = [tempDic objectForKey:USER_ID];
-    [self updateTeacherNames];
+   
     
     if([self.mainUserData.accountType intValue] == 1)
     {
@@ -1168,7 +1170,7 @@
 
 - (void)updateTeacherNames
 {
-    self.isUpdateTeachersComplete = false;
+    
     dispatch_queue_t createQueue = dispatch_queue_create("updateTeacherNames", NULL);
     dispatch_async(createQueue, ^{
         NSArray *dataArray;
@@ -1203,7 +1205,7 @@
                         [self.mainUserData addUserClass:userClassData];
                     }
                     
-                    self.isUpdateTeachersComplete = true;
+                    self.isUpdateTeachersComplete = YES;
                     
                     
                 }

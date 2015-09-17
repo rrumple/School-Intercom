@@ -64,7 +64,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
         [self.view addSubview:self.adView];
         self.mainUserData.remainingCounts--;
         [UIView animateWithDuration:1 animations:^{
-            bannerView.frame = CGRectMake(0.0,
+            bannerView.frame = CGRectMake(self.view.frame.size.width /2 - 160,
                                           self.view.frame.size.height -
                                           bannerView.frame.size.height,
                                           bannerView.frame.size.width,
@@ -85,7 +85,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
 {
     NSLog(@"Hide ad");
     [UIView animateWithDuration:1 animations:^{
-        self.adView.frame = CGRectMake(0.0,
+        self.adView.frame = CGRectMake(self.view.frame.size.width /2 - 160,
                                        self.view.frame.size.height,
                                        self.adView.frame.size.width,
                                        self.adView.frame.size.height);
@@ -111,7 +111,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
 - (void)appWillEnterForeground
 {
     
-    
+     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPushAlert:) name:@"DisplayAlert" object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
     
     
@@ -152,6 +152,16 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     }
     
       [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(appHasGoneInBackground) name:UIApplicationDidEnterBackgroundNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPushAlert:) name:@"DisplayAlert" object:nil];
+    
+    
+}
+
+- (void)showPushAlert:(NSNotification *)notification
+{
+    NSDictionary *data = [notification userInfo];
+    
+    [HelperMethods CreateAndDisplayOverHeadAlertInView:self.view withMessage:[data objectForKey:@"message"] andSchoolID:[data objectForKey:SCHOOL_ID]];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
@@ -169,7 +179,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     
     
     GADRequest *request = [GADRequest request];
-    request.testDevices = @[ @"59c997e06ef957f5f6c866b6fed1bb25" ];
+    request.testDevices = @[ @"59c997e06ef957f5f6c866b6fed1bb25", kGADSimulatorID ];
     [self.adView loadRequest:request];
     
     
@@ -233,7 +243,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     
     //[self.mainUserData showAllSchoolsInNSLOG];
     
-    self.adView = [[GADBannerView alloc]initWithAdSize:kGADAdSizeSmartBannerPortrait];
+    self.adView = [[GADBannerView alloc]initWithAdSize:kGADAdSizeBanner];
     NSMutableArray *tempArray = [self.mainUserData getAd];
     
     NSLog(@"Check to see if get new ad or last used ad");
@@ -248,7 +258,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
     }
     else
     {
-        self.adView.frame = CGRectMake(0, self.view.frame.size.height , self.view.frame.size.width,60);
+         self.adView.frame = CGRectMake(self.view.frame.size.width/2 - 160, self.view.frame.size.height , 320,50);
         [self setUnitID];
         self.adView.rootViewController = self;
         

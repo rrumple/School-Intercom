@@ -598,6 +598,23 @@
     [tracker set:kGAIScreenName value:@"Add_Update_Kid_Screen"];
     [tracker send:[[GAIDictionaryBuilder createScreenView] build]];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showPushAlert:) name:@"DisplayAlert" object:nil];
+    
+    
+}
+
+- (void)showPushAlert:(NSNotification *)notification
+{
+    NSDictionary *data = [notification userInfo];
+    
+    [HelperMethods CreateAndDisplayOverHeadAlertInView:self.view withMessage:[data objectForKey:@"message"] andSchoolID:[data objectForKey:SCHOOL_ID]];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
 }
 
 
@@ -626,9 +643,9 @@
     if (self.addingNewKid)
     {
        
-        [self.addUpdateButton setTitle:@"Add Student" forState:UIControlStateNormal];
+        [self.addUpdateButton setTitle:@"Add Child" forState:UIControlStateNormal];
         self.schoolTF.text = [self.mainUserData getSchoolNameFromID:self.mainUserData.schoolIDselected];
-        self.header.text = @"Add a Student";
+        self.header.text = @"Add a Child";
         self.teacherTableView.hidden = true;
         self.swipeLabel.hidden = true;
         self.showAddTeacherButton.hidden = true;
@@ -948,6 +965,10 @@
     {
         if(pickerView.tag == zPickerTeacher)
         {
+                if(pickerView.numberOfComponents == 2)
+                {
+                    [pickerView selectRow:0 inComponent:1 animated:NO];
+                }
                 self.teacherSelected = [[self.teachers objectAtIndex:row] objectForKey:ID];
                 self.teacherSelectedRow = row;
                 if([[self.teacherData objectForKey:self.teacherSelected]count] > 1)
@@ -957,7 +978,7 @@
                 }
                 else
                     self.gradeTF.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:row]objectForKey:@"teacherName"]] ;
-                [pickerView reloadAllComponents];
+               [pickerView reloadAllComponents];
             
             
         }
@@ -966,8 +987,8 @@
     {
         self.classSelected = [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:row]objectForKey:ID];
         self.gradeTF.text = [NSString stringWithFormat:@"%@ - %@", [[self.teachers objectAtIndex:self.teacherSelectedRow] objectForKey:@"teacherName"],
-                             [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:0]objectForKey:@"className"]] ;
-        [pickerView reloadAllComponents];
+                             [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:row]objectForKey:@"className"]] ;
+        //[pickerView reloadAllComponents];
     }
 }
 
@@ -1003,7 +1024,7 @@
         //self.gradeTF.text = [NSString stringWithFormat:@"%@", [[self.teachers objectAtIndex:0]objectForKey:@"teacherName"]];
         self.teacherSelected = [[self.teachers objectAtIndex:0] objectForKey:ID];
         self.teacherSelectedRow = 0;
-        self.classSelected = [[self.teachers objectAtIndex:0]objectForKey:@"classID"];
+        self.classSelected = [[self.teachers objectAtIndex:0]objectForKey:@"id"];
         self.gradeTF.text = [NSString stringWithFormat:@"%@ - %@", [[self.teachers objectAtIndex:self.teacherSelectedRow] objectForKey:@"teacherName"],
                              [[[self.teacherData objectForKey:self.teacherSelected] objectAtIndex:0]objectForKey:@"className"]] ;
         
