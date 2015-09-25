@@ -97,7 +97,7 @@
     return NO;
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskPortrait;
 }
@@ -510,7 +510,7 @@
                     dispatch_queue_t createQueue = dispatch_queue_create("updateIOSVersion", NULL);
                     dispatch_async(createQueue, ^{
                         NSArray *dataArray;
-                        dataArray = [self.registerData updateUserVersionAndModelUserID:[[NSUserDefaults standardUserDefaults]objectForKey:USER_ID] withVersion:iosVersion andModel:deviceModel];
+                        dataArray = [self.registerData updateUserVersionAndModelUserID:[[NSUserDefaults standardUserDefaults]objectForKey:USER_ID] withVersion:iosVersion andModel:deviceModel andAppVersion:[NSString stringWithFormat:@"%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]]];
                         if ([dataArray count] == 1)
                         {
                             dispatch_async(dispatch_get_main_queue(), ^{

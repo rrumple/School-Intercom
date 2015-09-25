@@ -82,7 +82,7 @@
         //NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
     
     NSMutableURLRequest * urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
-    urlRequest.timeoutInterval = 10.0;
+    //urlRequest.timeoutInterval = 10000.0;
     NSURLResponse * response = nil;
     NSError * error = nil;
     NSData * data = [NSURLConnection sendSynchronousRequest:urlRequest returningResponse:&response error:&error];

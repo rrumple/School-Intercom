@@ -272,7 +272,7 @@ typedef enum
 #define PHP_UPDATE_USER_PUSH_PIN @"update_push_pin.php"
 #define PHP_RESET_PASSWORD @"reset_password.php"
 #define PHP_UPDATE_PROFILE @"update_profile.php"
-#define PHP_UPDATE_DEVICE_VERSION @"update_device_version.php"
+#define PHP_UPDATE_DEVICE_VERSION @"update_device_version_126.php"
 #define PHP_UPDATE_AD_CLICKED @"update_ad_clicked.php"
 #define PHP_UPDATE_MM_AD_CLICKED @"mm_update_ad_clicked.php"
 #define PHP_UPDATE_MM_AD_FAILED @"mm_update_ad_failed.php"
@@ -338,6 +338,7 @@ typedef enum
 #define PHP_UPDATE_CLASS @"update_class.php"
 #define PHP_GET_TEACHER_CLASSES @"get_teacher_classes.php"
 #define PHP_DELETE_CLASS @"delete_class.php"
+#define PHP_EMAIL_PDF_ATTACHMENT @"email_pdf_attachment.php"
 
 
 //common fields

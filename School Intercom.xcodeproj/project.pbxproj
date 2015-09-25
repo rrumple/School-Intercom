@@ -10,10 +10,7 @@
 		0524E27F1B7ED54700CCD5C0 /* ClassesTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 0524E27E1B7ED54700CCD5C0 /* ClassesTableViewController.m */; };
 		0524E2821B7EE7BA00CCD5C0 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 0524E2811B7EE7BA00CCD5C0 /* Reachability.m */; };
 		0524E2891B7F27D400CCD5C0 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0524E2881B7F27D400CCD5C0 /* CoreData.framework */; };
-		0524E28B1B7F28DA00CCD5C0 /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0524E28A1B7F28DA00CCD5C0 /* libsqlite3.0.dylib */; };
-		0524E28D1B7F291900CCD5C0 /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0524E28C1B7F291900CCD5C0 /* libz.dylib */; };
 		0524E28F1B7F295200CCD5C0 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0524E28E1B7F295200CCD5C0 /* CoreMotion.framework */; };
-		0524E2911B7F2E2F00CCD5C0 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 0524E2901B7F2E2F00CCD5C0 /* libsqlite3.dylib */; };
 		0524E2A21B7F84BB00CCD5C0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 0524E2A11B7F84BB00CCD5C0 /* GoogleService-Info.plist */; };
 		05622E321B7FFAC800563671 /* AddUpdateClassTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 05622E311B7FFAC800563671 /* AddUpdateClassTableViewController.m */; };
 		058E66141B738B8C00488144 /* GoogleMobileAds.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 058E66131B738B8C00488144 /* GoogleMobileAds.framework */; };
@@ -24,9 +21,9 @@
 		05A117541B706D85004C6A62 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A117531B706D85004C6A62 /* CoreLocation.framework */; };
 		05A117561B706D8D004C6A62 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A117551B706D8D004C6A62 /* CoreTelephony.framework */; };
 		05A117581B706D9E004C6A62 /* EventKitUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A117571B706D9E004C6A62 /* EventKitUI.framework */; };
-		05A1175A1B706DB0004C6A62 /* libxml2.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A117591B706DB0004C6A62 /* libxml2.dylib */; };
 		05A1175C1B706DB9004C6A62 /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A1175B1B706DB9004C6A62 /* MediaPlayer.framework */; };
 		05A117601B731044004C6A62 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 05A1175F1B731044004C6A62 /* CoreMedia.framework */; };
+		05B7239B1BB3A79700316606 /* NewsModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 05B7239A1BB3A79700316606 /* NewsModel.m */; settings = {ASSET_TAGS = (); }; };
 		05ED85521B607444006D5714 /* AdminToolsQuickAddView.m in Sources */ = {isa = PBXBuildFile; fileRef = 05ED85511B607444006D5714 /* AdminToolsQuickAddView.m */; };
 		05ED85541B60746B006D5714 /* AdminToolsQuickAddView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 05ED85531B60746B006D5714 /* AdminToolsQuickAddView.xib */; };
 		7876F68D6093095497A50517 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E0E406A4C80C7006893BCA59 /* libPods.a */; };
@@ -178,10 +175,7 @@
 		0524E2801B7EE7BA00CCD5C0 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		0524E2811B7EE7BA00CCD5C0 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		0524E2881B7F27D400CCD5C0 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
-		0524E28A1B7F28DA00CCD5C0 /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
-		0524E28C1B7F291900CCD5C0 /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };
 		0524E28E1B7F295200CCD5C0 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
-		0524E2901B7F2E2F00CCD5C0 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		0524E2A11B7F84BB00CCD5C0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		05622E301B7FFAC800563671 /* AddUpdateClassTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddUpdateClassTableViewController.h; sourceTree = "<group>"; };
 		05622E311B7FFAC800563671 /* AddUpdateClassTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddUpdateClassTableViewController.m; sourceTree = "<group>"; };
@@ -194,9 +188,10 @@
 		05A117531B706D85004C6A62 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		05A117551B706D8D004C6A62 /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		05A117571B706D9E004C6A62 /* EventKitUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = EventKitUI.framework; path = System/Library/Frameworks/EventKitUI.framework; sourceTree = SDKROOT; };
-		05A117591B706DB0004C6A62 /* libxml2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libxml2.dylib; path = usr/lib/libxml2.dylib; sourceTree = SDKROOT; };
 		05A1175B1B706DB9004C6A62 /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		05A1175F1B731044004C6A62 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		05B723991BB3A79700316606 /* NewsModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = NewsModel.h; sourceTree = "<group>"; };
+		05B7239A1BB3A79700316606 /* NewsModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NewsModel.m; sourceTree = "<group>"; };
 		05ED85501B607444006D5714 /* AdminToolsQuickAddView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdminToolsQuickAddView.h; sourceTree = "<group>"; };
 		05ED85511B607444006D5714 /* AdminToolsQuickAddView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdminToolsQuickAddView.m; sourceTree = "<group>"; };
 		05ED85531B60746B006D5714 /* AdminToolsQuickAddView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AdminToolsQuickAddView.xib; sourceTree = "<group>"; };
@@ -455,16 +450,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0524E2911B7F2E2F00CCD5C0 /* libsqlite3.dylib in Frameworks */,
 				0524E28F1B7F295200CCD5C0 /* CoreMotion.framework in Frameworks */,
-				0524E28D1B7F291900CCD5C0 /* libz.dylib in Frameworks */,
-				0524E28B1B7F28DA00CCD5C0 /* libsqlite3.0.dylib in Frameworks */,
 				0524E2891B7F27D400CCD5C0 /* CoreData.framework in Frameworks */,
 				05A117601B731044004C6A62 /* CoreMedia.framework in Frameworks */,
 				946893021A8320BD0047C111 /* SystemConfiguration.framework in Frameworks */,
 				9402977A1A43F4B1007E0E89 /* MessageUI.framework in Frameworks */,
 				05A1175C1B706DB9004C6A62 /* MediaPlayer.framework in Frameworks */,
-				05A1175A1B706DB0004C6A62 /* libxml2.dylib in Frameworks */,
 				05A117581B706D9E004C6A62 /* EventKitUI.framework in Frameworks */,
 				05A117561B706D8D004C6A62 /* CoreTelephony.framework in Frameworks */,
 				05A117541B706D85004C6A62 /* CoreLocation.framework in Frameworks */,
@@ -652,15 +643,11 @@
 		94BD73BC183DA63D009E1129 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				0524E2901B7F2E2F00CCD5C0 /* libsqlite3.dylib */,
 				0524E28E1B7F295200CCD5C0 /* CoreMotion.framework */,
-				0524E28C1B7F291900CCD5C0 /* libz.dylib */,
-				0524E28A1B7F28DA00CCD5C0 /* libsqlite3.0.dylib */,
 				0524E2881B7F27D400CCD5C0 /* CoreData.framework */,
 				058E66131B738B8C00488144 /* GoogleMobileAds.framework */,
 				05A1175F1B731044004C6A62 /* CoreMedia.framework */,
 				05A1175B1B706DB9004C6A62 /* MediaPlayer.framework */,
-				05A117591B706DB0004C6A62 /* libxml2.dylib */,
 				05A117571B706D9E004C6A62 /* EventKitUI.framework */,
 				05A117551B706D8D004C6A62 /* CoreTelephony.framework */,
 				05A117531B706D85004C6A62 /* CoreLocation.framework */,
@@ -767,6 +754,8 @@
 				94451F581866EA1100136ED2 /* IntroModel.m */,
 				940296F91A32BC50007E0E89 /* AdminModel.h */,
 				940296FA1A32BC50007E0E89 /* AdminModel.m */,
+				05B723991BB3A79700316606 /* NewsModel.h */,
+				05B7239A1BB3A79700316606 /* NewsModel.m */,
 			);
 			name = Model;
 			sourceTree = "<group>";
@@ -960,7 +949,7 @@
 		94BD73B2183DA63C009E1129 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0510;
+				LastUpgradeCheck = 0700;
 				ORGANIZATIONNAME = "Randall Rumple";
 				TargetAttributes = {
 					94BD73B9183DA63D009E1129 = {
@@ -1154,6 +1143,7 @@
 				945D61831A20D12300FEFEA2 /* RequestSchoolViewController.m in Sources */,
 				94E33C9F1869E3E700DB9A82 /* TKProgressCircleView.m in Sources */,
 				940296FB1A32BC50007E0E89 /* AdminModel.m in Sources */,
+				05B7239B1BB3A79700316606 /* NewsModel.m in Sources */,
 				05ED85521B607444006D5714 /* AdminToolsQuickAddView.m in Sources */,
 				9427379919874431002CEA3F /* UpdateKidViewController.m in Sources */,
 				94E33C891869E3E700DB9A82 /* TKCalendarDayView.m in Sources */,
@@ -1240,6 +1230,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -1302,7 +1293,9 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)";
+				"FRAMEWORK_SEARCH_PATHS[arch=*]" = "$(inherited)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School Intercom/School Intercom-Info.plist";
@@ -1313,6 +1306,7 @@
 					"$(PROJECT_DIR)",
 				);
 				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.myschoolintercom.schoolintercom;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1330,7 +1324,8 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=*]" = "iPhone Distribution";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)";
+				ENABLE_BITCODE = NO;
+				FRAMEWORK_SEARCH_PATHS = "$(SRCROOT)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School Intercom/School Intercom-Info.plist";
@@ -1341,6 +1336,7 @@
 					"$(PROJECT_DIR)",
 				);
 				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.myschoolintercom.schoolintercom;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = 1;
@@ -1354,7 +1350,6 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/School Intercom.app/School Intercom";
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
@@ -1365,6 +1360,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "School IntercomTests/School IntercomTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "info.randallrumple.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
@@ -1376,13 +1372,13 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/School Intercom.app/School Intercom";
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
 					"$(DEVELOPER_FRAMEWORKS_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "School Intercom/School Intercom-Prefix.pch";
 				INFOPLIST_FILE = "School IntercomTests/School IntercomTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "info.randallrumple.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;

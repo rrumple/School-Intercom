@@ -9,10 +9,13 @@
 #import "NewsDetailViewController.h"
 //#import "Flurry.h"
 #import <Google/Analytics.h>
+#import "NewsModel.h"
 
 @interface NewsDetailViewController ()<UIWebViewDelegate>
 @property (weak, nonatomic) IBOutlet UITextView *newsTextView;
 @property (weak, nonatomic) IBOutlet UILabel *newsTitleLabel;
+@property (weak, nonatomic) IBOutlet UIButton *otherAttachmentButton;
+
 @property (weak, nonatomic) IBOutlet UIButton *attachmentButton;
 @property (weak, nonatomic) IBOutlet UIWebView *newsWebView;
 
@@ -20,10 +23,18 @@
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *loadingActivityIndicator;
 @property (weak, nonatomic) IBOutlet UILabel *loadingActivityViewLabel;
 
+@property (nonatomic, strong) NewsModel *newsData;
+
 
 @end
 
 @implementation NewsDetailViewController
+
+-(NewsModel *)newsData
+{
+    if(!_newsData) _newsData = [[NewsModel alloc]init];
+    return _newsData;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -96,6 +107,8 @@
     
     if([[self.newsDetailData objectForKey:@"attachmentName"] length] > 0)
     {
+        self.attachmentButton.hidden = false;
+        self.otherAttachmentButton.hidden = false;
         self.loadingIndicatorView.hidden = false;
         self.loadingActivityViewLabel.text = @"Loading...";
         [self.loadingActivityIndicator startAnimating];
@@ -143,6 +156,49 @@
 }
 - (IBAction)attachmentButtonPressed
 {
+    [self.attachmentButton setEnabled:false];
+    [self.otherAttachmentButton setEnabled:false];
+        dispatch_queue_t createQueue = dispatch_queue_create("emailAttachment", NULL);
+        dispatch_async(createQueue, ^{
+            NSArray *emailArray;
+            emailArray = [self.newsData emailPDFtoUser:self.userID withNewsID:[self.newsDetailData objectForKey:ID]];
+            if (emailArray)
+            {
+                
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    //NSLog(@"%@", [emailArray objectAtIndex:0]);
+                    
+                    
+                    if(![[[emailArray objectAtIndex:0]objectForKey:@"error"] boolValue])
+                    {
+                        
+                        id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+                        [tracker send:[[GAIDictionaryBuilder createEventWithCategory:@"News Attachment"
+                                                                              action:@"Request_to_Email_PDF"
+                                                                               label:@"Emailed_PDF"
+                                                                               value:@1] build]];
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email Sent" message:@"The PDF has been emailed to you." delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        alert.delegate = self;
+                        
+                        [alert show];
+                
+                        
+                        
+                    }
+                    else
+                    {
+                        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Send Failure" message:@"PDF Sending Failed! Try again later." delegate:self cancelButtonTitle:nil otherButtonTitles:@"Ok", nil];
+                        
+                        [alert show];
+                        
+                    }
+                    
+                    
+                    
+                });
+                
+            }
+        });
     
 }
 

@@ -49,7 +49,7 @@
 
 - (NSArray *)updateUserPushNotificationPinForUserID:(NSString *)userID withPin:(NSString *)deviceToken;
 
-- (NSArray *)updateUserVersionAndModelUserID:(NSString *)userID withVersion:(NSString *)version andModel:(NSString *)model;
+- (NSArray *)updateUserVersionAndModelUserID:(NSString *)userID withVersion:(NSString *)version andModel:(NSString *)model andAppVersion:(NSString *)appleAppVersion;
 
 - (NSArray *)getCurrentAppVersion;
 

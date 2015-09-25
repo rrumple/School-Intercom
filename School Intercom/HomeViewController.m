@@ -112,7 +112,7 @@
 {
     dispatch_queue_t createQueue = dispatch_queue_create("updateBadge", NULL);
     dispatch_async(createQueue, ^{
-        NSArray *dataArray;
+        NSArray *dataArray = [[NSArray alloc]init];
         dataArray = [self.databaseData zeroOutBadgeForSchoolID:self.mainUserData.schoolIDselected ofUser:self.mainUserData.userID];
         
         if (dataArray)
@@ -121,23 +121,25 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 //NSLog(@"%@", [dataArray objectAtIndex:0]);
                 
-                
-                if([[[dataArray objectAtIndex:0]objectForKey:@"error"] boolValue])
+                if(dataArray.count > 0)
                 {
-                    //
-                }
-                else
-                {
-                  
-                    int newBadgeNumber = [[[dataArray objectAtIndex:0]objectForKey:BADGE_COUNT]intValue];
-                    
-                    [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%i", newBadgeNumber] forKey:BADGE_COUNT];
-                    [[NSUserDefaults standardUserDefaults]synchronize];
-                    
-                    [[UIApplication sharedApplication]setApplicationIconBadgeNumber:newBadgeNumber];
-                    
-                    [self.mainUserData updateBadgeCountsForSchools:[[dataArray objectAtIndex:0] objectForKey:@"schoolBadgeData"]];
+                    if([[[dataArray objectAtIndex:0]objectForKey:@"error"] boolValue])
+                    {
+                        //
+                    }
+                    else
+                    {
+                      
+                        int newBadgeNumber = [[[dataArray objectAtIndex:0]objectForKey:BADGE_COUNT]intValue];
+                        
+                        [[NSUserDefaults standardUserDefaults] setObject:[NSString stringWithFormat:@"%i", newBadgeNumber] forKey:BADGE_COUNT];
+                        [[NSUserDefaults standardUserDefaults]synchronize];
+                        
+                        [[UIApplication sharedApplication]setApplicationIconBadgeNumber:newBadgeNumber];
+                        
+                        [self.mainUserData updateBadgeCountsForSchools:[[dataArray objectAtIndex:0] objectForKey:@"schoolBadgeData"]];
 
+                    }
                 }
                 
                 

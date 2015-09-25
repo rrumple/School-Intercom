@@ -709,23 +709,36 @@
 		[timeColor set];
 		CGRect timeRect = CGRectMake(2.0, i * VERTICAL_DIFF + VERTICAL_INSET - 9, 20.0 + (self.is24hClock?22:0), FONT_SIZE + 2.0);
 		
+        NSMutableParagraphStyle *paragraphStyle = [[NSParagraphStyle defaultParagraphStyle] mutableCopy];
+        /// Set line break mode
+        paragraphStyle.lineBreakMode = NSLineBreakByWordWrapping;
+        /// Set text alignment
+        paragraphStyle.alignment = NSTextAlignmentRight;
+        NSDictionary *dictionary = [[NSDictionary alloc] initWithObjectsAndKeys: timeFont, NSFontAttributeName, NSLineBreakByWordWrapping,NSParagraphStyleAttributeName, nil];
 		
 		if([self.times[i] length] > 2){
 			
 			timeRect.size.width = LEFT_INSET - timeRect.origin.x - 10;
-			[self.times[i] drawInRect:timeRect withFont:timeFont lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentRight];
+            /// Make a copy of the default paragraph style
+          
+            
+            [self.times[i] drawInRect:timeRect withAttributes:dictionary];
+			//[self.times[i] drawInRect:timeRect withFont:timeFont lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentRight];
 
 		}else{
-			[self.times[i] drawInRect:timeRect withFont:timeFont lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentRight];
+            [self.times[i] drawInRect:timeRect withAttributes:dictionary];
+			//[self.times[i] drawInRect:timeRect withFont:timeFont lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentRight];
 
 		}
 		
 		
 		
 		if (!self.is24hClock && i != 24/2) {
+            dictionary = [[NSDictionary alloc] initWithObjectsAndKeys: periodFont, NSFontAttributeName, NSLineBreakByWordWrapping,NSParagraphStyleAttributeName, nil];
 			[periodColor set];
 			CGRect r = CGRectMake(2.0f + 20.0, i * VERTICAL_DIFF + VERTICAL_INSET - 7, 22.0, AM_SIZE + 2.0);
-			[self.periods[i] drawInRect:r withFont:periodFont lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentRight];
+            [self.periods[i] drawInRect: r withAttributes:dictionary];
+			//[self.periods[i] drawInRect:r withFont:periodFont lineBreakMode:NSLineBreakByWordWrapping alignment:NSTextAlignmentRight];
 		}
 		
 		

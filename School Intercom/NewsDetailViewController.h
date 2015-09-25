@@ -11,4 +11,5 @@
 
 @interface NewsDetailViewController : UIViewController
 @property (nonatomic, strong) NSDictionary *newsDetailData;
+@property (nonatomic, strong) NSString *userID;
 @end

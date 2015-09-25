@@ -801,6 +801,7 @@ didFailToReceiveAdWithError:(GADRequestError *)error
         
         NewsDetailViewController *NDVC = segue.destinationViewController;
         NDVC.newsDetailData = [[self.postNewsData objectAtIndex:index.section] objectAtIndex:index.row];
+        NDVC.userID = self.mainUserData.userID;
         
        
     }

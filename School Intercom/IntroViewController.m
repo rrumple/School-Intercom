@@ -101,7 +101,7 @@
     return NO;
 }
 
-- (NSUInteger)supportedInterfaceOrientations
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
     return UIInterfaceOrientationMaskPortrait;
 }
@@ -347,6 +347,7 @@
 
 - (void)loadData
 {
+    [self updateDeviceInfo];
     
     [self.loadingActivityIndicator startAnimating];
     self.logoutButton.hidden = YES;
@@ -747,6 +748,36 @@
         }
     });
 
+}
+
+- (void)updateDeviceInfo
+{
+    NSString *iosVersion = [[UIDevice currentDevice] systemVersion];
+    //NSLog(@"%@", iosVersion);
+    NSString *deviceModel = [HelperMethods getDeviceModel];
+    //NSLog(@"%@", deviceModel);
+    if ([[[NSUserDefaults standardUserDefaults]objectForKey:ACCOUNT_CREATED]boolValue])
+    {
+        RegistrationModel *registerData = [[RegistrationModel alloc]init];
+        
+        dispatch_queue_t createQueue = dispatch_queue_create("updateIOSVersion", NULL);
+        dispatch_async(createQueue, ^{
+            NSArray *dataArray;
+            dataArray = [registerData updateUserVersionAndModelUserID:[[NSUserDefaults standardUserDefaults]objectForKey:USER_ID] withVersion:iosVersion andModel:deviceModel andAppVersion:[NSString stringWithFormat:@"%@", [[[NSBundle mainBundle] infoDictionary] objectForKey:@"CFBundleShortVersionString"]]];
+            if ([dataArray count] == 1)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    NSDictionary *tempDic = [dataArray objectAtIndex:0];
+                    
+                    if([[tempDic objectForKey:@"error"] boolValue])
+                    {
+                        NSLog(@"%@", tempDic);
+                    }
+                });
+                
+            }
+        });
+    }
 }
 
 - (void)getUserEmailFromDatabase

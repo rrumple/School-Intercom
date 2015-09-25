@@ -134,7 +134,16 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
             MMVC.schoolIDtoLoad = schoolID;
             
         }
-        else
+        else if([newStr isEqualToString:@"PP-"])
+        {
+            UIAlertView *pushPinChangeAlert = [[UIAlertView alloc]initWithTitle:@"Account Alert!" message:@"Your account was logged into on another device, you will no longer receive push notifications on this device. To receive alerts on more than one device please create one account per device" delegate:self cancelButtonTitle:@"Ignore" otherButtonTitles:@"Create Account", nil];
+            pushPinChangeAlert.tag = zAlertPushPinChange;
+            [pushPinChangeAlert show];
+            
+            MMVC.viewToLoad = mv_Home;
+            MMVC.schoolIDtoLoad = @"999";
+            
+        } else
         {
             NSString *schoolID = [messageID substringToIndex:32];
             MMVC.viewToLoad = mv_Home;
@@ -143,17 +152,7 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
             
         }
         
-        if([newStr isEqualToString:@"PP-"])
-        {
-            UIAlertView *pushPinChangeAlert = [[UIAlertView alloc]initWithTitle:@"Account Alert!" message:@"Your account was logged into on another device, you will no longer receive push notifications on this device. To receive alerts on more than one device please create one account per device" delegate:self cancelButtonTitle:@"Ignore" otherButtonTitles:@"Create Account", nil];
-            pushPinChangeAlert.tag = zAlertPushPinChange;
-            [pushPinChangeAlert show];
-            
-            NSString *schoolID = [messageID substringToIndex:32];
-            MMVC.viewToLoad = mv_Home;
-            MMVC.schoolIDtoLoad = schoolID;
-
-        }
+        
         
        
     }
@@ -213,32 +212,7 @@ NSString *const ADLoadDataNotification = @"ADLoadDataNotification";
     UINavigationController *navigationController = (UINavigationController*)_window.rootViewController;
     NSLog(@"%@", navigationController.viewControllers);
     
-    NSString *iosVersion = [[UIDevice currentDevice] systemVersion];
-    //NSLog(@"%@", iosVersion);
-    NSString *deviceModel = [HelperMethods getDeviceModel];
-    //NSLog(@"%@", deviceModel);
-    if ([[[NSUserDefaults standardUserDefaults]objectForKey:ACCOUNT_CREATED]boolValue])
-    {
-        RegistrationModel *registerData = [[RegistrationModel alloc]init];
-        
-        dispatch_queue_t createQueue = dispatch_queue_create("updateIOSVersion", NULL);
-        dispatch_async(createQueue, ^{
-            NSArray *dataArray;
-            dataArray = [registerData updateUserVersionAndModelUserID:[[NSUserDefaults standardUserDefaults]objectForKey:USER_ID] withVersion:iosVersion andModel:deviceModel];
-            if ([dataArray count] == 1)
-            {
-                dispatch_async(dispatch_get_main_queue(), ^{
-                    NSDictionary *tempDic = [dataArray objectAtIndex:0];
-                    
-                    if([[tempDic objectForKey:@"error"] boolValue])
-                    {
-                        NSLog(@"%@", tempDic);
-                    }
-                });
-                
-            }
-        });
-    }
+  
     if([[[NSUserDefaults standardUserDefaults]objectForKey:ACCOUNT_CREATED]boolValue])
     {
         //-- Set Notification

@@ -171,11 +171,11 @@
     
 }
 
-- (NSArray *)updateUserVersionAndModelUserID:(NSString *)userID withVersion:(NSString *)version andModel:(NSString *)model
+- (NSArray *)updateUserVersionAndModelUserID:(NSString *)userID withVersion:(NSString *)version andModel:(NSString *)model andAppVersion:(NSString *)appleAppVersion
 {
     NSArray *dataArray;
-    NSArray *keys = @[USER_ID, DEVICE_VERSION, DEVICE_MODEL];
-    NSArray *data = @[userID, version, model];
+    NSArray *keys = @[USER_ID, DEVICE_VERSION, DEVICE_MODEL, @"appleAppVersion"];
+    NSArray *data = @[userID, version, model, appleAppVersion];
     
     NSString *urlString = [DatabaseRequest buildURLUsingFilename:PHP_UPDATE_DEVICE_VERSION withKeys:keys andData:data];
     
